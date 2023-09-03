@@ -18083,7 +18083,7 @@ function generatePlots(){
     stats.append("rect").attr("x",x+40).attr("y",y+i*15).attr("width",height).attr("height",10)
          .attr("fill","#7777bb").attr("stroke","#9898d6").attr("stroke-width",1)
     stats.append("text").attr("x",x+20).attr("y",y+i*15+8).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","right").text(bigram);
-    stats.append("text").attr("x",x+200).attr("y",y+i*15+8).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","left").text(parseFloat(""+(100*m_same_finger[bigram]/m_input_length)).toFixed(2)+"%  "+m_same_finger[bigram]);
+    stats.append("text").attr("x",x+200).attr("y",y+i*15+8).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","left").text(parseFloat(""+(100*m_same_finger[bigram]/m_input_length)).toFixed(2)+"%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10){break;}
