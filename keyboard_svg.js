@@ -17767,6 +17767,9 @@ function importLayout(layout){
   for(let i = 22; i < 32;i++){
     rcdata[i+3][0] = layout.charAt(i);
   }
+  if (layout.length >= 33){
+    rcdata[36][0] = layout.charAt(32);
+  }
   console.log(rcdata);
 }
 
@@ -17801,8 +17804,16 @@ function getRow(letter){
   return -1;
 }
 
-function getFinger(col){
-  return finger[col];
+function getFinger(col,row){
+  if (row > 2){
+    if (col <= 4){
+      return 5
+    } else {
+      return 6
+    }
+  } else {
+    return finger[col];
+  }
 }
 
 function dist(x1,y1,x2,y2){
@@ -17895,14 +17906,14 @@ function measureWords(){
       }
       m_column_usage[col] += count;
       // finger usage //
-      var finger = getFinger(col);
+      var row = getRow(char);
+      var finger = getFinger(col,row);
       // console.log("  finger = "+finger);
       if (!m_finger_usage[finger]){
         m_finger_usage[finger] = 0;
       }
       m_finger_usage[finger] += count;
       // finger travel distance
-      var row = getRow(char);
       if (row<0){break;}
       //dist(x1,y1,x2,y2){
       d = dist(col,row,finger_pos[finger][1],finger_pos[finger][0]);
