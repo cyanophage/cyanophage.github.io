@@ -3,7 +3,7 @@
     <title>Keyboard Layout</title>
     <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
     <style>
-      body {background-color:#1b1c1f;}
+      body {background-color:#1b1c1f;font-family: Arial, sans-serif;}
       .static {
         cursor: not-allowed;
       }
@@ -12,9 +12,11 @@
       }
       .layout-svg{margin:auto;width:700px;}
       .stats-svg{margin:auto;width:700px;}
+      #tooltip {background:#333333;color:#cccccc;border: 1px solid #cccccc; padding:5px;}
     </style>
   </head>
   <body>
+    <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
     <a href="index.html">back</a>
     <div class="layout-svg" id = "svglayout"></div>
     <br>

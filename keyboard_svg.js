@@ -17743,16 +17743,17 @@ var rcdata = [
   ["space",3,7,0],
 ]
 
-function layout(){
-//   for(let i = 0; i < 11;i++){
-//     console.log(rcdata[i+1][0])
-//   }
-//   for(let i = 11; i < 22;i++){
-//     console.log(rcdata[i+2][0])
-//   }
-//   for(let i = 22; i < 32;i++){
-//     console.log(rcdata[i+3][0])
-//   }
+function showTooltip(evt, text){
+  let tooltip = document.getElementById("tooltip");
+  tooltip.innerHTML = text;
+  tooltip.style.display = "block";
+  tooltip.style.left = evt.pageX + 10 + 'px';
+  tooltip.style.top = evt.pageY + 10 + 'px';
+}
+
+function hideTooltip() {
+  var tooltip = document.getElementById("tooltip");
+  tooltip.style.display = "none";
 }
 
 function importLayout(layout){
@@ -17770,7 +17771,7 @@ function importLayout(layout){
   if (layout.length >= 33){
     rcdata[36][0] = layout.charAt(32);
   }
-  console.log(rcdata);
+  // console.log(rcdata);
 }
 
 
@@ -17867,6 +17868,7 @@ var m_skip_bigram = {};
 var m_lat_stretch = {};
 var m_letter_freq = {};
 var m_row_usage = {};
+var m_trigram_count = {};
 var m_input_length = 0;
 var finger_pos = [[1,1],[1,2],[1,3],[1,4],[4,5],[4,6],[1,7],[1,8],[1,9],[1,10]];
 
@@ -17879,15 +17881,16 @@ function measureWords(){
   m_lat_stretch = {};
   m_letter_freq = {};
   m_row_usage = {};
+  m_trigram_count = {};
   m_input_length = 0;
   var prevchar = "";
   var prevfinger = -1;
   var ppchar = "";
   var ppfinger = -1;
-  var bigram, skip;
+  var bigram, trigram, cat, skip;
   var prevcol = -1;
-  finger_pos = [[0,0],[1,1],[1,2],[1,3],[1,4],[4,5],[4,6],[1,7],[1,8],[1,9],[1,10]];
   for(var word in words) {
+    finger_pos = [[0,0],[1,1],[1,2],[1,3],[1,4],[4,5],[4,6],[1,7],[1,8],[1,9],[1,10]];
     // console.log(word);
     var count = words[word];
     m_input_length += count * (word.length+1);
@@ -17952,12 +17955,67 @@ function measureWords(){
       // trigram stuff
       if (i > 1) {
         skip = ppchar + "_" + char;
+        trigram = ppchar + prevchar + char;
         if (finger == ppfinger && ppchar != char){
           if (!m_skip_bigram[skip]) {
             m_skip_bigram[skip] = 0;
           }
           m_skip_bigram[skip] += count;
         }
+        cat = "other";
+        if (ppfinger <= 4 && prevfinger <= 4 && finger <= 4) { // left hand
+          if (ppfinger < prevfinger && prevfinger < finger) {
+            cat = "roll in"
+          } else if (ppfinger > prevfinger && prevfinger > finger) {
+            cat = "roll out"
+          } else if ((ppfinger < prevfinger && finger < prevfinger) || (ppfinger > prevfinger && finger > prevfinger)) {
+            cat = "redirect"
+            if (ppfinger == 4 || prevfinger == 4 || finger == 4){
+            } else {
+              cat = "redirect_"
+            }
+          }
+        }
+        if (ppfinger >=7 && prevfinger >=7 && finger >=7) { // right hand
+          if (ppfinger > prevfinger && prevfinger > finger) {
+            cat = "roll in"
+          } else if (ppfinger < prevfinger && prevfinger < finger) {
+            cat = "roll out"
+          } else if ((ppfinger > prevfinger && finger > prevfinger) || (ppfinger < prevfinger && finger < prevfinger)) {
+            cat = "redirect"
+            if (ppfinger == 7 || prevfinger == 7 || finger == 7){
+            } else {
+              cat = "redirect_"
+            }
+          }
+        }
+        if ((ppfinger <= 4 && prevfinger >= 7 && finger <= 4)||(ppfinger >= 7 && prevfinger <= 4 && finger >= 7)){
+          cat = "alt"
+          if (ppfinger == finger && ppchar != char){
+            cat = "alt sfs"
+          }
+        } else if (ppfinger <= 5 && prevfinger <= 5 && finger >= 6 && ppfinger < prevfinger) { // LLR
+          cat = "bi roll in"}
+        else if (ppfinger >= 6 && prevfinger >= 6 && finger <= 5 && ppfinger > prevfinger ) { // RRL
+          cat = "bi roll in"}
+        else if (ppfinger <= 5 && prevfinger <= 5 && finger >= 6 && ppfinger > prevfinger) { // LLR
+          cat = "bi roll out"}
+        else if (ppfinger >= 6 && prevfinger >= 6 && finger <= 5 && ppfinger < prevfinger ) { // RRL
+          cat = "bi roll out"}
+        else if (ppfinger <= 5 && prevfinger >= 6 && finger >= 6 && prevfinger > finger) { // LRR
+          cat = "bi roll in"}
+        else if (ppfinger >= 6 && prevfinger <= 5 && finger <= 5 && prevfinger < finger) { // RLL
+          cat = "bi roll in"}
+        else if (ppfinger <= 5 && prevfinger >= 6 && finger >= 6 && prevfinger < finger) { // LRR
+          cat = "bi roll out"}
+        else if (ppfinger >= 6 && prevfinger <= 5 && finger <= 5 && prevfinger > finger ) { // RLL
+          cat = "bi roll out";
+        }
+        if (!m_trigram_count[cat]){
+          m_trigram_count[cat] = 0;
+        }
+        m_trigram_count[cat] += count;
+        // console.log(trigram +"\t"+cat+"\t"+count);
       }
       prevcol = col;
       ppchar = prevchar;
@@ -18001,6 +18059,7 @@ function generatePlots(){
   }
   for(var col in m_column_usage){
     var height = 300*m_column_usage[col]/sum;
+    var tip = parseFloat(100*m_column_usage[col]/sum).toFixed(2);
     var red = Math.floor(275*m_column_usage[col]/sum) + 128
     var green = 128;
     if (red < 16){ red = 16; }
@@ -18010,6 +18069,7 @@ function generatePlots(){
 
     stats.append("rect").attr("x",x+col*20).attr("y",100-height).attr("width",15).attr("height",height)
          .attr("fill","#"+hex_red+hex_bg+hex_bg).attr("stroke","#453033").attr("stroke-width",1)
+         .attr("onmouseover","showTooltip(evt,'"+tip+"%')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x",x+col*20+7).attr("y",111).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(col)
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
   }
@@ -18024,6 +18084,7 @@ function generatePlots(){
   }
   for(var row in m_row_usage){
     var height = 200*m_row_usage[row]/sum;
+    var tip = parseFloat(100*m_row_usage[row]/sum).toFixed(2);
     var red = Math.floor(128*m_row_usage[row]/sum) + 128
     var green = 128;
     if (red < 16){ red = 16; }
@@ -18033,6 +18094,7 @@ function generatePlots(){
 
     stats.append("rect").attr("x",x+19).attr("y",y+40+row*20).attr("width",height).attr("height",14)
          .attr("fill","#"+hex_red+hex_bg+hex_bg).attr("stroke","#453033").attr("stroke-width",1)
+         .attr("onmouseover","showTooltip(evt,'"+tip+"%')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x",x+9).attr("y",y+51+row*20).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(parseInt(row)+1)
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
   }
@@ -18041,11 +18103,20 @@ function generatePlots(){
   var y = 0;
   stats.append("text").attr("x",x+40).attr("y",16).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Finger Usage")
   var sum = 0;
+  var left = 0;
+  var right = 0;
   for(var finger in m_finger_usage){
     sum += m_finger_usage[finger];
+    if (finger <= 4){
+      left += m_finger_usage[finger];
+    }
+    if (finger >= 7){
+      right += m_finger_usage[finger];
+    }
   }
   for(var finger in m_finger_usage){
     var height = 300*m_finger_usage[finger]/sum;
+    var tip = parseFloat(100*m_finger_usage[finger]/sum).toFixed(2);
     var red = Math.floor(275*m_finger_usage[finger]/sum) + 128
     var green = 128;
     if (red < 16){ red = 16; }
@@ -18054,15 +18125,32 @@ function generatePlots(){
     var hex_bg = green.toString(16);
     stats.append("rect").attr("x",x+finger*20).attr("y",100-height).attr("width",15).attr("height",height)
          .attr("fill","#"+hex_red+hex_bg+hex_bg).attr("stroke","#453033").attr("stroke-width",1)
-    stats.append("text").attr("x",x+finger*20+7).attr("y",111).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(finger)
+         .attr("onmouseover","showTooltip(evt,'"+tip+"%')").attr("onmouseout","hideTooltip()")
+    stats.append("text").attr("x",x+finger*20+7).attr("y",111).attr("fill","#dfe2eb").attr("font-size",10)
+         .attr("font-family","Sans,Arial").attr("text-anchor","middle").text(finger)
   }
+  stats.append("text").attr("x",x+57).attr("y",124).attr("fill","#dfe2eb").attr("font-size",11).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(parseFloat(100*left/sum).toFixed(2)+"%");
+  stats.append("text").attr("x",x+177).attr("y",124).attr("fill","#dfe2eb").attr("font-size",11).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(parseFloat(100*right/sum).toFixed(2)+"%");
   ///////////////////////////////////////   F I N G E R   D I S T A N C E   //////////////////////////////////
   var x = 250;
   var y = 0;
   var max = 108403;//from qwerty
+  sum = 0
+  left = 0;
+  right = 0;
+  for(var finger in m_finger_distance){
+    sum += m_finger_distance[finger];
+    if (finger <= 4){
+      left += m_finger_distance[finger];
+    }
+    if (finger >= 7){
+      right += m_finger_distance[finger];
+    }
+  }
   stats.append("text").attr("x",x+40).attr("y",16).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Finger Distance")
   for(var finger in m_finger_distance){
     var height = 75*m_finger_distance[finger]/max;
+    var tip = parseFloat(m_finger_distance[finger]/5500.0).toFixed(2);
     var red = Math.floor(128*m_finger_distance[finger]/max)+128
     var green = 128;
     if (red < 16){ red = 16; }
@@ -18071,9 +18159,12 @@ function generatePlots(){
     var hex_bg = green.toString(16);
     stats.append("rect").attr("x",x+finger*20).attr("y",100-height).attr("width",15).attr("height",height)
          .attr("fill","#"+hex_red+hex_bg+hex_bg).attr("stroke","#453033").attr("stroke-width",1)
+         .attr("onmouseover","showTooltip(evt,'"+tip+"')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x",x+finger*20+7).attr("y",111).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(finger)
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
   }
+  stats.append("text").attr("x",x+57).attr("y",124).attr("fill","#dfe2eb").attr("font-size",11).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(parseFloat(100*left/sum).toFixed(2)+"%");
+  stats.append("text").attr("x",x+177).attr("y",124).attr("fill","#dfe2eb").attr("font-size",11).attr("font-family","Sans,Arial").attr("text-anchor","middle").text(parseFloat(100*right/sum).toFixed(2)+"%");
   ///////////////////////////////////   S A M E   F I N G E R   B I G R A M S    ///////////////////////////////
   var x = 0;
   var y = 180;
@@ -18141,6 +18232,29 @@ function generatePlots(){
          .attr("fill","#7777bb").attr("stroke","#9898d6").attr("stroke-width",1)
     stats.append("text").attr("x",x+20).attr("y",y+i*15+8).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","right").text(bigram);
     stats.append("text").attr("x",x+200).attr("y",y+i*15+8).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","left").text(parseFloat(""+(100*m_lat_stretch[bigram]/m_input_length)).toFixed(2)+"%");
+    //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
+    i += 1;
+    if (i > 10){break;}
+  }
+  ///////////////////////////////////  T R I G R A M   S T A T S   ///////////////////////////////
+  var x = 740;
+  var y = 180;
+  sum = 0;
+  var keyValueArray = Object.entries(m_trigram_count);
+  keyValueArray.sort((a, b) => b[1] - a[1]);
+  m_trigram_count = Object.fromEntries(keyValueArray);
+  for(var cat in m_trigram_count){
+    sum += m_trigram_count[cat]
+  }
+  stats.append("text").attr("x",x+40).attr("y",y-16).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Trigram Stats")
+  var i = 0
+  for(var cat in m_trigram_count){
+    var height = 300*m_trigram_count[cat]/sum;
+    if (height>200){height=200;}
+    stats.append("rect").attr("x",x+80).attr("y",y+i*15).attr("width",height).attr("height",10)
+         .attr("fill","#7777bb").attr("stroke","#9898d6").attr("stroke-width",1)
+    stats.append("text").attr("x",x+20).attr("y",y+i*15+8).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","right").text(cat);
+    stats.append("text").attr("x",x+180).attr("y",y+i*15+8).attr("fill","#dfe2eb").attr("font-size",10).attr("font-family","Sans,Arial").attr("text-anchor","left").text(parseFloat(""+(100*m_trigram_count[cat]/sum)).toFixed(2)+"%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10){break;}
