@@ -17915,9 +17915,9 @@ function generateLayout() {
       .attr("stroke-width", "1").attr("class", "draggable");
     svg.append("text").attr("x", x + 15).attr("y", y + 19)
       .attr("font-size", fontsize).attr("font-family", "Sans,Arial")
-      .attr("text-anchor", "middle").text(letter).attr("class", "legend");
+      .attr("text-anchor", "middle").attr("class", "draggable legend").text(letter);
   }
-  svg.append("text").attr("x", 600).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+m_effort/100)
+  svg.append("text").attr("x", 600).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+m_effort/1000.0)
 }
 
 var m_column_usage = {};
@@ -18390,7 +18390,12 @@ function makeDraggable(evt) {
   function startDrag(evt) {
     if (evt.target.classList.contains('draggable')) {
       selectedElement = evt.target;
-      sibling = selectedElement.nextElementSibling; // dude this is super useful!
+      if (selectedElement.classList.contains('legend')){
+        selectedElement = selectedElement.previousElementSibling;
+        sibling = evt.target;
+      } else {
+        sibling = selectedElement.nextElementSibling; // dude this is super useful!
+      }
       if (selectedElement) {
         // move to the end so they appear on top while dragging
         svg.insertBefore(selectedElement, svg.lastChild);
