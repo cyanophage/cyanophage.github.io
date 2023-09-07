@@ -18370,6 +18370,11 @@ function makeDraggable(evt) {
   svg.addEventListener('mousemove', drag, false);
   svg.addEventListener('mouseup', endDrag, false);
   svg.addEventListener('mouseleave', endDrag);
+  svg.addEventListener('touchstart', startDrag, false);
+  svg.addEventListener('touchmove', drag, false);
+  svg.addEventListener('touchend', endDrag, false);
+  svg.addEventListener('touchcancel', endDrag);
+
 
   function getMousePosition(evt) {
     var CTM = svg.getScreenCTM();
