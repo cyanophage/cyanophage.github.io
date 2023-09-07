@@ -18338,7 +18338,7 @@ function generatePlots() {
     sum += m_trigram_count[cat]
   }
   const trigram_desc = {
-    "alt":"the hands used to type the trigram is either LRL or RLR",
+    "alt":"the hands used to type the trigram are either LRL or RLR",
     "alt sfs":"trigram is typed LRL or RLR but finger1 and finger3 are the same and type a different character",
     "bi roll in":"two of the characters in the trigram are typed with the same hand and the first is outside the second",
     "bi roll out":"two of the characters in the trigram are typed with the same hand and the first is inside the second",
@@ -18370,10 +18370,10 @@ function makeDraggable(evt) {
   svg.addEventListener('mousemove', drag, false);
   svg.addEventListener('mouseup', endDrag, false);
   svg.addEventListener('mouseleave', endDrag);
-  svg.addEventListener('touchstart', startDrag, false);
-  svg.addEventListener('touchmove', drag, false);
-  svg.addEventListener('touchend', endDrag, false);
-  svg.addEventListener('touchcancel', endDrag);
+  // svg.addEventListener('touchstart', startDrag, false);
+  // svg.addEventListener('touchmove', drag, false);
+  // svg.addEventListener('touchend', endDrag, false);
+  // svg.addEventListener('touchcancel', endDrag);
 
 
   function getMousePosition(evt) {
