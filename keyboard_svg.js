@@ -20,8 +20,8 @@ var max = 11.870939;
 var red = 0;
 var green = 128;
 
-var svg = d3.select("#svglayout").append("svg").attr("width", swidth).attr("height", sheight)
-  .attr("onload", "makeDraggable(evt)");
+
+var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
 
 var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("height", 400)
 
@@ -16224,6 +16224,9 @@ var words = {
   "mutations": 1,
 }
 
+makeDraggable(svg.node());
+
+
 // col         0  1  2  3  4  5  6  7  8  9 10 11
 var finger = [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10]
 var hand = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
@@ -16361,7 +16364,6 @@ function importLayout(layout) {
   }
   // console.log(rcdata);
 }
-
 
 function colToX(col) {
   dx = 55;
@@ -16521,11 +16523,6 @@ function measureWords() {
       // finger usage //
       row = getRow(char);
       // effort
-      // if (char.search(/[a-z]/) >= 0){
-
-      // } else if (count > 1) {
-      //   console.log(char +"  "+getEffort(row, col)+"  "+count);
-      // }
       if (!m_effort_per_letter[char]){
         m_effort_per_letter[char] = 0
       }
@@ -16680,17 +16677,9 @@ function measureWords() {
       }
     }
   }
-  for (var word in m_effort_per_word) {
-    console.log(word + "  " + m_effort_per_word[word]);
-  }
-  // console.log(rcdata);
-  // console.log(m_column_usage);
-  // console.log(m_skip_bigram);
 }
 
 function generatePlots() {
-  // stats.append("rect").attr("x", 10).attr("y",10).attr("width",100).attr("height",100)
-  //      .attr("fill","grey").attr("stroke","black")
   stats.selectAll("*").remove();
   ///////////////////////////////////////  C O L U M N   U S A G E  ////////////////////////////////////////////
   var x = 500;
@@ -16926,20 +16915,21 @@ function generatePlots() {
   }
 }
 
-function makeDraggable(evt) {
-  var svg = evt.target;
+function makeDraggable(svg) {
   svg.addEventListener('mousedown', startDrag, false);
   svg.addEventListener('mousemove', drag, false);
   svg.addEventListener('mouseup', endDrag, false);
   svg.addEventListener('mouseleave', endDrag);
-  // svg.addEventListener('touchstart', startDrag, false);
-  // svg.addEventListener('touchmove', drag, false);
-  // svg.addEventListener('touchend', endDrag, false);
-  // svg.addEventListener('touchcancel', endDrag);
 
+  svg.addEventListener('touchstart', startDrag);
+  svg.addEventListener('touchmove', drag);
+  svg.addEventListener('touchend', endDrag);
+  svg.addEventListener('touchleave', endDrag);
+  svg.addEventListener('touchcancel', endDrag);
 
   function getMousePosition(evt) {
     var CTM = svg.getScreenCTM();
+    if (evt.touches) { evt = evt.touches[0]; }
     return {
       x: (evt.clientX - CTM.e) / CTM.a,
       y: (evt.clientY - CTM.f) / CTM.d

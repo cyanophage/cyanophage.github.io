@@ -1,5 +1,7 @@
-<html>
+<!doctype html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <title>Keyboard Layout</title>
     <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
     <style>
@@ -12,8 +14,8 @@
       }
       .layout-svg{margin:auto;width:700px;}
       .stats-svg{margin:auto;width:700px;}
-      #tooltip {background:#333333;color:#cccccc;border: 1px solid #cccccc; padding:5px;}
-    </style>
+      #tooltip {background:#333333; color:#cccccc; border: 1px solid #cccccc; padding:5px;}
+      </style>
   </head>
   <body>
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
@@ -22,10 +24,6 @@
     <br>
     <div class="stats-svg" id = "svgstats"></div>
     <br>
-    <!-- <div>
-      <p>caveat: this playground uses a different corpus from the stats on the main page so stats will be different</p>
-
-    </div> -->
     <script type = "text/javascript" src="keyboard_svg.js"></script>
   </body>
 </html>
