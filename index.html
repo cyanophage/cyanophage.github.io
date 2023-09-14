@@ -8,15 +8,15 @@
     h2 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:5px;}
     h3 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:5px;}
     tr {border-bottom: 1px solid #ddd;}
-    .sidebar{height:100%;width:300px;background-color:#1b1c1f;position:fixed!important;z-index:1;overflow-x:hidden;overflow-y:auto;}
-    .content{background-color:#1b1c1f; margin-left: 300px;}
+    .sidebar{height:100%;width:200px;background-color:#1b1c1f;position:fixed!important;z-index:1;overflow-x:hidden;overflow-y:auto;}
+    .content{background-color:#1b1c1f; margin-left: 200px;}
     .bar-block {width:100%}
     .bar-item{padding:2px 16px;float:left;width:100%;border:none;display:block;outline:0}
-    .layout-svg{margin:auto;width:700px;}
     .sort-area{width:170px;margin-left:350px}
     .sort-button{height:20px;width:190px;background-color:#333333;color:#cccccc;border:none;text-align:center;text-decoration:none;display:inline-block;border-radius:4px;margin-bottom:3px;}
-    .stats-svg{margin:auto;width:1040px;}
-    @media (max-width:1140px){.sidebar{display:none} .content{margin-left: 0px;}}
+    .layout-svg{margin-left:200px;width:700px;}
+    .stats-svg{margin-left:200px;width:1040px;}
+    @media (max-width:1170px){ .sidebar{display:none} .content{margin-left: 0px;} .stats-svg{margin-left: 0px;} .layout-svg{margin-left: 0px;} }
     #tooltip {background:#333333;color:#cccccc;border: 1px solid #cccccc; padding:5px;}
     tr:hover {background-color: #D6EEEE;}
     a:link {  color: #dfe2eb;text-decoration: none;}
@@ -59,7 +59,7 @@ function hideTooltip() {
 }    </script>
 </head>
 <body style="background-color:#1b1c1f">
-<div id="tooltip" display="none" style="position: absolute;display: none;"></div><div class="sidebar bar-block" style="width:300px;" id="mySidebar">
+<div id="tooltip" display="none" style="position: absolute;display: none;"></div><div class="sidebar bar-block" style="width:200px;" id="mySidebar">
 <a href="#layout0" class="bar-item">qwerty</a>
 <a href="#layout1" class="bar-item">dvorak</a>
 <a href="#layout2" class="bar-item">workman</a>
