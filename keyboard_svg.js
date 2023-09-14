@@ -23,8 +23,9 @@ var green = 128;
 
 var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
 
-var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("height", 400)
-
+var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("height", 600)
+var dictionary = ["a","abandon","ability","able","abortion","about","above","abroad","absence","absolute","absolutely","absorb","abstract","abuse","academic","accelerate","accent","accept","acceptable","acceptance","access","accessible","accident","accommodate","accompany","accomplish","accomplishment","according","account","accountability","accounting","accuracy","accurate","accurately","accusation","accuse","achieve","achievement","acid","acknowledge","acquire","acquisition","across","act","action","active","actively","activist","activity","actor","actress","actual","actually","ad","adapt","add","added","addition","additional","address","adequate","adjust","adjustment","administer","administration","administrative","administrator","admire","admission","admit","adolescent","adopt","adoption","adult","advance","advanced","advantage","adventure","advertising","advice","advise","adviser","advocate","aeroplane","aesthetic","affair","affect","afford","afraid","after","afternoon","afterwards","again","against","age","agency","agenda","agent","aggression","aggressive","ago","agree","agreement","agricultural","agriculture","ah","ahead","aid","aide","aim","air","aircraft","airline","airport","aisle","alarm","album","alcohol","alien","alike","alive","all","allegation","alleged","allegedly","alley","alliance","allow","ally","almost","alone","along","alongside","already","also","alter","alternative","although","altogether","aluminium","always","amazing","ambassador","ambition","ambitious","amendment","amid","among","amount","analyse","analysis","analyst","ancestor","ancient","and","and/or","angel","anger","angle","angry","animal","ankle","anniversary","announce","announcement","annual","annually","anonymous","another","answer","anticipate","anxiety","anxious","any","anybody","anymore","anyone","anything","anyway","anywhere","apart","apartment","apologize","apology","apparent","apparently","appeal","appear","appearance","apple","application","apply","appoint","appointment","appreciate","appreciation","approach","appropriate","approval","approve","approximately","architect","architecture","area","arena","argue","argument","arise","arm","armed","army","around","arrange","arrangement","array","arrest","arrival","arrive","arrow","art","article","articulate","artifact","artificial","artist","artistic","as","ash","aside","ask","asleep","aspect","ass","assault","assemble","assembly","assert","assess","assessment","asset","assign","assignment","assist","assistance","assistant","associate","associated","association","assume","assumption","assure","astronomer","at","athlete","athletic","atmosphere","atop","attach","attack","attempt","attend","attendance","attention","attitude","attorney","attract","attraction","attractive","attribute","auction","audience","aunt","author","authority","authorize","auto","automatic","automatically","automobile","autonomy","availability","available","average","avoid","await","awake","award","aware","awareness","away","awful","baby","back","background","backyard","bacteria","bad","badly","bag","bake","balance","balanced","ball","balloon","ballot","ban","banana","band","bank","banker","banking","bankruptcy","bar","bare","barely","barn","barrel","barrier","base","baseball","basement","basic","basically","basis","basket","basketball","bat","bath","bathroom","battery","battle","bay","be","beach","beam","bean","bear","beard","beast","beat","beautiful","beauty","because","become","bed","bedroom","bee","beef","beer","before","beg","begin","beginning","behalf","behave","behaviour","behavioural","behind","being","belief","believe","bell","belly","belong","below","belt","bench","bend","beneath","benefit","beside","besides","best","bet","better","between","beyond","bias","bicycle","bid","big","bike","bill","billion","bind","biography","biological","biology","bird","birth","birthday","bishop","bit","bite","bitter","black","blade","blame","blank","blanket","blast","blend","bless","blessing","blind","blink","block","blond","blood","bloody","blow","blue","board","boast","boat","body","boil","bold","bolt","bomb","bombing","bond","bone","bonus","book","boom","boost","boot","booth","border","boring","born","borrow","boss","both","bother","bottle","bottom","bounce","boundary","bow","bowl","box","boy","boyfriend","brain","brake","branch","brand","brave","bread","break","breakfast","breast","breath","breathe","breathing","breeze","brick","bride","bridge","brief","briefly","bright","brilliant","bring","broad","broadcast","broken","broker","bronze","brother","brown","brush","brutal","bubble","buck","bucket","buddy","budget","bug","build","builder","building","bulb","bulk","bull","bullet","bunch","burden","bureau","burn","burning","burst","bury","bus","bush","business","businessman","busy","but","butt","butter","butterfly","button","buy","buyer","by","cab","cabin","cabinet","cable","cage","cake","calculate","calculation","calendar","call","calm","camera","camp","campaign","campus","can","cancel","cancer","candidate","candle","candy","canvas","cap","capability","capable","capacity","capital","captain","capture","car","carbohydrate","carbon","card","care","career","careful","carefully","cargo","carpet","carrier","carrot","carry","cart","cartoon","carve","case","cash","casino","cast","casual","casualty","cat","catalogue","catch","category","cattle","cause","cave","cease","ceiling","celebrate","celebration","celebrity","cell","cemetery","central","centre","century","ceremony","certain","certainly","chain","chair","chairman","challenge","chamber","champion","championship","chance","change","changing","channel","chaos","chapter","character","characteristic","characterize","charge","charity","charm","chart","charter","chase","cheap","cheat","check","cheek","cheer","cheese","chef","chemical","chemistry","chest","chew","chicken","chief","child","childhood","chill","chin","chip","chocolate","choice","cholesterol","choose","chop","chronic","chunk","church","cigarette","circle","circuit","circumstance","cite","citizen","citizenship","city","civic","civil","civilian","civilization","claim","class","classic","classical","classify","classroom","clay","clean","clear","clearly","clerk","click","client","cliff","climate","climb","cling","clinic","clinical","clip","clock","close","closed","closely","closer","closest","closet","cloth","clothes","clothing","cloud","club","clue","cluster","coach","coal","coalition","coast","coastal","coat","cocaine","code","coffee","cognitive","coin","cold","collaboration","collapse","collar","colleague","collect","collection","collective","collector","college","colonial","colony","colour","colourful","column","columnist","combat","combination","combine","combined","come","comedy","comfort","comfortable","coming","command","commander","comment","commercial","commission","commissioner","commit","commitment","committee","commodity","common","commonly","communicate","communication","community","companion","company","comparable","compare","comparison","compel","compelling","compensation","compete","competition","competitive","competitor","complain","complaint","complete","completely","complex","complexity","compliance","complicated","comply","component","compose","composition","compound","comprehensive","comprise","compromise","computer","concede","conceive","concentrate","concentration","concept","conception","concern","concerned","concerning","concert","conclude","conclusion","concrete","condemn","condition","conduct","conference","confess","confession","confidence","confident","confirm","conflict","confront","confrontation","confuse","confusion","congressional","connect","connection","conscience","conscious","consciousness","consecutive","consensus","consent","consequence","consequently","conservation","conservative","consider","considerable","considerably","consideration","consist","consistent","consistently","conspiracy","constant","constantly","constitute","constitution","constitutional","constraint","construct","construction","consult","consultant","consume","consumer","consumption","contact","contain","container","contemplate","contemporary","contend","content","contest","context","continent","continue","continued","continuing","continuous","contract","contractor","contrast","contribute","contribution","contributor","control","controversial","controversy","convenience","convention","conventional","conversation","conversion","convert","convey","convict","conviction","convince","convinced","cook","cookie","cooking","cool","cooperate","cooperation","cooperative","coordinate","coordinator","cop","cope","copy","cord","core","corn","corner","corporate","corporation","correct","correctly","correlation","correspondent","corridor","corruption","cost","costly","costume","cottage","cotton","couch","could","council","counsel","counselling","counsellor","count","counter","counterpart","country","county","coup","couple","courage","course","court","courtroom","cousin","cover","coverage","cow","crack","craft","crash","crawl","crazy","cream","create","creation","creative","creativity","creature","credibility","credit","crew","crime","criminal","crisis","criteria","critic","critical","criticism","criticize","crop","cross","crowd","crowded","crucial","cruel","cruise","crush","cry","crystal","cue","cultural","culture","cup","cure","curiosity","curious","currency","current","currently","curriculum","curtain","curve","custody","custom","customer","cut","cute","cycle","dad","daily","dam","damage","damn","dance","dancer","dancing","danger","dangerous","dare","dark","darkness","data","database","date","daughter","dawn","day","dead","deadline","deadly","deal","dealer","dear","death","debate","debris","debt","debut","decade","decent","decide","decision","deck","declare","decline","decorate","decrease","dedicate","deem","deep","deeply","deer","defeat","defence","defend","defendant","defender","defensive","deficit","define","definitely","definition","degree","delay","deliberately","delicate","delight","deliver","delivery","demand","democracy","democratic","demographic","demonstrate","demonstration","denial","dense","density","deny","depart","department","departure","depend","dependent","depending","depict","deploy","deposit","depressed","depression","depth","deputy","derive","descend","describe","description","desert","deserve","design","designer","desire","desk","desperate","desperately","despite","dessert","destination","destroy","destruction","detail","detailed","detect","detective","determination","determine","devastating","develop","developer","developing","development","developmental","device","devil","devote","diabetes","diagnose","diagnosis","dialogue","diamond","diary","dictate","die","diet","differ","difference","different","differently","difficult","difficulty","dig","digital","dignity","dilemma","dimension","diminish","dining","dinner","dip","diplomat","diplomatic","direct","direction","directly","director","dirt","dirty","disability","disabled","disagree","disappear","disappointed","disappointment","disaster","disc","discipline","disclose","discount","discourage","discourse","discover","discovery","discrimination","discuss","discussion","disease","dish","disk","dismiss","disorder","display","dispute","dissolve","distance","distant","distinct","distinction","distinctive","distinguish","distract","distribute","distribution","district","disturb","disturbing","diverse","diversity","divide","divine","division","divorce","do","dock","doctor","doctrine","document","documentary","dog","doll","domain","domestic","dominant","dominate","donate","donation","donor","door","doorway","dose","dot","double","doubt","dough","down","downtown","dozen","draft","drag","drain","drama","dramatic","dramatically","draw","drawer","drawing","dream","dress","dried","drift","drill","drink","drinking","drive","driver","driveway","driving","drop","drown","drug","drum","drunk","dry","duck","due","dumb","dump","during","dust","duty","dying","dynamic","dynamics","e-mail","each","eager","ear","early","earn","earnings","earth","earthquake","ease","easily","east","eastern","easy","eat","eating","echo","ecological","economic","economically","economics","economist","economy","ecosystem","edge","edit","edition","editor","educate","education","educational","educator","effect","effective","effectively","effectiveness","efficiency","efficient","effort","egg","ego","eight","eighth","either","elaborate","elbow","elder","elderly","elect","election","electric","electrical","electricity","electronic","electronics","elegant","element","elementary","elephant","elevator","eleven","eligible","eliminate","elite","else","elsewhere","embarrassed","embrace","emerge","emergency","emerging","emission","emotion","emotional","emotionally","emphasis","emphasize","empire","employ","employee","employer","employment","empty","enable","enact","encounter","encourage","encouraging","end","endless","endorse","endure","enemy","energy","enforce","enforcement","engage","engagement","engine","engineer","engineering","enhance","enjoy","enormous","enough","enrol","ensure","enter","enterprise","entertainment","enthusiasm","entire","entirely","entitle","entity","entrance","entrepreneur","entry","envelope","environment","environmental","envision","epidemic","episode","equal","equality","equally","equation","equip","equipment","equity","equivalent","era","error","escape","especially","essay","essence","essential","essentially","establish","establishment","estate","estimate","estimated","etc","ethical","ethics","ethnic","evaluate","evaluation","even","evening","event","eventually","ever","every","everybody","everyday","everyone","everything","everywhere","evidence","evident","evil","evolution","evolve","exact","exactly","exam","examination","examine","example","exceed","excellent","except","exception","excessive","exchange","excited","excitement","exciting","exclude","exclusive","exclusively","excuse","execute","execution","executive","exercise","exhaust","exhibit","exhibition","exist","existence","existing","exit","exotic","expand","expansion","expect","expectation","expected","expedition","expense","expensive","experience","experienced","experiment","experimental","expert","expertise","explain","explanation","explicit","explode","exploit","exploration","explore","explosion","export","expose","exposure","express","expression","extend","extended","extension","extensive","extent","external","extra","extraordinary","extreme","extremely","eye","eyebrow","fabric","face","facilitate","facility","fact","factor","factory","faculty","fade","fail","failure","faint","fair","fairly","faith","fall","false","fame","familiar","family","famous","fan","fantastic","fantasy","far","fare","farm","farmer","fascinating","fashion","fast","faster","fat","fatal","fate","father","fatigue","fault","favour","favourable","favourite","fear","feather","feature","federal","fee","feed","feedback","feel","feeling","fellow","female","feminist","fence","festival","fever","few","fewer","fibre","fiction","field","fierce","fifteen","fifth","fifty","fight","fighter","fighting","figure","file","fill","film","filter","final","finally","finance","financial","find","finding","fine","finger","finish","fire","firm","firmly","first","fiscal","fish","fisherman","fishing","fist","fit","fitness","five","fix","fixed","flag","flame","flash","flat","flavour","flee","fleet","flesh","flexibility","flexible","flight","flip","float","flood","floor","flour","flow","flower","fluid","fly","flying","focus","fog","fold","folk","follow","following","food","fool","foot","football","for","forbid","force","forehead","foreign","foreigner","forest","forever","forget","forgive","fork","form","formal","format","formation","former","formerly","formula","forth","fortunately","fortune","forty","forum","forward","foster","found","foundation","founder","four","fourth","fraction","fragile","fragment","frame","framework","franchise","frankly","fraud","free","freedom","freely","freeze","frequency","frequent","frequently","fresh","freshman","friend","friendly","friendship","from","front","frontier","frown","frozen","fruit","frustrate","frustration","fucking","fuel","full","full-time","fully","fun","function","functional","fund","fundamental","funding","funeral","funny","fur","furniture","furthermore","future","gain","galaxy","gallery","game","gang","gap","garage","garbage","garden","garlic","gas","gasoline","gate","gather","gathering","gay","gaze","gear","gender","gene","general","generally","generate","generation","generous","genetic","genius","genre","gentle","gentleman","gently","genuine","gesture","get","ghost","giant","gift","gifted","girl","girlfriend","give","given","glad","glance","glass","glimpse","global","globe","glory","glove","go","goal","goat","gold","golden","golf","good","govern","government","governor","grab","grace","grade","gradually","graduate","graduation","grain","grand","grandchild","grandfather","grandmother","grandparent","grant","grape","grasp","grass","grateful","grave","gravity","great","greatest","greatly","green","greet","grey","grief","grin","grip","grocery","gross","ground","group","grow","growing","growth","guarantee","guard","guess","guest","guidance","guide","guideline","guilt","guilty","guitar","gun","gut","guy","gym","ha","habit","habitat","hair","half","halfway","hall","hallway","hand","handful","handle","handsome","hang","happen","happily","happiness","happy","harassment","hard","hardly","hardware","harm","harmony","harsh","harvest","hat","hate","haul","have","hazard","he","head","headache","headline","headquarters","heal","health","healthy","hear","hearing","heart","heat","heaven","heavily","heavy","heel","height","helicopter","hell","hello","helmet","help","helpful","hence","her","herb","here","heritage","hero","hers","herself","hesitate","hey","hi","hidden","hide","high","high-tech","highlight","highly","highway","hike","hill","him","himself","hint","hip","hire","his","historian","historic","historical","historically","history","hit","hockey","hold","hole","holiday","holy","home","homeland","homeless","homework","honest","honestly","honey","honour","hook","hope","hopefully","horizon","hormone","horn","horrible","horror","horse","hospital","host","hostage","hostile","hot","hotel","hour","house","household","housing","how","however","hug","huge","huh","human","humanity","humour","hundred","hunger","hungry","hunt","hunter","hunting","hurricane","hurry","hurt","husband","hypothesis","ice","icon","idea","ideal","identical","identification","identify","identity","ideological","ideology","ie","if","ignore","ill","illegal","illness","illusion","illustrate","image","imagination","imagine","immediate","immediately","immigrant","immigration","immune","impact","implement","implementation","implication","imply","import","importance","important","importantly","impose","impossible","impress","impression","impressive","improve","improved","improvement","impulse","in","incentive","incident","include","including","income","incorporate","increase","increased","increasing","increasingly","incredible","incredibly","indeed","independence","independent","index","indicate","indication","indicator","indigenous","individual","industrial","industry","inevitable","inevitably","infant","infection","inflation","influence","influential","inform","informal","information","infrastructure","ingredient","inherent","inherit","initial","initially","initiate","initiative","injure","injury","inmate","inner","innocent","innovation","innovative","input","inquiry","insect","insert","inside","insight","insist","inspection","inspector","inspiration","inspire","install","installation","instance","instant","instantly","instead","instinct","institution","institutional","instruct","instruction","instructional","instructor","instrument","insurance","intact","integrate","integrated","integration","integrity","intellectual","intelligence","intelligent","intend","intense","intensity","intent","intention","interact","interaction","interest","interested","interesting","interfere","interior","internal","international","interpret","interpretation","interrupt","interval","intervention","interview","intimate","into","introduce","introduction","invade","invasion","invent","invention","inventory","invest","investigate","investigation","investigator","investment","investor","invisible","invitation","invite","involve","involved","involvement","iron","ironically","irony","island","isolate","isolated","isolation","issue","it","item","its","itself","jacket","jail","jar","jaw","jazz","jeans","jet","jewellery","job","join","joint","joke","journal","journalism","journalist","journey","joy","judge","judgement","judicial","juice","jump","jungle","junior","jurisdiction","juror","jury","just","justice","justify","keep","key","kick","kid","kill","killer","killing","kind","king","kingdom","kiss","kit","kitchen","knee","kneel","knife","knock","know","knowledge","known","lab","label","laboratory","labour","lack","ladder","lady","lake","lamp","land","landing","landmark","landscape","lane","language","lap","large","largely","laser","last","late","lately","later","latter","laugh","laughter","launch","laundry","law","lawmaker","lawn","lawsuit","lawyer","lay","layer","lead","leader","leadership","leading","leaf","league","lean","leap","learn","learning","least","leather","leave","lecture","left","leg","legacy","legal","legally","legend","legislation","legislative","legislator","legislature","legitimate","lemon","lend","length","lens","less","lesson","let","letter","level","liability","liberal","liberty","library","license","lid","lie","life","lifestyle","lifetime","lift","light","lighting","lightly","lightning","like","likelihood","likely","likewise","limb","limit","limitation","limited","line","link","lion","lip","liquid","list","listen","listener","literally","literary","literature","little","live","liver","living","load","loan","lobby","local","locate","location","lock","log","logic","logical","lonely","long","long-term","longtime","look","loop","loose","lose","loss","lost","lot","lots","loud","love","lovely","lover","low","lower","loyal","loyalty","luck","lucky","lunch","lung","machine","mad","magazine","magic","magnetic","magnitude","mail","main","mainly","mainstream","maintain","maintenance","major","majority","make","maker","makeup","male","mall","man","manage","management","manager","managing","mandate","manipulate","manner","mansion","manual","manufacturer","manufacturing","many","map","marble","march","margin","marine","mark","marker","market","marketing","marketplace","marriage","married","marry","mask","mass","massive","master","match","mate","material","mathematics","maths","matter","maximum","may","maybe","mayor","me","meal","mean","meaning","meaningful","means","meantime","meanwhile","measure","measurement","meat","mechanic","mechanical","mechanism","medal","media","medical","medication","medicine","medium","meet","meeting","melt","member","membership","memory","mental","mentally","mention","mentor","menu","merchant","mere","merely","merit","mess","message","metal","metaphor","meter","method","metropolitan","middle","middle-class","midnight","midst","might","migration","mild","military","milk","mill","million","mind","mine","mineral","minimal","minimize","minimum","minister","ministry","minor","minority","minute","miracle","mirror","miss","missile","missing","mission","missionary","mistake","mix","mixed","mixture","mm-hmm","mobile","mode","model","moderate","modern","modest","modify","molecule","moment","momentum","money","monitor","monkey","monster","month","monthly","monument","mood","moon","moral","more","moreover","morning","mortality","mortgage","most","mostly","mother","motion","motivate","motivation","motive","motor","mount","mountain","mouse","mouth","move","movement","movie","much","mud","multiple","mum","municipal","murder","muscle","museum","mushroom","music","musical","musician","must","mutter","mutual","my","myself","mysterious","mystery","myth","nail","naked","name","narrative","narrow","nasty","nation","national","nationwide","native","natural","naturally","nature","naval","near","nearby","nearly","neat","necessarily","necessary","necessity","neck","need","needle","negative","negotiate","negotiation","neighbour","neighbourhood","neighbouring","neither","nerve","nervous","nest","net","network","neutral","never","nevertheless","new","newly","news","newspaper","next","nice","night","nightmare","nine","no","nobody","nod","noise","nomination","nominee","non-profit","none","nonetheless","noon","nor","norm","normal","normally","north","northeast","northern","northwest","nose","not","note","notebook","nothing","notice","notion","novel","now","nowhere","nuclear","number","numerous","nurse","nut","nutrient","o'clock","oak","object","objection","objective","obligation","observation","observe","observer","obstacle","obtain","obvious","obviously","occasion","occasional","occasionally","occupation","occupy","occur","ocean","odd","odds","of","off","offence","offender","offensive","offer","offering","office","officer","official","officially","often","oh","oil","ok","okay","old","old-fashioned","on","once","one","one-third","ongoing","onion","online","only","onto","open","opening","openly","opera","operate","operating","operation","operator","opinion","opponent","opportunity","oppose","opposed","opposite","opposition","opt","optimistic","option","or","oral","orange","orbit","order","ordinary","organ","organic","organism","organization","organizational","organize","organized","orientation","origin","original","originally","other","others","otherwise","ought","our","ours","ourselves","out","outcome","outdoor","outer","outfit","outlet","outline","output","outside","outsider","outstanding","oven","over","overall","overcome","overlook","overnight","oversee","overwhelm","overwhelming","owe","own","owner","ownership","oxygen","pace","pack","package","pad","page","pain","painful","paint","painter","painting","pair","palace","pale","palm","pan","panel","panic","pants","paper","parade","parent","parental","parish","park","parking","part","partial","partially","participant","participate","participation","particle","particular","particularly","partly","partner","partnership","party","pass","passage","passenger","passing","passion","past","pasta","pastor","pat","patch","patent","path","patience","patient","patrol","patron","pattern","pause","pavement","pay","payment","peace","peaceful","peak","peanut","peasant","peel","peer","pen","penalty","pencil","pension","people","pepper","per","perceive","perceived","percentage","perception","perfect","perfectly","perform","performance","performer","perhaps","period","permanent","permission","permit","persist","person","personal","personality","personally","personnel","perspective","persuade","pet","phase","phenomenon","philosophical","philosophy","phone","photo","photograph","photographer","photography","phrase","physical","physically","physician","physics","piano","pick","pickup","picture","pie","piece","pig","pile","pill","pillow","pilot","pin","pine","pink","pioneer","pipe","pistol","pit","pitch","pitcher","pizza","place","placement","plain","plaintiff","plan","plane","planet","planner","planning","plant","plastic","plate","platform","play","player","playoff","plea","plead","pleasant","please","pleased","pleasure","plenty","plot","plunge","plus","pocket","poem","poet","poetry","point","poke","pole","police","policeman","policy","political","politically","politician","politics","poll","pollution","pond","pool","poor","pop","popular","popularity","population","porch","pork","port","portfolio","portion","portrait","portray","pose","position","positive","possess","possession","possibility","possible","possibly","post","poster","pot","potato","potential","potentially","pound","pour","poverty","powder","power","powerful","practical","practically","practice","practitioner","praise","pray","prayer","preach","precious","precise","precisely","predator","predict","prediction","prefer","preference","pregnancy","pregnant","preliminary","premise","premium","preparation","prepare","prescription","presence","present","presentation","preserve","presidency","president","presidential","press","pressure","presumably","pretend","pretty","prevail","prevent","prevention","previous","previously","price","pride","priest","primarily","primary","prime","principal","principle","print","prior","priority","prison","prisoner","privacy","private","privately","privilege","prize","pro","probably","problem","procedure","proceed","process","processing","processor","proclaim","produce","producer","product","production","productive","productivity","profession","professional","professor","profile","profit","profound","program","programming","progress","progressive","prohibit","project","projection","prominent","promise","promising","promote","promotion","prompt","proof","proper","properly","property","proportion","proposal","propose","proposed","prosecution","prosecutor","prospect","protect","protection","protective","protein","protest","protocol","proud","prove","provide","provided","provider","province","provision","provoke","psychological","psychologist","psychology","public","publication","publicity","publicly","publish","publisher","pull","pulse","pump","punch","punish","punishment","purchase","pure","purple","purpose","purse","pursue","pursuit","push","put","puzzle","qualify","quality","quantity","quarter","quarterback","queen","quest","question","questionnaire","quick","quickly","quiet","quietly","quit","quite","quote","rabbit","race","racial","racism","rack","radar","radiation","radical","radio","rage","rail","railway","rain","raise","rally","ranch","random","range","rank","rape","rapid","rapidly","rare","rarely","rat","rate","rather","rating","ratio","rational","raw","re","reach","react","reaction","read","reader","readily","reading","ready","real","realistic","reality","realize","really","realm","rear","reason","reasonable","rebel","rebuild","recall","receive","receiver","recent","recently","reception","recession","recipe","recipient","recognition","recognize","recommend","recommendation","record","recording","recover","recovery","recruit","red","reduce","reduction","refer","reference","reflect","reflection","reform","refrigerator","refuge","refugee","refuse","regain","regard","regarding","regardless","regime","region","regional","register","regret","regular","regularly","regulate","regulation","regulator","regulatory","rehabilitation","reinforce","reject","relate","related","relation","relationship","relative","relatively","relax","release","relevant","reliability","reliable","relief","relieve","religion","religious","reluctant","rely","remain","remaining","remark","remarkable","remember","remind","reminder","remote","removal","remove","render","rent","rental","repair","repeat","repeatedly","replace","replacement","reply","report","reportedly","reporter","reporting","represent","representation","representative","republic","republican","reputation","request","require","required","requirement","rescue","research","researcher","resemble","reservation","reserve","residence","resident","residential","resign","resist","resistance","resolution","resolve","resort","resource","respect","respectively","respond","respondent","response","responsibility","responsible","rest","restaurant","restore","restrict","restriction","result","resume","retail","retailer","retain","retire","retired","retirement","retreat","return","reveal","revelation","revenue","reverse","review","revolution","revolutionary","reward","rhetoric","rhythm","rib","ribbon","rice","rich","rid","ride","rider","ridge","ridiculous","rifle","right","rim","ring","riot","rip","rise","risk","risky","ritual","rival","river","road","robot","rock","rocket","rod","role","roll","rolling","romance","romantic","roof","room","root","rope","rose","rough","roughly","round","route","routine","routinely","row","royal","rub","rubber","ruin","rule","ruling","rumour","run","runner","running","rural","rush","sack","sacred","sacrifice","sad","safe","safely","safety","sail","sake","salad","salary","sale","sales","salmon","salt","same","sample","sanction","sand","sandwich","satellite","satisfaction","satisfy","sauce","save","saving","say","scale","scan","scandal","scare","scared","scary","scatter","scenario","scene","scent","schedule","scheme","scholar","scholarship","school","science","scientific","scientist","scope","score","scramble","scratch","scream","screen","screening","screw","script","sculpture","sea","seal","search","season","seat","second","secondary","secret","secretary","section","sector","secular","secure","security","see","seed","seek","seem","seemingly","segment","seize","seldom","select","selected","selection","self","self-esteem","sell","seller","seminar","senator","send","senior","sensation","sense","sensitive","sensitivity","sensor","sentence","sentiment","separate","separation","sequence","series","serious","seriously","servant","serve","service","serving","session","set","setting","settle","settlement","seven","seventh","several","severe","severely","sex","sexual","sexuality","sexually","sexy","shade","shadow","shake","shall","shallow","shame","shape","share","shared","shareholder","shark","sharp","sharply","she","shed","sheep","sheer","sheet","shelf","shell","shelter","shift","shine","ship","shirt","shit","shock","shoe","shoot","shooting","shop","shopping","shore","short","short-term","shortage","shortly","shorts","shot","should","shoulder","shout","shove","show","shower","shrimp","shrink","shrug","shut","shuttle","shy","sibling","sick","side","sigh","sight","sign","signal","signature","significance","significant","significantly","silence","silent","silk","silly","silver","similar","similarity","similarly","simple","simply","simultaneously","sin","since","sing","singer","single","sink","sir","sister","sit","site","situation","six","sixth","size","ski","skill","skilled","skin","skip","skirt","skull","sky","slam","slap","slave","slavery","sleep","sleeve","slice","slide","slight","slightly","slip","slope","slot","slow","slowly","small","smart","smell","smile","smoke","smooth","snake","snap","sneak","snow","so","so-called","soak","soap","soar","soccer","social","socially","society","sock","sodium","sofa","soft","soften","softly","software","soil","solar","soldier","sole","solely","solid","solution","solve","some","somebody","someday","somehow","someone","something","sometime","sometimes","somewhat","somewhere","son","song","soon","sophisticated","sorry","sort","soul","sound","soup","source","south","southeast","southern","southwest","sovereignty","space","spare","spark","speak","speaker","special","specialist","specialize","specialty","species","specific","specifically","specify","spectacular","spectrum","speculate","speculation","speech","speed","spell","spend","spending","sphere","spill","spin","spine","spirit","spiritual","spit","spite","split","spokesman","sponsor","spoon","sport","spot","spouse","spray","spread","spring","sprinkle","spy","squad","square","squeeze","stability","stable","stack","stadium","staff","stage","stair","stake","stance","stand","standard","standing","star","stare","start","starter","starting","state","statement","station","statistical","statistics","statue","status","statute","stay","steadily","steady","steak","steal","steam","steel","steep","steer","stem","step","stereotype","stick","stiff","still","stimulate","stimulus","stir","stock","stomach","stone","stop","storage","store","storm","story","stove","straight","straighten","strain","strange","stranger","strategic","strategy","straw","streak","stream","street","strength","strengthen","stress","stretch","strict","strictly","strike","striking","string","strip","stroke","strong","strongly","structural","structure","struggle","student","studio","study","stuff","stumble","stupid","style","subject","submit","subsequent","subsidy","substance","substantial","substantially","subtle","suburb","suburban","succeed","success","successful","successfully","such","suck","sudden","suddenly","sue","suffer","suffering","sufficient","sugar","suggest","suggestion","suicide","suit","suitable","suite","sum","summary","summer","summit","sun","sunlight","sunny","super","superior","supermarket","supervisor","supplier","supply","support","supporter","supportive","suppose","supposed","supposedly","sure","surely","surface","surgeon","surgery","surprise","surprised","surprising","surprisingly","surround","surrounding","surveillance","survey","survival","survive","survivor","suspect","suspend","suspicion","suspicious","sustain","sustainable","swallow","swear","sweat","sweater","sweep","sweet","swell","swim","swimming","swing","switch","sword","symbol","symbolic","sympathy","symptom","syndrome","system","table","tablespoon","tackle","tactic","tag","tail","take","tale","talent","talented","talk","tall","tank","tap","tape","target","task","taste","tax","taxpayer","tea","teach","teacher","teaching","team","teammate","tear","teaspoon","technical","technician","technique","technological","technology","teen","teenage","teenager","telephone","telescope","television","tell","temperature","temple","temporary","ten","tend","tendency","tender","tennis","tension","tent","term","terms","terrain","terrible","terribly","terrific","territory","terror","terrorism","terrorist","test","testify","testimony","testing","text","textbook","texture","than","thank","thanks","that","the","theatre","their","them","theme","themselves","then","theological","theology","theoretical","theory","therapist","therapy","there","thereby","therefore","these","they","thick","thigh","thin","thing","think","thinking","third","thirty","this","thoroughly","those","though","thought","thousand","thread","threat","threaten","three","threshold","thrive","throat","through","throughout","throw","thumb","thus","ticket","tide","tie","tight","tighten","tightly","tile","till","timber","time","timing","tiny","tip","tire","tired","tissue","title","to","tobacco","today","toe","together","toilet","tolerance","tolerate","toll","tomato","tomorrow","tone","tongue","tonight","too","tool","tooth","top","topic","toss","total","totally","touch","touchdown","tough","tour","tourism","tourist","tournament","toward","towards","towel","tower","town","toxic","toy","trace","track","trade","trading","tradition","traditional","traditionally","traffic","tragedy","tragic","trail","trailer","train","trainer","training","trait","transaction","transfer","transform","transformation","transit","transition","translate","translation","transmission","transmit","transport","transportation","trap","trash","trauma","travel","traveller","tray","treasure","treat","treatment","treaty","tree","tremendous","trend","trial","tribal","tribe","trick","trigger","trim","trip","triumph","troop","tropical","trouble","troubled","truck","true","truly","trunk","trust","truth","try","tube","tuck","tumour","tune","tunnel","turkey","turn","twelve","twentieth","twenty","twice","twin","twist","two","two-thirds","type","typical","typically","ugly","uh","ultimate","ultimately","unable","uncertain","uncertainty","uncle","uncomfortable","uncover","under","undergo","undergraduate","underlying","undermine","understand","understanding","undertake","unemployment","unexpected","unfair","unfold","unfortunately","unhappy","uniform","union","unique","unit","unite","unity","universal","universe","university","unknown","unless","unlike","unlikely","unprecedented","until","unusual","up","update","upon","upper","upset","upstairs","urban","urge","us","use","used","useful","user","usual","usually","utility","utilize","vacation","vaccine","vacuum","valid","validity","valley","valuable","value","van","vanish","variable","variation","variety","various","vary","vast","vegetable","vehicle","vendor","venture","verbal","verdict","version","versus","vertical","very","vessel","veteran","via","victim","victory","video","view","viewer","village","violate","violation","violence","violent","virtual","virtually","virtue","virus","visible","vision","visit","visitor","visual","vital","vitamin","vocal","voice","volume","voluntary","volunteer","vote","voter","voting","vs","vulnerable","wage","wagon","waist","wait","wake","walk","walking","wall","wander","want","war","warehouse","warm","warmth","warn","warning","warrior","wash","waste","watch","water","wave","way","we","weak","weaken","weakness","wealth","wealthy","weapon","wear","weather","weave","web","wedding","weed","week","weekend","weekly","weigh","weight","weird","welcome","welfare","well","well-being","well-known","west","western","wet","whale","what","whatever","wheat","wheel","wheelchair","when","whenever","where","whereas","wherever","whether","which","while","whip","whisper","white","who","whoever","whole","whom","whose","why","wide","widely","widespread","widow","wife","wild","wilderness","wildlife","will","willing","willingness","win","wind","window","wine","wing","winner","winter","wipe","wire","wisdom","wise","wish","with","withdraw","withdrawal","within","without","witness","wolf","woman","wonder","wonderful","wood","wooden","word","work","worker","working","workout","workplace","works","workshop","world","worldwide","worried","worry","worth","would","wound","wow","wrap","wrist","write","writer","writing","written","wrong","yard","yeah","year","yell","yellow","yes","yesterday","yet","yield","you","young","youngster","your","yours","yourself","youth","zone"]
+// var dictionary = ["steward","debt","fall"]
 var words = {
   "the": 6940,
   "of": 3770,
@@ -15859,6 +15860,2405 @@ var m_input_length = 0;
 var m_effort = 0;
 var finger_pos = [[1, 1], [1, 2], [1, 3], [1, 4], [4, 5], [4, 6], [1, 7], [1, 8], [1, 9], [1, 10]];
 
+// var bigram_effort = {
+//   2 : {          // col1
+//     1 : {        // row1
+//       3 : {      // col2
+//         0 : 1.0, // row2
+//       }
+//     }
+//   }
+// };
+
+//    0  1  2  3  4  5  6  7  8  9 10 11
+// 0     q  w  e  r  t  y  u  i  o  p  -
+// 1     a  s  d  f  g  h  j  k  l  ;  '
+// 2  \  z  x  c  v  b  n  m  ,  .  /
+
+var bigram_effort = {
+  0 : {
+    0 : {
+      0 : {
+        0 : 3.3,
+        1 : 13.871,
+        2 : 14.871,
+      },
+      1 : {
+        0 : 8.2,
+        1 : 10.486,
+        2 : 14.012,
+      },
+      2 : {
+        0 : 3.2,
+        1 : 4.959,
+        2 : 6.486,
+      },
+      3 : {
+        0 : 3.2,
+        1 : 4.727,
+        2 : 6.163,
+      },
+      4 : {
+        0 : 3.2,
+        1 : 4.601,
+        2 : 5.959,
+      },
+      5 : {
+        0 : 3.2,
+        1 : 4.523,
+        2 : 5.823,
+      },
+      6 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+        3 : 3.3,
+      },
+      7 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      8 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      9 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      10 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      11 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 13.571,
+        1 : 2.5,
+        2 : 13.571,
+      },
+      1 : {
+        0 : 10.186,
+        1 : 7.4,
+        2 : 10.186,
+      },
+      2 : {
+        0 : 4.659,
+        1 : 2.4,
+        2 : 4.659,
+      },
+      3 : {
+        0 : 4.427,
+        1 : 2.4,
+        2 : 4.427,
+      },
+      4 : {
+        0 : 4.301,
+        1 : 2.4,
+        2 : 4.301,
+      },
+      5 : {
+        0 : 4.223,
+        1 : 2.4,
+        2 : 4.223,
+      },
+      6 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+        3 : 2.5,
+      },
+      7 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      8 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      9 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      10 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      11 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 15.571,
+        1 : 14.671,
+        2 : 3.5,
+      },
+      1 : {
+        0 : 14.712,
+        1 : 11.286,
+        2 : 8.4,
+      },
+      2 : {
+        0 : 7.186,
+        1 : 5.759,
+        2 : 3.4,
+      },
+      3 : {
+        0 : 6.863,
+        1 : 5.527,
+        2 : 3.4,
+      },
+      4 : {
+        0 : 6.659,
+        1 : 5.401,
+        2 : 3.4,
+      },
+      5 : {
+        0 : 6.523,
+        1 : 5.323,
+        2 : 3.4,
+      },
+      6 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+        3 : 3.5,
+      },
+      7 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      8 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      9 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      10 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      11 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+    },
+  },
+  1 : {
+    0 : {
+      0 : {
+        0 : 6.9,
+        1 : 9.186,
+        2 : 12.712,
+      },
+      1 : {
+        0 : 1.8,
+        1 : 12.371,
+        2 : 13.371,
+      },
+      2 : {
+        0 : 1.7,
+        1 : 6.986,
+        2 : 10.512,
+      },
+      3 : {
+        0 : 1.7,
+        1 : 3.459,
+        2 : 4.986,
+      },
+      4 : {
+        0 : 1.7,
+        1 : 3.227,
+        2 : 4.663,
+      },
+      5 : {
+        0 : 1.7,
+        1 : 3.101,
+        2 : 4.459,
+      },
+      6 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+        3 : 1.8,
+      },
+      7 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      8 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      9 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      10 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      11 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 8.886,
+        1 : 6.1,
+        2 : 8.886,
+      },
+      1 : {
+        0 : 12.071,
+        1 : 1.0,
+        2 : 12.071,
+      },
+      2 : {
+        0 : 3.686,
+        1 : 0.9,
+        2 : 6.686,
+      },
+      3 : {
+        0 : 3.159,
+        1 : 0.9,
+        2 : 3.159,
+      },
+      4 : {
+        0 : 2.927,
+        1 : 0.9,
+        2 : 2.927,
+      },
+      5 : {
+        0 : 2.801,
+        1 : 0.9,
+        2 : 2.801,
+      },
+      6 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+        3 : 1.0,
+      },
+      7 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      8 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      9 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      10 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      11 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 13.412,
+        1 : 9.986,
+        2 : 7.1,
+      },
+      1 : {
+        0 : 14.071,
+        1 : 13.171,
+        2 : 2.0,
+      },
+      2 : {
+        0 : 11.212,
+        1 : 7.786,
+        2 : 1.9,
+      },
+      3 : {
+        0 : 5.686,
+        1 : 4.259,
+        2 : 1.9,
+      },
+      4 : {
+        0 : 5.363,
+        1 : 4.027,
+        2 : 1.9,
+      },
+      5 : {
+        0 : 5.159,
+        1 : 3.901,
+        2 : 1.9,
+      },
+      6 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+        3 : 2.0,
+      },
+      7 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      8 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      9 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      10 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      11 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+    },
+  },
+  2 : {
+    0 : {
+      0 : {
+        0 : 1.5,
+        1 : 3.259,
+        2 : 4.786,
+      },
+      1 : {
+        0 : 1.5,
+        1 : 6.786,
+        2 : 10.312,
+      },
+      2 : {
+        0 : 1.4,
+        1 : 6.971,
+        2 : 7.971,
+      },
+      3 : {
+        0 : 1.3,
+        1 : 3.586,
+        2 : 7.112,
+      },
+      4 : {
+        0 : 1.3,
+        1 : 3.059,
+        2 : 4.586,
+      },
+      5 : {
+        0 : 1.3,
+        1 : 2.827,
+        2 : 4.263,
+      },
+      6 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+        3 : 1.4,
+      },
+      7 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      8 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      9 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      10 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      11 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 2.959,
+        1 : 0.7,
+        2 : 2.959,
+      },
+      1 : {
+        0 : 3.486,
+        1 : 0.7,
+        2 : 3.486,
+      },
+      2 : {
+        0 : 6.671,
+        1 : 0.6,
+        2 : 6.671,
+      },
+      3 : {
+        0 : 3.286,
+        1 : 0.5,
+        2 : 3.286,
+      },
+      4 : {
+        0 : 2.759,
+        1 : 0.5,
+        2 : 2.759,
+      },
+      5 : {
+        0 : 2.527,
+        1 : 0.5,
+        2 : 2.527,
+      },
+      6 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+        3 : 0.6,
+      },
+      7 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      8 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      9 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      10 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      11 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 5.486,
+        1 : 4.059,
+        2 : 1.7,
+      },
+      1 : {
+        0 : 11.012,
+        1 : 7.586,
+        2 : 1.7,
+      },
+      2 : {
+        0 : 8.671,
+        1 : 7.771,
+        2 : 1.6,
+      },
+      3 : {
+        0 : 7.812,
+        1 : 4.386,
+        2 : 1.5,
+      },
+      4 : {
+        0 : 5.286,
+        1 : 3.859,
+        2 : 1.5,
+      },
+      5 : {
+        0 : 4.963,
+        1 : 3.627,
+        2 : 1.5,
+      },
+      6 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+        3 : 1.6,
+      },
+      7 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      8 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      9 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      10 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      11 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+    },
+  },
+  3 : {
+    0 : {
+      0 : {
+        0 : 1.2,
+        1 : 2.727,
+        2 : 4.163,
+      },
+      1 : {
+        0 : 1.2,
+        1 : 2.959,
+        2 : 4.486,
+      },
+      2 : {
+        0 : 1.2,
+        1 : 3.486,
+        2 : 7.012,
+      },
+      3 : {
+        0 : 1.1,
+        1 : 6.671,
+        2 : 7.671,
+      },
+      4 : {
+        0 : 1.0,
+        1 : 3.286,
+        2 : 6.812,
+      },
+      5 : {
+        0 : 3.0,
+        1 : 5.759,
+        2 : 8.286,
+      },
+      6 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+        3 : 1.1,
+      },
+      7 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      8 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      9 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      10 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      11 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 2.427,
+        1 : 0.4,
+        2 : 2.427,
+      },
+      1 : {
+        0 : 2.659,
+        1 : 0.4,
+        2 : 2.659,
+      },
+      2 : {
+        0 : 3.186,
+        1 : 0.4,
+        2 : 3.186,
+      },
+      3 : {
+        0 : 6.371,
+        1 : 0.3,
+        2 : 6.371,
+      },
+      4 : {
+        0 : 2.986,
+        1 : 0.2,
+        2 : 2.986,
+      },
+      5 : {
+        0 : 5.459,
+        1 : 2.2,
+        2 : 3.459,
+      },
+      6 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+        3 : 0.3,
+      },
+      7 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      8 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      9 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      10 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      11 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 4.863,
+        1 : 3.527,
+        2 : 1.4,
+      },
+      1 : {
+        0 : 5.186,
+        1 : 3.759,
+        2 : 1.4,
+      },
+      2 : {
+        0 : 7.712,
+        1 : 4.286,
+        2 : 1.4,
+      },
+      3 : {
+        0 : 8.371,
+        1 : 7.471,
+        2 : 1.3,
+      },
+      4 : {
+        0 : 7.512,
+        1 : 4.086,
+        2 : 1.2,
+      },
+      5 : {
+        0 : 8.986,
+        1 : 6.559,
+        2 : 3.2,
+      },
+      6 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+        3 : 1.3,
+      },
+      7 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      8 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      9 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      10 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      11 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+    },
+  },
+  4 : {
+    0 : {
+      0 : {
+        0 : 1.2,
+        1 : 2.601,
+        2 : 3.959,
+      },
+      1 : {
+        0 : 1.2,
+        1 : 2.727,
+        2 : 4.163,
+      },
+      2 : {
+        0 : 1.2,
+        1 : 2.959,
+        2 : 4.486,
+      },
+      3 : {
+        0 : 1.2,
+        1 : 3.486,
+        2 : 7.012,
+      },
+      4 : {
+        0 : 1.1,
+        1 : 6.671,
+        2 : 7.671,
+      },
+      5 : {
+        0 : 4.0,
+        1 : 6.286,
+        2 : 9.812,
+      },
+      6 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+        3 : 1.1,
+      },
+      7 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      8 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      9 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      10 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      11 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 2.301,
+        1 : 0.4,
+        2 : 2.301,
+      },
+      1 : {
+        0 : 2.427,
+        1 : 0.4,
+        2 : 2.427,
+      },
+      2 : {
+        0 : 2.659,
+        1 : 0.4,
+        2 : 2.659,
+      },
+      3 : {
+        0 : 3.186,
+        1 : 0.4,
+        2 : 3.186,
+      },
+      4 : {
+        0 : 6.371,
+        1 : 0.3,
+        2 : 6.371,
+      },
+      5 : {
+        0 : 5.986,
+        1 : 3.2,
+        2 : 5.986,
+      },
+      6 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+        3 : 0.3,
+      },
+      7 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      8 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      9 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      10 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      11 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 4.659,
+        1 : 3.401,
+        2 : 1.4,
+      },
+      1 : {
+        0 : 4.863,
+        1 : 3.527,
+        2 : 1.4,
+      },
+      2 : {
+        0 : 5.186,
+        1 : 3.759,
+        2 : 1.4,
+      },
+      3 : {
+        0 : 7.712,
+        1 : 4.286,
+        2 : 1.4,
+      },
+      4 : {
+        0 : 8.371,
+        1 : 7.471,
+        2 : 1.3,
+      },
+      5 : {
+        0 : 10.512,
+        1 : 7.086,
+        2 : 4.2,
+      },
+      6 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+        3 : 1.3,
+      },
+      7 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      8 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      9 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      10 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      11 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+    },
+  },
+  5 : {
+    0 : {
+      0 : {
+        0 : 4.9,
+        1 : 6.223,
+        2 : 7.523,
+      },
+      1 : {
+        0 : 4.9,
+        1 : 6.301,
+        2 : 7.659,
+      },
+      2 : {
+        0 : 4.9,
+        1 : 6.427,
+        2 : 7.863,
+      },
+      3 : {
+        0 : 4.9,
+        1 : 6.659,
+        2 : 8.186,
+      },
+      4 : {
+        0 : 7.9,
+        1 : 10.186,
+        2 : 13.712,
+      },
+      5 : {
+        0 : 3.8,
+        1 : 10.371,
+        2 : 11.371,
+      },
+      6 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+        3 : 3.8,
+      },
+      7 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      8 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      9 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      10 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      11 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 5.923,
+        1 : 4.1,
+        2 : 5.923,
+      },
+      1 : {
+        0 : 6.001,
+        1 : 4.1,
+        2 : 6.001,
+      },
+      2 : {
+        0 : 6.127,
+        1 : 4.1,
+        2 : 6.127,
+      },
+      3 : {
+        0 : 6.359,
+        1 : 4.1,
+        2 : 6.359,
+      },
+      4 : {
+        0 : 9.886,
+        1 : 7.1,
+        2 : 9.886,
+      },
+      5 : {
+        0 : 10.071,
+        1 : 3.0,
+        2 : 10.071,
+      },
+      6 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+        3 : 3.0,
+      },
+      7 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      8 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      9 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      10 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      11 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 8.223,
+        1 : 7.023,
+        2 : 5.1,
+      },
+      1 : {
+        0 : 8.359,
+        1 : 7.101,
+        2 : 5.1,
+      },
+      2 : {
+        0 : 8.563,
+        1 : 7.227,
+        2 : 5.1,
+      },
+      3 : {
+        0 : 8.886,
+        1 : 7.459,
+        2 : 5.1,
+      },
+      4 : {
+        0 : 14.412,
+        1 : 10.986,
+        2 : 8.1,
+      },
+      5 : {
+        0 : 12.071,
+        1 : 11.171,
+        2 : 4.0,
+      },
+      6 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+        3 : 4.0,
+      },
+      7 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      8 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      9 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      10 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      11 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+    },
+  },
+  6 : {
+    0 : {
+      0 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      1 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      2 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      3 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      4 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      5 : {
+        0 : 3.8,
+        1 : 3.8,
+        2 : 3.8,
+      },
+      6 : {
+        0 : 3.8,
+        1 : 10.371,
+        2 : 11.371,
+        3 : 3.8,
+      },
+      7 : {
+        0 : 7.9,
+        1 : 10.186,
+        2 : 13.712,
+      },
+      8 : {
+        0 : 4.9,
+        1 : 6.659,
+        2 : 8.186,
+      },
+      9 : {
+        0 : 4.9,
+        1 : 6.427,
+        2 : 7.863,
+      },
+      10 : {
+        0 : 4.9,
+        1 : 6.301,
+        2 : 7.659,
+      },
+      11 : {
+        0 : 4.9,
+        1 : 6.223,
+        2 : 7.523,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      1 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      2 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      3 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      4 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      5 : {
+        0 : 3.0,
+        1 : 3.0,
+        2 : 3.0,
+      },
+      6 : {
+        0 : 10.071,
+        1 : 3.0,
+        2 : 10.071,
+        3 : 3.0,
+      },
+      7 : {
+        0 : 9.886,
+        1 : 7.1,
+        2 : 9.886,
+      },
+      8 : {
+        0 : 6.359,
+        1 : 4.1,
+        2 : 6.359,
+      },
+      9 : {
+        0 : 6.127,
+        1 : 4.1,
+        2 : 6.127,
+      },
+      10 : {
+        0 : 6.001,
+        1 : 4.1,
+        2 : 6.001,
+      },
+      11 : {
+        0 : 5.923,
+        1 : 4.1,
+        2 : 5.923,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      1 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      2 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      3 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      4 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      5 : {
+        0 : 4.0,
+        1 : 4.0,
+        2 : 4.0,
+      },
+      6 : {
+        0 : 12.071,
+        1 : 11.171,
+        2 : 4.0,
+        3 : 4.0,
+      },
+      7 : {
+        0 : 14.412,
+        1 : 10.986,
+        2 : 8.1,
+      },
+      8 : {
+        0 : 8.886,
+        1 : 7.459,
+        2 : 5.1,
+      },
+      9 : {
+        0 : 8.563,
+        1 : 7.227,
+        2 : 5.1,
+      },
+      10 : {
+        0 : 8.359,
+        1 : 7.101,
+        2 : 5.1,
+      },
+      11 : {
+        0 : 8.223,
+        1 : 7.023,
+        2 : 5.1,
+      },
+    },
+  },
+  7 : {
+    0 : {
+      0 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      1 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      2 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      3 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      4 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      5 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      6 : {
+        0 : 4.0,
+        1 : 6.286,
+        2 : 9.812,
+        3 : 1.1,
+      },
+      7 : {
+        0 : 1.1,
+        1 : 6.671,
+        2 : 7.671,
+      },
+      8 : {
+        0 : 1.2,
+        1 : 3.486,
+        2 : 7.012,
+      },
+      9 : {
+        0 : 1.2,
+        1 : 2.959,
+        2 : 4.486,
+      },
+      10 : {
+        0 : 1.2,
+        1 : 2.727,
+        2 : 4.163,
+      },
+      11 : {
+        0 : 1.2,
+        1 : 2.601,
+        2 : 3.959,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      1 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      2 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      3 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      4 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      5 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      6 : {
+        0 : 5.986,
+        1 : 3.2,
+        2 : 5.986,
+        3 : 0.3,
+      },
+      7 : {
+        0 : 6.371,
+        1 : 0.3,
+        2 : 6.371,
+      },
+      8 : {
+        0 : 3.186,
+        1 : 0.4,
+        2 : 3.186,
+      },
+      9 : {
+        0 : 2.659,
+        1 : 0.4,
+        2 : 2.659,
+      },
+      10 : {
+        0 : 2.427,
+        1 : 0.4,
+        2 : 2.427,
+      },
+      11 : {
+        0 : 2.301,
+        1 : 0.4,
+        2 : 2.301,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      1 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      2 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      3 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      4 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      5 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      6 : {
+        0 : 10.512,
+        1 : 7.086,
+        2 : 4.2,
+        3 : 1.3,
+      },
+      7 : {
+        0 : 8.371,
+        1 : 7.471,
+        2 : 1.3,
+      },
+      8 : {
+        0 : 7.712,
+        1 : 4.286,
+        2 : 1.4,
+      },
+      9 : {
+        0 : 5.186,
+        1 : 3.759,
+        2 : 1.4,
+      },
+      10 : {
+        0 : 4.863,
+        1 : 3.527,
+        2 : 1.4,
+      },
+      11 : {
+        0 : 4.659,
+        1 : 3.401,
+        2 : 1.4,
+      },
+    },
+  },
+  8 : {
+    0 : {
+      0 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      1 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      2 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      3 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      4 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      5 : {
+        0 : 1.1,
+        1 : 1.1,
+        2 : 1.1,
+      },
+      6 : {
+        0 : 3.0,
+        1 : 5.759,
+        2 : 8.286,
+        3 : 1.1,
+      },
+      7 : {
+        0 : 1.0,
+        1 : 3.286,
+        2 : 6.812,
+      },
+      8 : {
+        0 : 1.1,
+        1 : 6.671,
+        2 : 7.671,
+      },
+      9 : {
+        0 : 1.2,
+        1 : 3.486,
+        2 : 7.012,
+      },
+      10 : {
+        0 : 1.2,
+        1 : 2.959,
+        2 : 4.486,
+      },
+      11 : {
+        0 : 1.2,
+        1 : 2.727,
+        2 : 4.163,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      1 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      2 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      3 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      4 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      5 : {
+        0 : 0.3,
+        1 : 0.3,
+        2 : 0.3,
+      },
+      6 : {
+        0 : 5.459,
+        1 : 2.2,
+        2 : 3.459,
+        3 : 0.3,
+      },
+      7 : {
+        0 : 2.986,
+        1 : 0.2,
+        2 : 2.986,
+      },
+      8 : {
+        0 : 6.371,
+        1 : 0.3,
+        2 : 6.371,
+      },
+      9 : {
+        0 : 3.186,
+        1 : 0.4,
+        2 : 3.186,
+      },
+      10 : {
+        0 : 2.659,
+        1 : 0.4,
+        2 : 2.659,
+      },
+      11 : {
+        0 : 2.427,
+        1 : 0.4,
+        2 : 2.427,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      1 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      2 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      3 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      4 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      5 : {
+        0 : 1.3,
+        1 : 1.3,
+        2 : 1.3,
+      },
+      6 : {
+        0 : 8.986,
+        1 : 6.559,
+        2 : 3.2,
+        3 : 1.3,
+      },
+      7 : {
+        0 : 7.512,
+        1 : 4.086,
+        2 : 1.2,
+      },
+      8 : {
+        0 : 8.371,
+        1 : 7.471,
+        2 : 1.3,
+      },
+      9 : {
+        0 : 7.712,
+        1 : 4.286,
+        2 : 1.4,
+      },
+      10 : {
+        0 : 5.186,
+        1 : 3.759,
+        2 : 1.4,
+      },
+      11 : {
+        0 : 4.863,
+        1 : 3.527,
+        2 : 1.4,
+      },
+    },
+  },
+  9 : {
+    0 : {
+      0 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      1 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      2 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      3 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      4 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      5 : {
+        0 : 1.4,
+        1 : 1.4,
+        2 : 1.4,
+      },
+      6 : {
+        0 : 1.3,
+        1 : 2.827,
+        2 : 4.263,
+        3 : 1.4,
+      },
+      7 : {
+        0 : 1.3,
+        1 : 3.059,
+        2 : 4.586,
+      },
+      8 : {
+        0 : 1.3,
+        1 : 3.586,
+        2 : 7.112,
+      },
+      9 : {
+        0 : 1.4,
+        1 : 6.971,
+        2 : 7.971,
+      },
+      10 : {
+        0 : 1.5,
+        1 : 6.786,
+        2 : 10.312,
+      },
+      11 : {
+        0 : 1.5,
+        1 : 3.259,
+        2 : 4.786,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      1 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      2 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      3 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      4 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      5 : {
+        0 : 0.6,
+        1 : 0.6,
+        2 : 0.6,
+      },
+      6 : {
+        0 : 2.527,
+        1 : 0.5,
+        2 : 2.527,
+        3 : 0.6,
+      },
+      7 : {
+        0 : 2.759,
+        1 : 0.5,
+        2 : 2.759,
+      },
+      8 : {
+        0 : 3.286,
+        1 : 0.5,
+        2 : 3.286,
+      },
+      9 : {
+        0 : 6.671,
+        1 : 0.6,
+        2 : 6.671,
+      },
+      10 : {
+        0 : 3.486,
+        1 : 0.7,
+        2 : 3.486,
+      },
+      11 : {
+        0 : 2.959,
+        1 : 0.7,
+        2 : 2.959,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      1 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      2 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      3 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      4 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      5 : {
+        0 : 1.6,
+        1 : 1.6,
+        2 : 1.6,
+      },
+      6 : {
+        0 : 4.963,
+        1 : 3.627,
+        2 : 1.5,
+        3 : 1.6,
+      },
+      7 : {
+        0 : 5.286,
+        1 : 3.859,
+        2 : 1.5,
+      },
+      8 : {
+        0 : 7.812,
+        1 : 4.386,
+        2 : 1.5,
+      },
+      9 : {
+        0 : 8.671,
+        1 : 7.771,
+        2 : 1.6,
+      },
+      10 : {
+        0 : 11.012,
+        1 : 7.586,
+        2 : 1.7,
+      },
+      11 : {
+        0 : 5.486,
+        1 : 4.059,
+        2 : 1.7,
+      },
+    },
+  },
+  10 : {
+    0 : {
+      0 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      1 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      2 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      3 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      4 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      5 : {
+        0 : 1.8,
+        1 : 1.8,
+        2 : 1.8,
+      },
+      6 : {
+        0 : 1.7,
+        1 : 3.101,
+        2 : 4.459,
+        3 : 1.8,
+      },
+      7 : {
+        0 : 1.7,
+        1 : 3.227,
+        2 : 4.663,
+      },
+      8 : {
+        0 : 1.7,
+        1 : 3.459,
+        2 : 4.986,
+      },
+      9 : {
+        0 : 1.7,
+        1 : 6.986,
+        2 : 10.512,
+      },
+      10 : {
+        0 : 1.8,
+        1 : 12.371,
+        2 : 13.371,
+      },
+      11 : {
+        0 : 6.9,
+        1 : 9.186,
+        2 : 12.712,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      1 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      2 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      3 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      4 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      5 : {
+        0 : 1.0,
+        1 : 1.0,
+        2 : 1.0,
+      },
+      6 : {
+        0 : 2.801,
+        1 : 0.9,
+        2 : 2.801,
+        3 : 1.0,
+      },
+      7 : {
+        0 : 2.927,
+        1 : 0.9,
+        2 : 2.927,
+      },
+      8 : {
+        0 : 3.159,
+        1 : 0.9,
+        2 : 3.159,
+      },
+      9 : {
+        0 : 3.686,
+        1 : 0.9,
+        2 : 6.686,
+      },
+      10 : {
+        0 : 12.071,
+        1 : 1.0,
+        2 : 12.071,
+      },
+      11 : {
+        0 : 8.886,
+        1 : 6.1,
+        2 : 8.886,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      1 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      2 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      3 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      4 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      5 : {
+        0 : 2.0,
+        1 : 2.0,
+        2 : 2.0,
+      },
+      6 : {
+        0 : 5.159,
+        1 : 3.901,
+        2 : 1.9,
+        3 : 2.0,
+      },
+      7 : {
+        0 : 5.363,
+        1 : 4.027,
+        2 : 1.9,
+      },
+      8 : {
+        0 : 5.686,
+        1 : 4.259,
+        2 : 1.9,
+      },
+      9 : {
+        0 : 11.212,
+        1 : 7.786,
+        2 : 1.9,
+      },
+      10 : {
+        0 : 14.071,
+        1 : 13.171,
+        2 : 2.0,
+      },
+      11 : {
+        0 : 13.412,
+        1 : 9.986,
+        2 : 7.1,
+      },
+    },
+  },
+  11 : {
+    0 : {
+      0 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      1 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      2 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      3 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      4 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      5 : {
+        0 : 3.3,
+        1 : 3.3,
+        2 : 3.3,
+      },
+      6 : {
+        0 : 3.2,
+        1 : 4.523,
+        2 : 5.823,
+        3 : 3.3,
+      },
+      7 : {
+        0 : 3.2,
+        1 : 4.601,
+        2 : 5.959,
+      },
+      8 : {
+        0 : 3.2,
+        1 : 4.727,
+        2 : 6.163,
+      },
+      9 : {
+        0 : 3.2,
+        1 : 4.959,
+        2 : 6.486,
+      },
+      10 : {
+        0 : 8.2,
+        1 : 10.486,
+        2 : 14.012,
+      },
+      11 : {
+        0 : 3.3,
+        1 : 13.871,
+        2 : 14.871,
+      },
+    },
+    1 : {
+      0 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      1 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      2 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      3 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      4 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      5 : {
+        0 : 2.5,
+        1 : 2.5,
+        2 : 2.5,
+      },
+      6 : {
+        0 : 4.223,
+        1 : 2.4,
+        2 : 4.223,
+        3 : 2.5,
+      },
+      7 : {
+        0 : 4.301,
+        1 : 2.4,
+        2 : 4.301,
+      },
+      8 : {
+        0 : 4.427,
+        1 : 2.4,
+        2 : 4.427,
+      },
+      9 : {
+        0 : 4.659,
+        1 : 2.4,
+        2 : 4.659,
+      },
+      10 : {
+        0 : 10.186,
+        1 : 7.4,
+        2 : 10.186,
+      },
+      11 : {
+        0 : 13.571,
+        1 : 2.5,
+        2 : 13.571,
+      },
+    },
+    2 : {
+      0 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      1 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      2 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      3 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      4 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      5 : {
+        0 : 3.5,
+        1 : 3.5,
+        2 : 3.5,
+      },
+      6 : {
+        0 : 6.523,
+        1 : 5.323,
+        2 : 3.4,
+        3 : 3.5,
+      },
+      7 : {
+        0 : 6.659,
+        1 : 5.401,
+        2 : 3.4,
+      },
+      8 : {
+        0 : 6.863,
+        1 : 5.527,
+        2 : 3.4,
+      },
+      9 : {
+        0 : 7.186,
+        1 : 5.759,
+        2 : 3.4,
+      },
+      10 : {
+        0 : 14.712,
+        1 : 11.286,
+        2 : 8.4,
+      },
+      11 : {
+        0 : 15.571,
+        1 : 14.671,
+        2 : 3.5,
+      },
+    },
+  },
+}
+
+var word_effort = {}
+function measureDictionary() {
+  var total=0, word, char1, char2, col1, row1, col2, row2
+  for(var wordi in dictionary) {
+    total = 0.0;
+    word = dictionary[wordi];
+    // console.log(`word = ${word}`)
+    for (let i = 1; i < word.length; i++) {
+      char1 = word.charAt(i-1);
+      char2 = word.charAt(i);
+      col1 = getCol(char1);
+      row1 = getRow(char1);
+      col2 = getCol(char2);
+      row2 = getRow(char2);
+      // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
+      if (bigram_effort[col1]) {
+        if (bigram_effort[col1][row1]) {
+          if (bigram_effort[col1][row1][col2]) {
+            if (bigram_effort[col1][row1][col2][row2]) {
+              var e = bigram_effort[col1][row1][col2][row2]
+              // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
+              total += e;
+            }
+          }
+        }
+      }
+    }
+    char1 = word.charAt(word.length-1);
+    char2 = "_"
+    col1 = getCol(char1);
+    row1 = getRow(char1);
+    col2 = 6;
+    row2 = 3;
+    // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
+    if (bigram_effort[col1]) {
+      if (bigram_effort[col1][row1]) {
+        if (bigram_effort[col1][row1][col2]) {
+          if (bigram_effort[col1][row1][col2][row2]) {
+            var e = bigram_effort[col1][row1][col2][row2]
+            // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
+            total += e;
+          }
+        }
+      }
+    }
+
+    for (let i = 2; i < word.length; i++) {
+      char1 = word.charAt(i-2);
+      char2 = word.charAt(i);
+      col1 = getCol(char1);
+      row1 = getRow(char1);
+      col2 = getCol(char2);
+      row2 = getRow(char2);
+      // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
+      if (bigram_effort[col1]) {
+        if (bigram_effort[col1][row1]) {
+          if (bigram_effort[col1][row1][col2]) {
+            if (bigram_effort[col1][row1][col2][row2]) {
+              var e = bigram_effort[col1][row1][col2][row2]
+              // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
+              total += 0.2 * e;
+            }
+          }
+        }
+      }
+    }
+    char1 = word.charAt(word.length-2);
+    char2 = "_"
+    col1 = getCol(char1);
+    row1 = getRow(char1);
+    col2 = 6;
+    row2 = 3;
+    // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
+    if (bigram_effort[col1]) {
+      if (bigram_effort[col1][row1]) {
+        if (bigram_effort[col1][row1][col2]) {
+          if (bigram_effort[col1][row1][col2][row2]) {
+            var e = bigram_effort[col1][row1][col2][row2]
+            // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
+            total += 0.2 * e;
+          }
+        }
+      }
+    }
+
+    word_effort[word] = total/word.length;
+  }
+}
+
 function measureWords() {
   m_column_usage = {};
   m_finger_usage = {};
@@ -16307,7 +18707,48 @@ function generatePlots() {
     i += 1;
     if (i > 10) { break; }
   }
+  ///////////////////////////////////  H A R D   W O R D S   ///////////////////////////////
+  var x = 0;
+  var y = 390;
+  sum = 0;
+  var keyValueArray = Object.entries(word_effort);
+  keyValueArray.sort((a, b) => b[1] - a[1]);
+  word_effort = Object.fromEntries(keyValueArray);
+  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Hard Words ")
+  var i = 0
+  for (var word in word_effort) {
+    var height = 10*word_effort[word];
+    if (word.length > 3){
+      stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+        .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
+      stats.append("text").attr("x", x + 165).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
+      i += 1;
+      if (i > 10) { break; }
+    }
+  }
+  ///////////////////////////////////  E A S Y   W O R D S   ///////////////////////////////
+  var x = 250;
+  var y = 390;
+  sum = 0;
+  var keyValueArray = Object.entries(word_effort);
+  keyValueArray.sort((a, b) => a[1] - b[1]);
+  word_effort = Object.fromEntries(keyValueArray);
+  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Easy Words ")
+  var i = 0
+  for (var word in word_effort) {
+    var height = 10*word_effort[word];
+    if (word.length > 3){
+      stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+        .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
+      stats.append("text").attr("x", x + 145).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
+      i += 1;
+      if (i > 10) { break; }
+    }
+  }
 }
+
 
 function makeDraggable(svg) {
   svg.addEventListener('mousedown', startDrag, false);
@@ -16423,6 +18864,7 @@ function makeDraggable(svg) {
 
       d3.select(svg).selectAll("*").remove();
       measureWords();
+      measureDictionary();
       generateLayout();
       generatePlots();
     }
@@ -16433,6 +18875,7 @@ function run(layout) {
   importLayout(layout);
   generateCoords();
   measureWords();
+  measureDictionary();
   generateLayout();
   generatePlots();
 }
@@ -16443,5 +18886,6 @@ if (url_layout) {
 }
 generateCoords();
 measureWords();
+measureDictionary();
 generateLayout();
 generatePlots();
