@@ -18302,19 +18302,19 @@ function measureWords() {
     // console.log(word);
     var count = words[word];
     m_input_length += count * (word.length + 1);
+    word = word.replace(":",";")
+    word = word.replace("?","/")
+    word = word.replace("\"","'")
+    word = word.replace("<",",")
+    word = word.replace(">",".")
+    word = word.replace("_","-")
+    word = word.replace("\t", "")
+    word = word.replace("\r", "")
+    word = word.replace("—", "-")
+    word = word.replace("–", "-")
     char = word.charAt(0);
     samehand = char
     for (let i = 0; i < word.length; i++) {
-      word = word.replace(":",";")
-      word = word.replace("?","/")
-      word = word.replace("\"","'")
-      word = word.replace("<",",")
-      word = word.replace(">",".")
-      word = word.replace("_","-")
-      word = word.replace("\t", "")
-      word = word.replace("\r", "")
-      word = word.replace("—", "-")
-      word = word.replace("–", "-")
       char = word.charAt(i);
       // freq //
       if (!m_letter_freq[char]) {
@@ -18505,9 +18505,11 @@ function measureWords() {
       prevchar = char;
       prevfinger = finger;
     }
-
     if (samehand.length >= 4){
-      samehandstrings[samehand] = count;
+      if (!samehandstrings[samehand]) {
+        samehandstrings[samehand] = 0;
+      }
+      samehandstrings[samehand] += count;
     }
   }
   //## DEBUGGING EFFORT
@@ -18669,9 +18671,9 @@ function generatePlots() {
   // stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
   var i = 0
   for (var bigram in m_same_finger) {
-    var height = 18000 * m_same_finger[bigram] / m_input_length;
-    if (height > 200) { height = 200; }
-    stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+    var width = 18000 * m_same_finger[bigram] / m_input_length;
+    if (width > 200) { width = 200; }
+    stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
     stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] / m_input_length)).toFixed(2) + "%");
