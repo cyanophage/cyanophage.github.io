@@ -2,7 +2,6 @@
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
-// Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
 let url_layout = params.layout; // "some_value"
 
 var swidth = 1000;
@@ -2518,6 +2517,23 @@ function importLayout(layout) {
   // console.log(rcdata);
 }
 
+function exportLayout(){
+  var str = "";
+  for (let i = 0; i < 11; i++) {
+    str += rcdata[i + 1][0];
+  }
+  for (let i = 11; i < 22; i++) {
+    str += rcdata[i + 2][0];
+  }
+  for (let i = 22; i < 32; i++) {
+    str += rcdata[i + 3][0]
+  }
+  if (rcdata[36][0].length == 1) {
+    str += rcdata[36][0];
+  }
+  return str
+}
+
 function colToX(col) {
   dx = 55;
   if (col > 5) {
@@ -3316,6 +3332,13 @@ function generatePlots() {
   var finger1 = i;
   var finger2 = j;
   var sum = 0;
+  stats.append("text").attr("x",0).attr("y",0).attr("font-size",10).attr("font-family","Sans,Arial")
+       .attr("fill","#dfe2eb").attr("text-anchor","middle")
+       .attr("transform",`translate(${x+2},${y+100}) rotate(-90)`)
+       .text("First Finger");
+  stats.append("text").attr("x",x+130).attr("y",y).attr("font-size",10).attr("font-family","Sans,Arial")
+       .attr("fill","#dfe2eb").attr("text-anchor","middle")
+       .text("Second Finger");
   for(var i = 0; i <= 8; i++){
     sum = 0;
     for(var j = 1; j <= 8; j++){
@@ -3458,19 +3481,23 @@ function makeDraggable(svg) {
       // console.log("dropped on "+xydata[dropi][0]);
 
       // swap x and y in xydata
-      tmp = xydata[starti][1];
-      xydata[starti][1] = xydata[dropi][1];
-      xydata[dropi][1] = tmp;
-      tmp = xydata[starti][2];
-      xydata[starti][2] = xydata[dropi][2];
-      xydata[dropi][2] = tmp;
+      tmp = xydata[starti][0];
+      xydata[starti][0] = xydata[dropi][0];
+      xydata[dropi][0] = tmp;
+      tmp = xydata[starti][3];
+      xydata[starti][3] = xydata[dropi][3];
+      xydata[dropi][3] = tmp;
       // swap x and y in rcdata
-      tmp = rcdata[starti][1];
-      rcdata[starti][1] = rcdata[dropi][1];
-      rcdata[dropi][1] = tmp;
-      tmp = rcdata[starti][2];
-      rcdata[starti][2] = rcdata[dropi][2];
-      rcdata[dropi][2] = tmp;
+      tmp = rcdata[starti][0];
+      rcdata[starti][0] = rcdata[dropi][0];
+      rcdata[dropi][0] = tmp;
+      tmp = rcdata[starti][3];
+      rcdata[starti][3] = rcdata[dropi][3];
+      rcdata[dropi][3] = tmp;
+
+      var queryParams = new URLSearchParams(window.location.search);
+      queryParams.set("layout", exportLayout());
+      history.replaceState(null, null, "?"+queryParams.toString());
 
       d3.select(svg).selectAll("*").remove();
       measureWords();
