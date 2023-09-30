@@ -5,7 +5,9 @@
     <title>Keyboard Layout</title>
     <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
     <style>
-      body {background-color:#1b1c1f;font-family: Arial, sans-serif;}
+      body {
+        background-color:#1b1c1f;font-family: Arial, sans-serif;
+      }
       .static {
         cursor: not-allowed;
       }
@@ -14,6 +16,32 @@
       }
       .layout-svg{margin:auto;width:1000px;}
       .stats-svg{margin:auto;width:1000px;}
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0.0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .popup {
+        background-color: #aaa;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+
+      .effort {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
       #tooltip {background:#333333; color:#cccccc; border: 1px solid #cccccc; padding:5px;}
       </style>
   </head>
@@ -24,6 +52,56 @@
     <br>
     <div class="stats-svg" id = "svgstats"></div>
     <br>
+    <div id="popup" class="overlay">
+      <div class="popup">
+        <input type="text" id="textInput-0-0" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-1" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-2" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-3" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-4" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-5" class="effort" maxlength="1">
+        &nbsp;
+        &nbsp;
+        <input type="text" id="textInput-0-6" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-7" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-8" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-9" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-10" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-11" class="effort" maxlength="1">
+        <br>
+        <input type="text" id="textInput-1-0" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-1" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-2" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-3" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-4" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-5" class="effort" maxlength="1">
+        &nbsp;
+        &nbsp;
+        <input type="text" id="textInput-1-6" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-7" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-8" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-9" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-10" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-11" class="effort" maxlength="1">
+        <br>
+        <input type="text" id="textInput-2-0" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-1" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-2" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-3" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-4" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-5" class="effort" maxlength="1">
+        &nbsp;
+        &nbsp;
+        <input type="text" id="textInput-2-6" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-7" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-8" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-9" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-10" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-11" class="effort" maxlength="1">
+        <br>
+        <button onclick="closePopup()">OK</button>
+      </div>
+    </div>
     <script type = "text/javascript" src="keyboard_svg.js"></script>
   </body>
 </html>

@@ -2449,6 +2449,29 @@ var bigram_effort = {
   },
 }
 
+function openPopup() {
+  for (var row = 0; row < 3; row++){
+    for (var col = 0; col < 12; col++){
+      var name = "textInput-" + row + "-" + col
+      document.getElementById(name).value = effort[row][col];
+    }
+  }
+  document.getElementById('popup').style.display = 'flex';
+}
+
+function closePopup() {
+  for (var row = 0; row < 3; row++){
+    for (var col = 0; col < 12; col++){
+      var name = "textInput-" + row + "-" + col
+      effort[row][col] = document.getElementById(name).value;
+    }
+  }
+  document.getElementById('popup').style.display = 'none';
+  console.log(effort);
+  measureWords();
+  generateLayout();
+}
+
 function getEffort(row, column){
   if (effort[row]){
     if (effort[row][column]){
@@ -2550,6 +2573,7 @@ function generateCoords() {
 }
 
 function generateLayout() {
+  svg.selectAll("*").remove();
   // console.log("drawing layout from xydata");
   svg.append("rect").attr("x", 45).attr("y", 0).attr("width", 530).attr("height", 170)
     .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
@@ -2578,11 +2602,16 @@ function generateLayout() {
       .attr("font-size", fontsize).attr("font-family", "Sans,Arial")
       .attr("text-anchor", "middle").attr("class", "draggable legend").text(letter);
   }
-  // svg.append("text").attr("x", 600).attr("y", 105).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+m_effort)
-
-  // svg.append("text").attr("x", 600).attr("y", 135).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Input "+m_input_length)
-
+  // effort text
   svg.append("text").attr("x", 600).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+(577*m_effort/m_input_length).toFixed(2))
+  // edit button
+  svg.append("rect").attr("x", 720).attr("y", 147).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "openPopup()")
+  .attr("onmouseover", "showTooltip(evt,'Edit effort values for each key')").attr("onmouseout", "hideTooltip()")
+
+  svg.append("text").attr("x", 740).attr("y", 164).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("Edit")
+
 }
 
 var m_column_usage = {};
@@ -3114,7 +3143,7 @@ function generatePlots() {
     sum += tmp[bigram] / m_input_length;
   }
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
-  stats.append("rect").attr("x", x + 200).attr("y", y - 36).attr("width", 20).attr("height", 20)
+  stats.append("rect").attr("x", x + 195).attr("y", y - 32).attr("width", 20).attr("height", 20)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","toggle()")
   var i = 0;
   for (var bigram in tmp) {
