@@ -3254,6 +3254,32 @@ function generatePlots() {
     i += 1;
     if (i > 10) { break; }
   }
+
+  ///////////////////////////////////  S A M E   H A N D   S T R I N G S  ///////////////////////////////
+  var x = 250;
+  var y = 390;
+  sum = 0;
+  // function compareByLength(a, b) {
+  //   return b.length - a.length;
+  // }
+  // samehandstrings.sort(compareByLength);
+
+  var keyValueArray = Object.entries(samehandstrings);
+  keyValueArray.sort((a, b) => b[1]*b[0].length - a[1]*a[0].length);
+  samehandstrings = Object.fromEntries(keyValueArray);
+
+  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings ")
+  var i = 0
+  for (var word in samehandstrings) {
+    var count = samehandstrings[word];
+    var width = 0.03 * word.length * count;
+    if (width > 100) {width = 100;}
+    stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
+    stats.append("text").attr("x", x + 145).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(word.length*count);
+    i += 1;
+    if (i > 10) { break; }
+  }
   ///////////////////////////////////  H A R D   W O R D S   ///////////////////////////////
   var x = 420;
   var y = 390;
@@ -3295,32 +3321,6 @@ function generatePlots() {
     }
   }
 
-  ///////////////////////////////////  S A M E   H A N D   S T R I N G S  ///////////////////////////////
-  var x = 250;
-  var y = 390;
-  sum = 0;
-  // function compareByLength(a, b) {
-  //   return b.length - a.length;
-  // }
-  // samehandstrings.sort(compareByLength);
-
-  var keyValueArray = Object.entries(samehandstrings);
-  keyValueArray.sort((a, b) => b[1]*b[0].length - a[1]*a[0].length);
-  samehandstrings = Object.fromEntries(keyValueArray);
-
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings ")
-  var i = 0
-  for (var word in samehandstrings) {
-    var count = samehandstrings[word];
-    var height = 0.03 * word.length * count;
-    // if (word.length > 3){
-      stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
-      stats.append("text").attr("x", x + 145).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(word.length*count);
-      i += 1;
-      if (i > 10) { break; }
-    // }
-  }
 
   ///////////////////////////////////  F I N G E R   P A I R S   ///////////////////////////////
   // console.log(m_finger_pairs);
