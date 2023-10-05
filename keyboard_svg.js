@@ -48,8 +48,12 @@ function fetchDictionary(){
   fetch(dictionary_url)
     .then(response => response.json())
     .then(data => {
-      dictionary = data["dictionary"]; // Assign data to the global variable
-      // console.log("Words loaded from json: " + Object.keys(words).length);
+      if (data["dictionary"]){
+        dictionary = data["dictionary"]; // Assign data to the global variable
+      } else {
+        console.log("something went wrong with loading the dictionary");
+      }
+      // console.log("Words loaded from json: " + Object.keys(dictionary).length);
       measureDictionary();
       generateLayout();
       generatePlots();
@@ -60,12 +64,13 @@ function fetchEffort(){
   fetch(effort_url)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
+      // console.log(data);
       bigram_effort = data;
       measureDictionary();
       generatePlots();
+      console.log("effort loaded");
     })
-    .catch(error => console.error('Error loading dictionary JSON file:', error));
+    .catch(error => console.error('Error loading effort JSON file:', error));
 }
 
 makeDraggable(svg.node());
@@ -214,8 +219,13 @@ function getEffort(row, column){
 }
 
 var skip_toggle = false;
-function toggle() {
+function skipToggle() {
   skip_toggle = !skip_toggle
+  generatePlots();
+}
+var scissors_toggle = false;
+function scissorsToggle() {
+  scissors_toggle = !scissors_toggle
   generatePlots();
 }
 
@@ -370,6 +380,7 @@ var m_finger_pairs = {};
 var m_same_finger = {};
 var m_skip_bigram = {};
 var m_skip_bigram2 = {};
+var m_scissors = {};
 var m_pinky_scissors = {};
 var m_lat_stretch = {};
 var m_letter_freq = {};
@@ -383,11 +394,13 @@ var finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7]
 var word_effort = {}
 var samehandstrings = {};
 function measureDictionary() {
-  var total=0, word, char1, char2, col1, row1, col2, row2, hand1, hand2, samehand
+  console.log("measuring effort of each word in the dictionary");
+  var total=0, word, char1, char2, col1, row1, col2, row2, hand1, hand2, samehand,count = 0;
   for(var wordi in dictionary) {
+    count += 1;
     total = 0.0;
     word = dictionary[wordi];
-    // console.log(word);
+    console.log(word);
     char1 = word.charAt(0);
     samehand = `${char1}`;
     // console.log(`word = ${word}`)
@@ -471,6 +484,10 @@ function measureDictionary() {
 
     word_effort[word] = total/word.length;
   }
+  console.log("count "+count);
+  if (count == 0){
+    // fetchDictionary();
+  }
 }
 
 function measureWords() {
@@ -479,6 +496,7 @@ function measureWords() {
   m_finger_distance = {};
   m_skip_bigram = {};
   m_skip_bigram2 = {};
+  m_scissors = {};
   m_pinky_scissors = {};
   m_same_finger = {};
   m_lat_stretch = {};
@@ -584,6 +602,13 @@ function measureWords() {
             m_lat_stretch[bigram] = 0;
           }
           m_lat_stretch[bigram] += count;
+        }
+        // scissors
+        if (Math.abs(col-prevcol) == 1 && Math.abs(row-prevrow) >= 2 && ((finger <= 4 && prevfinger <= 4 &&finger!=prevfinger)||(finger >=7 && prevfinger>=7&&finger!=prevfinger))) {
+          if (!m_scissors[bigram]) {
+            m_scissors[bigram] = 0;
+          }
+          m_scissors[bigram] += count;
         }
         // pinky/ring scissors
         if (Math.abs(col-prevcol) == 1 && Math.abs(row-prevrow) >= 1 && (finger == 1 ||finger == 10||prevfinger==1||prevfinger==10)) {
@@ -893,8 +918,8 @@ function generatePlots() {
     sum += tmp[bigram] / m_input_length;
   }
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
-  stats.append("rect").attr("x", x + 195).attr("y", y - 32).attr("width", 20).attr("height", 20)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","toggle()")
+  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle()")
   var i = 0;
   for (var bigram in tmp) {
     var height = 36000 * tmp[bigram] / m_input_length;
@@ -934,21 +959,34 @@ function generatePlots() {
   var x = 760;
   var y = 180;
   sum = 0;
-  var keyValueArray = Object.entries(m_pinky_scissors);
-  keyValueArray.sort((a, b) => b[1] - a[1]);
-  m_pinky_scissors = Object.fromEntries(keyValueArray);
-  for (var bigram in m_pinky_scissors) {
-    sum += m_pinky_scissors[bigram] / m_input_length;
+
+  if (scissors_toggle) {
+    var keyValueArray = Object.entries(m_pinky_scissors);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
+  } else {
+    var keyValueArray = Object.entries(m_scissors);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
   }
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
-  var i = 0
-  for (var bigram in m_pinky_scissors) {
-    var height = 36000 * m_pinky_scissors[bigram] / m_input_length;
-    if (height > 200) { height = 200; }
+  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle()")
+  var i = 0;
+  for (var bigram in tmp) {
+    var height = 36000 * tmp[bigram] / m_input_length;
+    if (height > 180) { height = 180; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_pinky_scissors[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -1242,20 +1280,20 @@ function makeDraggable(svg) {
   }
 }
 
-function run(layout) {
-  importLayout(layout);
-  generateCoords();
-  measureWords();
-  measureDictionary();
-  generateLayout();
-  generatePlots();
-}
+// function run(layout) {
+//   importLayout(layout);
+//   generateCoords();
+//   measureWords();
+//   measureDictionary();
+//   generateLayout();
+//   generatePlots();
+// }
 
 // importLayout("wlrdzqgubj-shnt,.aeoi'fmvc/;pxky");
 if (url_layout) {
   importLayout(url_layout)
 }
 generateCoords();
+fetchEffort();
 fetchData();
 fetchDictionary();
-fetchEffort();
