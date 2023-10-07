@@ -223,7 +223,7 @@ function skipToggle() {
   skip_toggle = !skip_toggle
   generatePlots();
 }
-var scissors_toggle = false;
+var scissors_toggle = true;
 function scissorsToggle() {
   scissors_toggle = !scissors_toggle
   generatePlots();
