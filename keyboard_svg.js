@@ -204,7 +204,7 @@ function closePopup() {
     }
   }
   document.getElementById('popup').style.display = 'none';
-  console.log(effort);
+  // console.log(effort);
   measureWords();
   generateLayout();
 }
@@ -400,7 +400,7 @@ function measureDictionary() {
     count += 1;
     total = 0.0;
     word = dictionary[wordi];
-    console.log(word);
+    // console.log(word);
     char1 = word.charAt(0);
     samehand = `${char1}`;
     // console.log(`word = ${word}`)
