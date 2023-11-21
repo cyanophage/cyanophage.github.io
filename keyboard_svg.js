@@ -874,18 +874,21 @@ function generatePlots() {
   var y = 180;
   sum = 0;
   var tmp;
-  for (var bigram in tmp) {
-    sum += tmp[bigram] / m_input_length;
-  }
   if (skip_toggle) {
     var keyValueArray = Object.entries(m_skip_bigram);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
   } else {
     var keyValueArray = Object.entries(m_skip_bigram2);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("2u Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
   }
 
