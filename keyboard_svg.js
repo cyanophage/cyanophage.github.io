@@ -2,7 +2,7 @@
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
-let url_layout = params.layout; // "some_value"
+let url_layout = params.layout;
 
 var swidth = 1000;
 var sheight = 180;
@@ -36,8 +36,6 @@ function fetchData(){
     .then(response => response.json())
     .then(data => {
       words = data; // Assign data to the global variable
-      // console.log(words);
-      // console.log("Words loaded from json: " + Object.keys(words).length);
       measureWords();
       generateLayout();
       generatePlots();
@@ -53,7 +51,6 @@ function fetchDictionary(){
       } else {
         console.log("something went wrong with loading the dictionary");
       }
-      // console.log("Words loaded from json: " + Object.keys(dictionary).length);
       measureDictionary();
       generateLayout();
       generatePlots();
@@ -64,7 +61,6 @@ function fetchEffort(){
   fetch(effort_url)
     .then(response => response.json())
     .then(data => {
-      // console.log(data);
       bigram_effort = data;
       measureDictionary();
       generatePlots();
@@ -167,7 +163,6 @@ var effort = [
   ],
 ];
 
-
 // var bigram_effort = {
 //   2 : {          // col1
 //     1 : {        // row1
@@ -182,9 +177,6 @@ var effort = [
 // 0     q  w  e  r  t  y  u  i  o  p  -
 // 1     a  s  d  f  g  h  j  k  l  ;  '
 // 2  \  z  x  c  v  b  n  m  ,  .  /
-
-// var bigram_effort = {
-// }
 
 function openPopup() {
   for (var row = 0; row < 3; row++){
@@ -204,7 +196,6 @@ function closePopup() {
     }
   }
   document.getElementById('popup').style.display = 'none';
-  // console.log(effort);
   measureWords();
   generateLayout();
 }
@@ -257,7 +248,6 @@ function importLayout(layout) {
   if (layout.length >= 33) {
     rcdata[36][0] = layout.charAt(32);
   }
-  // console.log(rcdata);
 }
 
 function exportLayout(){
@@ -333,7 +323,6 @@ function generateCoords() {
 
 function generateLayout() {
   svg.selectAll("*").remove();
-  // console.log("drawing layout from xydata");
   svg.append("rect").attr("x", 45).attr("y", 0).attr("width", 530).attr("height", 170)
     .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
   for (let i = 0; i < xydata.length; i++) {
@@ -400,10 +389,8 @@ function measureDictionary() {
     count += 1;
     total = 0.0;
     word = dictionary[wordi];
-    // console.log(word);
     char1 = word.charAt(0);
     samehand = `${char1}`;
-    // console.log(`word = ${word}`)
     for (let i = 1; i < word.length; i++) {
       char1 = word.charAt(i-1);
       char2 = word.charAt(i);
@@ -411,13 +398,11 @@ function measureDictionary() {
       row1 = getRow(char1);
       col2 = getCol(char2);
       row2 = getRow(char2);
-      // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
       if (bigram_effort[col1]) {
         if (bigram_effort[col1][row1]) {
           if (bigram_effort[col1][row1][col2]) {
             if (bigram_effort[col1][row1][col2][row2]) {
               var e = bigram_effort[col1][row1][col2][row2]
-              // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
               total += e;
             }
           }
@@ -430,13 +415,11 @@ function measureDictionary() {
     row1 = getRow(char1);
     col2 = 6;
     row2 = 3;
-    // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
     if (bigram_effort[col1]) {
       if (bigram_effort[col1][row1]) {
         if (bigram_effort[col1][row1][col2]) {
           if (bigram_effort[col1][row1][col2][row2]) {
             var e = bigram_effort[col1][row1][col2][row2]
-            // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
             total += e;
           }
         }
@@ -450,13 +433,11 @@ function measureDictionary() {
       row1 = getRow(char1);
       col2 = getCol(char2);
       row2 = getRow(char2);
-      // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
       if (bigram_effort[col1]) {
         if (bigram_effort[col1][row1]) {
           if (bigram_effort[col1][row1][col2]) {
             if (bigram_effort[col1][row1][col2][row2]) {
               var e = bigram_effort[col1][row1][col2][row2]
-              // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
               total += 0.2 * e;
             }
           }
@@ -469,13 +450,11 @@ function measureDictionary() {
     row1 = getRow(char1);
     col2 = 6;
     row2 = 3;
-    // console.log(`  ${char1}${char2}  ${row1},${col1} => ${row2},${col2}`)
     if (bigram_effort[col1]) {
       if (bigram_effort[col1][row1]) {
         if (bigram_effort[col1][row1][col2]) {
           if (bigram_effort[col1][row1][col2][row2]) {
             var e = bigram_effort[col1][row1][col2][row2]
-            // console.log(`    effort from ${row1},${col1} to ${row2},${col2} is ${e}`)
             total += 0.2 * e;
           }
         }
@@ -484,10 +463,7 @@ function measureDictionary() {
 
     word_effort[word] = total/word.length;
   }
-  console.log("count "+count);
-  if (count == 0){
-    // fetchDictionary();
-  }
+  // console.log("count "+count);
 }
 
 function measureWords() {
@@ -520,7 +496,6 @@ function measureWords() {
   var m_effort_per_word = {};
   for (var word in words) {
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
-    // console.log(word);
     var count = words[word];
     m_input_length += count * (word.length + 1);
     char = word.charAt(0);
@@ -566,7 +541,6 @@ function measureWords() {
       m_finger_usage[finger] += count;
       // finger travel distance
       if (row < 0) { break; }
-      //dist(x1,y1,x2,y2){
       d = dist(col, row, finger_pos[finger][1], finger_pos[finger][0]);
 
       if (!m_finger_distance[finger]) {
@@ -733,16 +707,11 @@ function measureWords() {
       samehandstrings[samehand] += count;
     }
   }
-  // for(var www in m_simple_effort){
-  //   console.log(`${www} ${m_simple_effort[www]}`)
-  // }
   var sum = 0;
   for (var letter in m_letter_freq) {
     sum += m_letter_freq[letter]
   }
-  // console.log("putting freq into rcdata");
   for (var letter in m_letter_freq) {
-    // console.log("letter "+letter)
     for (let i = 0; i < rcdata.length; i++) {
       if (rcdata[i][0] == letter) {
         rcdata[i][3] = 100 * m_letter_freq[letter] / sum
@@ -905,6 +874,9 @@ function generatePlots() {
   var y = 180;
   sum = 0;
   var tmp;
+  for (var bigram in tmp) {
+    sum += tmp[bigram] / m_input_length;
+  }
   if (skip_toggle) {
     var keyValueArray = Object.entries(m_skip_bigram);
     keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -916,10 +888,7 @@ function generatePlots() {
     tmp = Object.fromEntries(keyValueArray);
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("2u Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
   }
-  for (var bigram in tmp) {
-    sum += tmp[bigram] / m_input_length;
-  }
-  
+
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle()")
   var i = 0;
@@ -1033,10 +1002,6 @@ function generatePlots() {
   var x = 250;
   var y = 390;
   sum = 0;
-  // function compareByLength(a, b) {
-  //   return b.length - a.length;
-  // }
-  // samehandstrings.sort(compareByLength);
 
   var keyValueArray = Object.entries(samehandstrings);
   keyValueArray.sort((a, b) => b[1]*b[0].length - a[1]*a[0].length);
@@ -1097,7 +1062,6 @@ function generatePlots() {
 
 
   ///////////////////////////////////  F I N G E R   P A I R S   ///////////////////////////////
-  // console.log(m_finger_pairs);
   var x = 10;
   var y = 370;
   var box_x = 26;
@@ -1197,7 +1161,6 @@ function makeDraggable(svg) {
 
         x = selectedElement.getAttributeNS(null, "x");
         y = selectedElement.getAttributeNS(null, "y");
-        // console.log("pick up at "+x+"  "+y);
         // scan through xydata to find out which key are we closest to
         closestdist = 9999;
         starti = -1;
@@ -1252,7 +1215,6 @@ function makeDraggable(svg) {
           dropi = i;
         }
       }
-      // console.log("dropped on "+xydata[dropi][0]);
 
       // swap x and y in xydata
       tmp = xydata[starti][0];
@@ -1282,16 +1244,6 @@ function makeDraggable(svg) {
   }
 }
 
-// function run(layout) {
-//   importLayout(layout);
-//   generateCoords();
-//   measureWords();
-//   measureDictionary();
-//   generateLayout();
-//   generatePlots();
-// }
-
-// importLayout("wlrdzqgubj-shnt,.aeoi'fmvc/;pxky");
 if (url_layout) {
   importLayout(url_layout)
 }
