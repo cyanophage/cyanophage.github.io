@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Keyboard Layout Stats</title>
+    <style>
+    body {font-family: Arial, sans-serif;background-color:#1b1c1f}
+    h1 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:10px;}
+    h2 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:5px;}
+    h3 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:5px;}
+    a:link {  color: #dfe2eb;text-decoration: none;}
+    a:visited {  color: #dfe2eb;text-decoration: none;}
+    a:hover {  color: #dfe2eb;text-decoration: none;background-color: #40434a;}
+    a:active {  color: #dfe2eb;text-decoration: none;}
+     table {
+       width: 95%;
+       border: 1px solid #333333;
+       border-collapse: collapse;
+     }
+     th {
+     padding-top: 8px;
+     padding-bottom: 8px;
+     text-align: center;
+     background-color: #363846;
+     color: white;
+     }
+     tr:nth-child(even){background-color: #1b1c1f;color:#cccccc}
+     tr:nth-child(odd){background-color: #111111;color:#cccccc}
+     tr:hover {background-color: #2e3036;}
+     td {
+       padding-left: 8px;
+       padding-right: 8px;
+       padding-top: 3px;
+       padding-bottom: 3px;
+       text-align: center;
+     
+       border: 1px solid #444;
+     }
+     .center {
+       margin-left: auto;
+       margin-right: auto;
+     }
+    </style>
+</head>
+<body>
+  <table class="center">
+    <tr>
+      <th>Name</th>
+      <th>thumb</th>
+      <th>effort</th>
+      <th>distance</th>
+      <th>sfb</th>
+      <th>skip_bigrams</th>
+      <th>skip_bigrams2</th>
+      <th>lateral_stretch</th>
+      <th>pinky_scissors</th>
+      <th>tworow_scissors</th>
+      <th>trigram_alt</th>
+      <th>tri_redirect</th>
+      <th>roll_in</th>
+      <th>roll_out</th>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout0">qwerty</a></td>
+      <td>shift</td>
+      <td>1258.52</td>
+      <td>346.59</td>
+      <td>4.39%</td>
+      <td>1.43%</td>
+      <td>5.46%</td>
+      <td>4.55%</td>
+      <td>0.56%</td>
+      <td>0.97%</td>
+      <td>21.38%</td>
+      <td>11.92%</td>
+      <td>21.71%</td>
+      <td>19.05%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout1">dvorak</a></td>
+      <td>shift</td>
+      <td>769.9</td>
+      <td>202.29</td>
+      <td>1.87%</td>
+      <td>0.45%</td>
+      <td>3.48%</td>
+      <td>0.8%</td>
+      <td>0.4%</td>
+      <td>0.06%</td>
+      <td>39.07%</td>
+      <td>2.57%</td>
+      <td>23.79%</td>
+      <td>15.41%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout2">workman</a></td>
+      <td>shift</td>
+      <td>525.53</td>
+      <td>190.5</td>
+      <td>1.97%</td>
+      <td>0.6%</td>
+      <td>4.16%</td>
+      <td>1.11%</td>
+      <td>0.57%</td>
+      <td>0.18%</td>
+      <td>24.58%</td>
+      <td>9.13%</td>
+      <td>25.74%</td>
+      <td>21.66%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout3">colemak</a></td>
+      <td>shift</td>
+      <td>634.31</td>
+      <td>186.24</td>
+      <td>0.91%</td>
+      <td>0.46%</td>
+      <td>4.25%</td>
+      <td>2.26%</td>
+      <td>0.65%</td>
+      <td>0.09%</td>
+      <td>25.43%</td>
+      <td>9.22%</td>
+      <td>26.66%</td>
+      <td>22.52%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout4">colemak-dh</a></td>
+      <td>shift</td>
+      <td>535.19</td>
+      <td>185.58</td>
+      <td>0.91%</td>
+      <td>0.41%</td>
+      <td>4.25%</td>
+      <td>1.27%</td>
+      <td>0.65%</td>
+      <td>0.09%</td>
+      <td>25.43%</td>
+      <td>9.22%</td>
+      <td>26.66%</td>
+      <td>22.52%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout5">halmak v1</a></td>
+      <td>shift</td>
+      <td>442.46</td>
+      <td>182.36</td>
+      <td>1.97%</td>
+      <td>0.61%</td>
+      <td>3.47%</td>
+      <td>0.4%</td>
+      <td>1.56%</td>
+      <td>0.08%</td>
+      <td>38.01%</td>
+      <td>3.42%</td>
+      <td>21.51%</td>
+      <td>18.6%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout6">halmak v2</a></td>
+      <td>shift</td>
+      <td>442.46</td>
+      <td>183.52</td>
+      <td>1.93%</td>
+      <td>0.64%</td>
+      <td>3.42%</td>
+      <td>0.4%</td>
+      <td>1.23%</td>
+      <td>0.08%</td>
+      <td>38.17%</td>
+      <td>3.08%</td>
+      <td>23.53%</td>
+      <td>16.9%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout7">canary v1</a></td>
+      <td>shift</td>
+      <td>520.03</td>
+      <td>200.05</td>
+      <td>0.66%</td>
+      <td>0.15%</td>
+      <td>3.66%</td>
+      <td>1.75%</td>
+      <td>0.38%</td>
+      <td>0.02%</td>
+      <td>29.27%</td>
+      <td>6.96%</td>
+      <td>24.87%</td>
+      <td>25.48%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout8">canary v2</a></td>
+      <td>shift</td>
+      <td>543.95</td>
+      <td>201.15</td>
+      <td>0.81%</td>
+      <td>0.28%</td>
+      <td>3.84%</td>
+      <td>2.67%</td>
+      <td>0.38%</td>
+      <td>0.06%</td>
+      <td>28.79%</td>
+      <td>6.82%</td>
+      <td>24.7%</td>
+      <td>25.4%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout9">semimak</a></td>
+      <td>shift</td>
+      <td>553.58</td>
+      <td>189.02</td>
+      <td>0.59%</td>
+      <td>0.2%</td>
+      <td>2.77%</td>
+      <td>1.65%</td>
+      <td>1.17%</td>
+      <td>0.04%</td>
+      <td>36.12%</td>
+      <td>6.44%</td>
+      <td>21.31%</td>
+      <td>23.39%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout10">nerps</a></td>
+      <td>shift</td>
+      <td>565.3</td>
+      <td>195.25</td>
+      <td>0.85%</td>
+      <td>0.4%</td>
+      <td>3.36%</td>
+      <td>1.24%</td>
+      <td>0.25%</td>
+      <td>0.03%</td>
+      <td>35.8%</td>
+      <td>2.49%</td>
+      <td>20.13%</td>
+      <td>26.18%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout11">graphite</a></td>
+      <td>shift</td>
+      <td>521.64</td>
+      <td>185.99</td>
+      <td>0.68%</td>
+      <td>0.24%</td>
+      <td>2.73%</td>
+      <td>0.87%</td>
+      <td>0.25%</td>
+      <td>0.04%</td>
+      <td>37.66%</td>
+      <td>2.59%</td>
+      <td>22.18%</td>
+      <td>23.82%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout12">gallium</a></td>
+      <td>shift</td>
+      <td>516.09</td>
+      <td>185.31</td>
+      <td>0.64%</td>
+      <td>0.24%</td>
+      <td>2.74%</td>
+      <td>0.97%</td>
+      <td>0.49%</td>
+      <td>0.03%</td>
+      <td>37.56%</td>
+      <td>2.68%</td>
+      <td>21.79%</td>
+      <td>24.26%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout13">aptV3</a></td>
+      <td>shift</td>
+      <td>510.55</td>
+      <td>186.92</td>
+      <td>0.81%</td>
+      <td>0.31%</td>
+      <td>3.09%</td>
+      <td>0.33%</td>
+      <td>1.12%</td>
+      <td>0.06%</td>
+      <td>30.73%</td>
+      <td>5.58%</td>
+      <td>34.88%</td>
+      <td>14.67%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout14">middlemak v1</a></td>
+      <td>shift</td>
+      <td>557.93</td>
+      <td>202.27</td>
+      <td>1.22%</td>
+      <td>0.6%</td>
+      <td>4.28%</td>
+      <td>1.91%</td>
+      <td>0.37%</td>
+      <td>0.18%</td>
+      <td>25.92%</td>
+      <td>7.46%</td>
+      <td>31.34%</td>
+      <td>17.88%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout15">middlemak v2</a></td>
+      <td>shift</td>
+      <td>569.18</td>
+      <td>198.32</td>
+      <td>1.01%</td>
+      <td>0.6%</td>
+      <td>3.86%</td>
+      <td>1.91%</td>
+      <td>0.25%</td>
+      <td>0.18%</td>
+      <td>32.46%</td>
+      <td>4.1%</td>
+      <td>20.83%</td>
+      <td>26.39%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout16">northstar v1</a></td>
+      <td>shift</td>
+      <td>523.24</td>
+      <td>190.2</td>
+      <td>0.78%</td>
+      <td>0.19%</td>
+      <td>3.61%</td>
+      <td>0.98%</td>
+      <td>0.33%</td>
+      <td>0.04%</td>
+      <td>36.05%</td>
+      <td>2.93%</td>
+      <td>20.65%</td>
+      <td>24.82%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout17">northstar v3</a></td>
+      <td>shift</td>
+      <td>516.24</td>
+      <td>188.88</td>
+      <td>1.03%</td>
+      <td>0.14%</td>
+      <td>3.13%</td>
+      <td>1.01%</td>
+      <td>0.39%</td>
+      <td>0.02%</td>
+      <td>35.75%</td>
+      <td>3.03%</td>
+      <td>20.6%</td>
+      <td>24.94%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout18">isrt</a></td>
+      <td>shift</td>
+      <td>498.05</td>
+      <td>179.31</td>
+      <td>0.65%</td>
+      <td>0.4%</td>
+      <td>3.5%</td>
+      <td>1.51%</td>
+      <td>1.11%</td>
+      <td>0.04%</td>
+      <td>26.64%</td>
+      <td>7.64%</td>
+      <td>23.43%</td>
+      <td>27.25%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout19">beakl19bis</a></td>
+      <td>shift</td>
+      <td>517.55</td>
+      <td>215.76</td>
+      <td>0.95%</td>
+      <td>0.7%</td>
+      <td>4.08%</td>
+      <td>1.52%</td>
+      <td>0.19%</td>
+      <td>0.09%</td>
+      <td>36.38%</td>
+      <td>2.03%</td>
+      <td>32.62%</td>
+      <td>11.11%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout20">handsdownneu</a></td>
+      <td>shift</td>
+      <td>537.86</td>
+      <td>196.93</td>
+      <td>0.77%</td>
+      <td>0.49%</td>
+      <td>4.0%</td>
+      <td>1.26%</td>
+      <td>0.59%</td>
+      <td>0.05%</td>
+      <td>36.75%</td>
+      <td>2.04%</td>
+      <td>33.33%</td>
+      <td>10.7%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout21">sturdy</a></td>
+      <td>shift</td>
+      <td>575.48</td>
+      <td>195.54</td>
+      <td>0.63%</td>
+      <td>0.2%</td>
+      <td>2.81%</td>
+      <td>1.58%</td>
+      <td>0.41%</td>
+      <td>0.01%</td>
+      <td>32.16%</td>
+      <td>5.01%</td>
+      <td>24.37%</td>
+      <td>25.72%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout22">engram</a></td>
+      <td>shift</td>
+      <td>457.38</td>
+      <td>198.25</td>
+      <td>1.01%</td>
+      <td>0.4%</td>
+      <td>3.47%</td>
+      <td>0.41%</td>
+      <td>0.71%</td>
+      <td>0.13%</td>
+      <td>35.5%</td>
+      <td>3.08%</td>
+      <td>29.94%</td>
+      <td>14.38%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout23">whorf</a></td>
+      <td>shift</td>
+      <td>614.36</td>
+      <td>199.76</td>
+      <td>0.45%</td>
+      <td>0.18%</td>
+      <td>2.74%</td>
+      <td>1.66%</td>
+      <td>0.64%</td>
+      <td>0.02%</td>
+      <td>34.53%</td>
+      <td>6.23%</td>
+      <td>22.89%</td>
+      <td>23.77%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout24">recurva</a></td>
+      <td>shift</td>
+      <td>630.03</td>
+      <td>199.52</td>
+      <td>0.56%</td>
+      <td>0.21%</td>
+      <td>2.74%</td>
+      <td>1.19%</td>
+      <td>1.09%</td>
+      <td>0.08%</td>
+      <td>32.09%</td>
+      <td>4.43%</td>
+      <td>23.99%</td>
+      <td>26.18%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout25">tranquility v1</a></td>
+      <td>shift</td>
+      <td>466.47</td>
+      <td>198.09</td>
+      <td>1.32%</td>
+      <td>0.59%</td>
+      <td>4.46%</td>
+      <td>0.2%</td>
+      <td>0.47%</td>
+      <td>0.11%</td>
+      <td>36.4%</td>
+      <td>3.12%</td>
+      <td>25.94%</td>
+      <td>14.12%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout26">tranquility v7</a></td>
+      <td>shift</td>
+      <td>526.48</td>
+      <td>197.74</td>
+      <td>0.89%</td>
+      <td>0.68%</td>
+      <td>3.83%</td>
+      <td>0.38%</td>
+      <td>1.2%</td>
+      <td>0.1%</td>
+      <td>36.01%</td>
+      <td>3.69%</td>
+      <td>26.17%</td>
+      <td>16.5%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout27">irst</a></td>
+      <td>shift</td>
+      <td>538.8</td>
+      <td>180.11</td>
+      <td>0.64%</td>
+      <td>0.2%</td>
+      <td>3.32%</td>
+      <td>1.46%</td>
+      <td>1.0%</td>
+      <td>0.02%</td>
+      <td>27.13%</td>
+      <td>7.8%</td>
+      <td>24.58%</td>
+      <td>26.27%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout28">pine</a></td>
+      <td>shift</td>
+      <td>575.39</td>
+      <td>203.17</td>
+      <td>0.9%</td>
+      <td>0.27%</td>
+      <td>2.98%</td>
+      <td>2.44%</td>
+      <td>0.59%</td>
+      <td>0.05%</td>
+      <td>31.53%</td>
+      <td>4.66%</td>
+      <td>21.5%</td>
+      <td>27.64%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout29">mtgap</a></td>
+      <td>shift</td>
+      <td>521.21</td>
+      <td>189.53</td>
+      <td>0.92%</td>
+      <td>0.26%</td>
+      <td>3.27%</td>
+      <td>0.46%</td>
+      <td>0.59%</td>
+      <td>0.05%</td>
+      <td>33.85%</td>
+      <td>2.54%</td>
+      <td>29.99%</td>
+      <td>16.34%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout30">maltron</a></td>
+      <td>e</td>
+      <td>518.98</td>
+      <td>154.16</td>
+      <td>0.66%</td>
+      <td>0.13%</td>
+      <td>2.75%</td>
+      <td>0.7%</td>
+      <td>0.98%</td>
+      <td>0.02%</td>
+      <td>25.54%</td>
+      <td>6.49%</td>
+      <td>23.63%</td>
+      <td>25.43%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout31">rsthd</a></td>
+      <td>e</td>
+      <td>510.19</td>
+      <td>152.67</td>
+      <td>0.7%</td>
+      <td>0.29%</td>
+      <td>2.94%</td>
+      <td>0.81%</td>
+      <td>0.99%</td>
+      <td>0.05%</td>
+      <td>20.59%</td>
+      <td>5.96%</td>
+      <td>33.82%</td>
+      <td>15.54%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout32">dsthk v1</a></td>
+      <td>e</td>
+      <td>379.24</td>
+      <td>164.67</td>
+      <td>0.87%</td>
+      <td>0.69%</td>
+      <td>3.48%</td>
+      <td>0.43%</td>
+      <td>0.12%</td>
+      <td>0.14%</td>
+      <td>20.1%</td>
+      <td>6.13%</td>
+      <td>34.35%</td>
+      <td>14.66%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout33">dsthk v2</a></td>
+      <td>e</td>
+      <td>398.15</td>
+      <td>152.5</td>
+      <td>0.93%</td>
+      <td>0.32%</td>
+      <td>2.87%</td>
+      <td>0.45%</td>
+      <td>0.49%</td>
+      <td>0.06%</td>
+      <td>20.38%</td>
+      <td>5.73%</td>
+      <td>34.51%</td>
+      <td>14.88%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout34">aptmak</a></td>
+      <td>e</td>
+      <td>395.27</td>
+      <td>153.11</td>
+      <td>0.75%</td>
+      <td>0.33%</td>
+      <td>2.74%</td>
+      <td>0.17%</td>
+      <td>0.6%</td>
+      <td>0.09%</td>
+      <td>21.21%</td>
+      <td>5.64%</td>
+      <td>32.84%</td>
+      <td>15.61%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout35">handsdowndash</a></td>
+      <td>e</td>
+      <td>466.34</td>
+      <td>159.55</td>
+      <td>0.82%</td>
+      <td>0.37%</td>
+      <td>2.93%</td>
+      <td>0.39%</td>
+      <td>0.85%</td>
+      <td>0.05%</td>
+      <td>28.09%</td>
+      <td>1.65%</td>
+      <td>22.52%</td>
+      <td>19.87%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout36">handsdowngold v1</a></td>
+      <td>t</td>
+      <td>479.13</td>
+      <td>174.94</td>
+      <td>0.66%</td>
+      <td>0.35%</td>
+      <td>3.17%</td>
+      <td>0.9%</td>
+      <td>0.7%</td>
+      <td>0.04%</td>
+      <td>36.21%</td>
+      <td>1.81%</td>
+      <td>32.87%</td>
+      <td>12.82%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout37">handsdowngold v2</a></td>
+      <td>t</td>
+      <td>455.44</td>
+      <td>174.37</td>
+      <td>0.59%</td>
+      <td>0.42%</td>
+      <td>3.09%</td>
+      <td>0.54%</td>
+      <td>0.57%</td>
+      <td>0.04%</td>
+      <td>38.8%</td>
+      <td>1.37%</td>
+      <td>32.21%</td>
+      <td>12.06%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout38">tranquilityT v1</a></td>
+      <td>t</td>
+      <td>417.88</td>
+      <td>168.13</td>
+      <td>0.84%</td>
+      <td>0.51%</td>
+      <td>3.14%</td>
+      <td>0.23%</td>
+      <td>0.72%</td>
+      <td>0.05%</td>
+      <td>38.85%</td>
+      <td>2.95%</td>
+      <td>23.0%</td>
+      <td>18.26%</td>
+    </tr>
+    <tr>
+      <td><a href="index.html#layout39">tranquilityT v2</a></td>
+      <td>t</td>
+      <td>411.2</td>
+      <td>167.96</td>
+      <td>0.78%</td>
+      <td>0.31%</td>
+      <td>2.77%</td>
+      <td>0.09%</td>
+      <td>0.78%</td>
+      <td>0.05%</td>
+      <td>39.94%</td>
+      <td>2.6%</td>
+      <td>23.4%</td>
+      <td>18.01%</td>
+    </tr>
+  </table>
+</body>

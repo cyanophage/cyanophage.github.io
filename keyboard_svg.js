@@ -382,6 +382,7 @@ var finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7]
 
 var word_effort = {}
 var samehandstrings = {};
+var samehandcount = {};
 function measureDictionary() {
   console.log("measuring effort of each word in the dictionary");
   var total=0, word, char1, char2, col1, row1, col2, row2, hand1, hand2, samehand,count = 0;
@@ -481,6 +482,7 @@ function measureWords() {
   m_trigram_count = {};
   m_finger_pairs = {};
   samehandstrings = {};
+  samehandcount = {};
   m_input_length = 0;
   m_effort = 0;
   var char = "";
@@ -595,12 +597,16 @@ function measureWords() {
         if (prevhand == hand) {
           samehand = samehand + char;
         } else {
-          if (samehand.length >= 4) {
+          if (samehand.length>=4) {
             if (!samehandstrings[samehand]) {
               samehandstrings[samehand] = 0;
             }
             samehandstrings[samehand] += count;
           }
+          if (!samehandcount[samehand.length]){
+            samehandcount[samehand.length] = 0;
+          }
+          samehandcount[samehand.length] += count
           samehand = char;
         }
         // finger pairs
@@ -700,12 +706,18 @@ function measureWords() {
       prevchar = char;
       prevfinger = finger;
     }
-    if (samehand.length >= 4){
-      if (!samehandstrings[samehand]) {
-        samehandstrings[samehand] = 0;
+    // if (prevhand == hand) {
+      if (samehand.length>=4) {
+        if (!samehandstrings[samehand]) {
+          samehandstrings[samehand] = 0;
+        }
+        samehandstrings[samehand] += count;
       }
-      samehandstrings[samehand] += count;
-    }
+      if (!samehandcount[samehand.length]){
+        samehandcount[samehand.length] = 0;
+      }
+      samehandcount[samehand.length] += count
+    // }
   }
   var sum = 0;
   for (var letter in m_letter_freq) {
@@ -1010,20 +1022,46 @@ function generatePlots() {
   keyValueArray.sort((a, b) => b[1]*b[0].length - a[1]*a[0].length);
   samehandstrings = Object.fromEntries(keyValueArray);
 
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings ")
+  stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings")
   var i = 0
   for (var word in samehandstrings) {
     var count = samehandstrings[word];
     var width = 0.03 * word.length * count;
     if (width > 100) {width = 100;}
-    stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+    stats.append("rect").attr("x", x + 70).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
-    stats.append("text").attr("x", x + 145).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(word.length*count);
+    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(word.length*count);
     i += 1;
     if (i > 10) { break; }
   }
+
+
+  ///////////////////////////////////  S A M E   H A N D   C O U N T S  ///////////////////////////////
+  var x = 415;
+  var y = 390;
+  sum = 0;
+
+  // var keyValueArray = Object.entries(samehandcount);
+  // keyValueArray.sort((a, b) => b - a);
+  // samehandcount = Object.fromEntries(keyValueArray);
+
+  stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Count")
+  var i = 0
+  for (var len in samehandcount) {
+    var count = samehandcount[len];
+    var width = 0.00014 * count;
+    // var width = 25 * count;
+    if (width > 100) {width = 100;}
+    stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(len);
+    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text((count/1000).toFixed(1));
+    // stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(count);
+    i += 1;
+    if (i > 10) { break; }
+  }
+
   ///////////////////////////////////  H A R D   W O R D S   ///////////////////////////////
-  var x = 420;
+  var x = 580;
   var y = 390;
   sum = 0;
   var keyValueArray = Object.entries(word_effort);
@@ -1043,25 +1081,25 @@ function generatePlots() {
     }
   }
   ///////////////////////////////////  E A S Y   W O R D S   ///////////////////////////////
-  var x = 610;
-  var y = 390;
-  sum = 0;
-  var keyValueArray = Object.entries(word_effort);
-  keyValueArray.sort((a, b) => a[1] - b[1]);
-  word_effort = Object.fromEntries(keyValueArray);
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Easy Words ")
-  var i = 0
-  for (var word in word_effort) {
-    var height = 10*word_effort[word];
-    if (word.length > 3){
-      stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
-        .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
-      stats.append("text").attr("x", x + 125).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
-      i += 1;
-      if (i > 10) { break; }
-    }
-  }
+  // var x = 610;
+  // var y = 390;
+  // sum = 0;
+  // var keyValueArray = Object.entries(word_effort);
+  // keyValueArray.sort((a, b) => a[1] - b[1]);
+  // word_effort = Object.fromEntries(keyValueArray);
+  // stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Easy Words ")
+  // var i = 0
+  // for (var word in word_effort) {
+  //   var height = 10*word_effort[word];
+  //   if (word.length > 3){
+  //     stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+  //       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+  //     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
+  //     stats.append("text").attr("x", x + 125).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
+  //     i += 1;
+  //     if (i > 10) { break; }
+  //   }
+  // }
 
 
   ///////////////////////////////////  F I N G E R   P A I R S   ///////////////////////////////
