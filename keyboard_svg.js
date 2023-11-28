@@ -219,6 +219,11 @@ function scissorsToggle() {
   scissors_toggle = !scissors_toggle
   generatePlots();
 }
+var sfb_toggle = true;
+function sfbToggle() {
+  sfb_toggle = !sfb_toggle
+  generatePlots();
+}
 
 function showTooltip(evt, text) {
   let tooltip = document.getElementById("tooltip");
@@ -366,7 +371,8 @@ var m_column_usage = {};
 var m_finger_usage = {};
 var m_finger_distance = {};
 var m_finger_pairs = {};
-var m_same_finger = {};
+var m_same_finger = {};  // per bigram
+var m_same_finger2 = {}; // per finger
 var m_skip_bigram = {};
 var m_skip_bigram2 = {};
 var m_scissors = {};
@@ -476,6 +482,7 @@ function measureWords() {
   m_scissors = {};
   m_pinky_scissors = {};
   m_same_finger = {};
+  m_same_finger2 = {};
   m_lat_stretch = {};
   m_letter_freq = {};
   m_row_usage = {};
@@ -572,6 +579,10 @@ function measureWords() {
             m_same_finger[bigram] = 0;
           }
           m_same_finger[bigram] += count;
+          if (!m_same_finger2[finger]) {
+            m_same_finger2[finger] = 0;
+          }
+          m_same_finger2[finger] += count;
         }
         if ((prevcol == 3 && col == 5) || (prevcol == 8 && col == 6) || (prevcol == 5 && col == 3) || (prevcol == 6 && col == 8)) {
           if (!m_lat_stretch[bigram]) {
@@ -597,7 +608,7 @@ function measureWords() {
         if (prevhand == hand) {
           samehand = samehand + char;
         } else {
-          if (samehand.length>=4) {
+          if (samehand.length >= 4) {
             if (!samehandstrings[samehand]) {
               samehandstrings[samehand] = 0;
             }
@@ -706,8 +717,7 @@ function measureWords() {
       prevchar = char;
       prevfinger = finger;
     }
-    // if (prevhand == hand) {
-      if (samehand.length>=4) {
+      if (samehand.length >= 4) {
         if (!samehandstrings[samehand]) {
           samehandstrings[samehand] = 0;
         }
@@ -717,7 +727,6 @@ function measureWords() {
         samehandcount[samehand.length] = 0;
       }
       samehandcount[samehand.length] += count
-    // }
   }
   var sum = 0;
   for (var letter in m_letter_freq) {
@@ -860,26 +869,57 @@ function generatePlots() {
   var x = 0;
   var y = 180;
   sum = 0;
-  var keyValueArray = Object.entries(m_same_finger);
-  keyValueArray.sort((a, b) => b[1] - a[1]);
-  m_same_finger = Object.fromEntries(keyValueArray);
+  // toggle button
+  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing same finger bigrams for each bigram, and for each finger')")
+  .attr("onmouseout","hideTooltip()").attr("onclick","sfbToggle()")
+  if(sfb_toggle) {
+    var keyValueArray = Object.entries(m_same_finger);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    m_same_finger = Object.fromEntries(keyValueArray);
 
-  for (var bigram in m_same_finger) {
-    sum += m_same_finger[bigram] / m_input_length;
-  }
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
-  // stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
-  var i = 0
-  for (var bigram in m_same_finger) {
-    var width = 18000 * m_same_finger[bigram] / m_input_length;
-    if (width > 200) { width = 200; }
-    stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10)
-      .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] / m_input_length)).toFixed(2) + "%");
-    //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
-    i += 1;
-    if (i > 10) { break; }
+    for (var bigram in m_same_finger) {
+      sum += m_same_finger[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+    // stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
+
+    var i = 0
+    for (var bigram in m_same_finger) {
+      var width = 18000 * m_same_finger[bigram] / m_input_length;
+      if (width > 200) { width = 200; }
+      stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10)
+        .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
+      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] / m_input_length)).toFixed(2) + "%");
+      //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
+      i += 1;
+      if (i > 10) { break; }
+    }
+  } else {
+    for (var finger in m_same_finger2) {
+      sum += m_same_finger2[finger] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial")
+       .attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+    for (var finger in m_same_finger2) {
+      var height = 30000 * m_same_finger2[finger] / m_input_length;
+      if (height > 150) { height = 150;}
+      var tip = parseFloat(100 * m_same_finger2[finger] / m_input_length).toFixed(2);
+      var red = Math.floor(6000 * m_same_finger2[finger] / m_input_length) + 128
+      var green = 128;
+      if (red < 16) { red = 16; }
+      if (red > 255) { red = 255; }
+      var hex_red = red.toString(16);
+      var hex_bg = green.toString(16);
+      stats.append("rect").attr("x", x + finger * 20).attr("y", y+155 - height).attr("width", 15).attr("height", height)
+        .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", "#453033").attr("stroke-width", 1)
+        .attr("onmouseover", "showTooltip(evt,'" + tip + "%')").attr("onmouseout", "hideTooltip()")
+
+      stats.append("text").attr("x", x + finger * 20 + 7).attr("y", y+166).attr("fill", "#dfe2eb").attr("font-size", 10)
+        .attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(finger)
+    }
+
   }
   ///////////////////////////////////   S K I P   F I N G E R   B I G R A M S    ///////////////////////////////
   var x = 250;
