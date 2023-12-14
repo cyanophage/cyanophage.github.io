@@ -64,7 +64,7 @@ function fetchEffort(){
       bigram_effort = data;
       measureDictionary();
       generatePlots();
-      console.log("effort loaded");
+      // console.log("effort loaded");
     })
     .catch(error => console.error('Error loading effort JSON file:', error));
 }
@@ -242,32 +242,64 @@ function importLayout(layout) {
   // 01234567890123456789012345678901
   // wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
   for (let i = 0; i < 11; i++) {
-    rcdata[i + 1][0] = layout.charAt(i);
+    if (layout.charAt(i) == "^"){
+      rcdata[i + 1][0] = "shift"
+    } else {
+      rcdata[i + 1][0] = layout.charAt(i);
+    }
   }
   for (let i = 11; i < 22; i++) {
-    rcdata[i + 2][0] = layout.charAt(i);
+    if (layout.charAt(i) == "^"){
+      rcdata[i + 2][0] = "shift"
+    } else {
+      rcdata[i + 2][0] = layout.charAt(i);
+    }
   }
   for (let i = 22; i < 32; i++) {
-    rcdata[i + 3][0] = layout.charAt(i);
+    if (layout.charAt(i) == "^"){
+      rcdata[i + 3][0] = "shift"
+    } else {
+      rcdata[i + 3][0] = layout.charAt(i);
+    }
   }
   if (layout.length >= 33) {
-    rcdata[36][0] = layout.charAt(32);
+    if (layout.charAt(32) == "^"){
+      rcdata[36][0] = "shift"
+    } else {
+      rcdata[36][0] = layout.charAt(32);
+    }
   }
 }
 
 function exportLayout(){
   var str = "";
   for (let i = 0; i < 11; i++) {
-    str += rcdata[i + 1][0];
+    if (rcdata[i+1][0] == "shift"){
+      str += "^";
+    } else {
+      str += rcdata[i + 1][0];
+    }
   }
   for (let i = 11; i < 22; i++) {
-    str += rcdata[i + 2][0];
+    if (rcdata[i + 2][0] == "shift"){
+      str += "^";
+    } else {
+      str += rcdata[i + 2][0];
+    }
   }
   for (let i = 22; i < 32; i++) {
-    str += rcdata[i + 3][0]
+    if (rcdata[i + 3][0] == "shift"){
+      str += "^";
+    } else {
+      str += rcdata[i + 3][0];
+    }
   }
   if (rcdata[36][0].length == 1) {
-    str += rcdata[36][0];
+    if (rcdata[36][0] == "shift"){
+      str += "^";
+    } else {
+      str += rcdata[36][0];
+    }
   }
   return str
 }
@@ -390,7 +422,7 @@ var word_effort = {}
 var samehandstrings = {};
 var samehandcount = {};
 function measureDictionary() {
-  console.log("measuring effort of each word in the dictionary");
+  // console.log("measuring effort of each word in the dictionary");
   var total=0, word, char1, char2, col1, row1, col2, row2, hand1, hand2, samehand,count = 0;
   for(var wordi in dictionary) {
     count += 1;
@@ -1245,13 +1277,20 @@ function makeDraggable(svg) {
         // scan through xydata to find out which key are we closest to
         closestdist = 9999;
         starti = -1;
+        var keyname = ""
         for (let i = 0; i < xydata.length; i++) {
           d = dist(x, y, xydata[i][2], xydata[i][1]);
           if (d < closestdist) {
             // console.log("dist = "+d+"  "+xydata[i][0]);
             closestdist = d;
             starti = i;
+            keyname = xydata[i][0];
           }
+        }
+        console.log("keyname = "+keyname);
+        if (keyname == "mod" || keyname == "back" || keyname == "space"){
+          selectedElement = null;
+          return;
         }
         // console.log("picked up "+xydata[starti][0]);
         offset = getMousePosition(evt);
@@ -1261,7 +1300,6 @@ function makeDraggable(svg) {
         offset2.x -= parseFloat(sibling.getAttributeNS(null, "x"));
         offset2.y -= parseFloat(sibling.getAttributeNS(null, "y"));
       }
-
     }
   }
 
