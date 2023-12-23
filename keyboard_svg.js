@@ -387,6 +387,12 @@ function generateLayout() {
       .attr("font-size", fontsize).attr("font-family", "Sans,Arial")
       .attr("text-anchor", "middle").attr("class", "draggable legend").text(letter);
   }
+  //
+  if (m_total_word_effort == 0){
+    measureDictionary();
+    measureWords();
+  }
+  svg.append("text").attr("x", 600).attr("y", 135).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Total Word Effort "+(m_total_word_effort/100.0).toFixed(1))
   // effort text
   svg.append("text").attr("x", 600).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+(577*m_effort/m_input_length).toFixed(2))
   // edit button
@@ -407,6 +413,7 @@ var m_same_finger = {};  // per bigram
 var m_same_finger2 = {}; // per finger
 var m_skip_bigram = {};
 var m_skip_bigram2 = {};
+var m_redirects = {};
 var m_scissors = {};
 var m_pinky_scissors = {};
 var m_lat_stretch = {};
@@ -500,7 +507,7 @@ function measureDictionary() {
       }
     }
 
-    word_effort[word] = total/word.length;
+    word_effort[word] = total/10;
   }
   // console.log("count "+count);
 }
@@ -511,6 +518,7 @@ function measureWords() {
   m_finger_distance = {};
   m_skip_bigram = {};
   m_skip_bigram2 = {};
+  m_redirects = {};
   m_scissors = {};
   m_pinky_scissors = {};
   m_same_finger = {};
@@ -524,6 +532,7 @@ function measureWords() {
   samehandcount = {};
   m_input_length = 0;
   m_effort = 0;
+  m_total_word_effort = 0;
   var char = "";
   var prevchar = "";
   var prevfinger = -1;
@@ -539,6 +548,12 @@ function measureWords() {
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
     var count = words[word];
     m_input_length += count * (word.length + 1);
+
+    if (word_effort[word]){
+      // console.log(word +" "+word_effort[word]);
+      m_total_word_effort += word_effort[word] * count;
+    }
+
     char = word.charAt(0);
     samehand = char
     for (let i = 0; i < word.length; i++) {
@@ -688,6 +703,10 @@ function measureWords() {
             cat = "roll out"
           } else if ((ppfinger < prevfinger && finger < prevfinger) || (ppfinger > prevfinger && finger > prevfinger)) {
             cat = "redirect"
+            // if (!m_redirects[trigram]) {
+            //   m_redirects[trigram] = 0;
+            // }
+            // m_redirects[trigram] += count;
             if (ppfinger == 4 || prevfinger == 4 || finger == 4) {
             } else {
               cat = "bad redirect"
@@ -701,6 +720,10 @@ function measureWords() {
             cat = "roll out"
           } else if ((ppfinger > prevfinger && finger > prevfinger) || (ppfinger < prevfinger && finger < prevfinger)) {
             cat = "redirect"
+            // if (!m_redirects[trigram]) {
+            //   m_redirects[trigram] = 0;
+            // }
+            // m_redirects[trigram] += count;
             if (ppfinger == 7 || prevfinger == 7 || finger == 7) {
             } else {
               cat = "bad redirect"
@@ -1070,6 +1093,12 @@ function generatePlots() {
     "roll in":"the three characters of the trigram are typed with the same hand and go from the outside to the inside",
     "other":"all other trigrams that don\\'t fit into any of the other categories",
   };
+  // for(var tri in m_redirects){
+  //   if (m_redirects[tri] > 40){
+  //     console.log(tri + "  " + m_redirects[tri]);
+  //     // trigram_desc["redirect"] = trigram_desc["redirect"].concat(" "+tri);
+  //   }
+  // }
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Trigram Stats")
   var i = 0
   for (var cat in m_trigram_count) {
@@ -1137,13 +1166,13 @@ function generatePlots() {
   var y = 390;
   sum = 0;
   var keyValueArray = Object.entries(word_effort);
-  keyValueArray.sort((a, b) => b[1] - a[1]);
+  keyValueArray.sort((a, b) => b[1]/b[0].length - a[1]/a[0].length);
   word_effort = Object.fromEntries(keyValueArray);
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Hard Words ")
   var i = 0
   for (var word in word_effort) {
-    var height = 10*word_effort[word];
-    if (word.length > 3){
+    var height = 100*word_effort[word]/word.length;
+    if (word.length > 3 && words[word] > 4){
       stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
         .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
@@ -1287,7 +1316,7 @@ function makeDraggable(svg) {
             keyname = xydata[i][0];
           }
         }
-        console.log("keyname = "+keyname);
+        // console.log("keyname = "+keyname);
         if (keyname == "mod" || keyname == "back" || keyname == "space"){
           selectedElement = null;
           return;
@@ -1355,8 +1384,8 @@ function makeDraggable(svg) {
       history.replaceState(null, null, "?"+queryParams.toString());
 
       d3.select(svg).selectAll("*").remove();
-      measureWords();
       measureDictionary();
+      measureWords();
       generateLayout();
       generatePlots();
     }
