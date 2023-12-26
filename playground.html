@@ -6,7 +6,7 @@
     <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
     <style>
       body {
-        background-color:#1b1c1f;font-family: Arial, sans-serif;
+        background-color:#1b1c1f; color: #999;font-family: Arial, sans-serif;
       }
       .static {
         cursor: not-allowed;
@@ -30,6 +30,15 @@
 
       .popup {
         background-color: #aaa;
+        color: #333;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+      .popup2 {
+        background-color: #aaa;
+        color: #333;
+        width: 300px;
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
@@ -42,12 +51,20 @@
         height: 20px;
         font-family:Arial, Helvetica, sans-serif
       }
+      .importText {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
       #tooltip {background:#333333; color:#cccccc; border: 1px solid #cccccc; padding:5px;}
       </style>
   </head>
   <body>
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
     <a href="index.html">back</a>
+    <a onclick="openImportPopup()">import</a>
     <div class="layout-svg" id = "svglayout"></div>
     <br>
     <div class="stats-svg" id = "svgstats"></div>
@@ -102,6 +119,15 @@
         <button onclick="closePopup()">OK</button>
       </div>
     </div>
+    <div id="importPopup" class="overlay">
+      <div class="popup2">
+        <p id="importMessage">Import</p>
+        <input type="text" id="importText" class="importText">
+        <br>
+        <button onclick="closeImportPopup()">OK</button>
+      </div>
+    </div>
+
     <script type = "text/javascript" src="keyboard_svg.js"></script>
   </body>
 </html>

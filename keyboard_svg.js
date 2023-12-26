@@ -188,6 +188,31 @@ function openPopup() {
   document.getElementById('popup').style.display = 'flex';
 }
 
+function openImportPopup() {
+  document.getElementById('importPopup').style.display = 'flex';
+}
+
+function closeImportPopup() {
+  var importString = document.getElementById('importText').value;
+  importString = importString.replace(/\s+/g, '');
+  if (importString.length == 30){
+    importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + "'" + importString.slice(20);
+  }
+  if (importString.length == 32 || importString.length == 33){
+    importLayout(importString);
+    generateCoords();
+    measureDictionary();
+    measureWords();
+    generateLayout();
+    generatePlots();
+    document.getElementById('importPopup').style.display = 'none';
+  } else {
+    document.getElementById('importMessage').innerText = "Input string needs to be 30,32 or 33 characters"
+    // console.log(document.getElementById('importMessage'));
+    console.log("input string is length "+ importString.length + "  " + importString);
+  }
+}
+
 function closePopup() {
   for (var row = 0; row < 3; row++){
     for (var col = 0; col < 12; col++){
@@ -422,6 +447,7 @@ var m_row_usage = {};
 var m_trigram_count = {};
 var m_input_length = 0;
 var m_effort = 0;
+var m_total_word_effort = 0;
 var m_simple_effort = {};
 var finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
 
