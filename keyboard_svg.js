@@ -7,8 +7,8 @@ let url_layout = params.layout;
 var swidth = 1000;
 var sheight = 180;
 
-var w = 30;
-var gap = 10;
+var w = 38;
+var gap = 8;
 var letter = "";
 var x = 0;
 var y = 0;
@@ -18,6 +18,7 @@ var per;
 var max = 11.870939;
 var red = 0;
 var green = 128;
+var mode = "iso";
 
 var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
 
@@ -72,50 +73,55 @@ function fetchEffort(){
 makeDraggable(svg.node());
 
 // col         0  1  2  3  4  5  6  7  8  9 10 11
-var finger = [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10]
-var hand = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
+var fingerAssignment = [
+               [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+               [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+               [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
+             ]
+// var hand = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
 
+// char, row, col, freq, y, x, width
 var rcdata = [
-  ["tab", 0, 0, 0],
-  ["q", 0, 1, 0.06607202],
-  ["w", 0, 2, 2.775025],
-  ["e", 0, 3, 11.870939],
-  ["r", 0, 4, 4.988437],
-  ["t", 0, 5, 9.547406],
-  ["y", 0, 6, 1.7949564],
-  ["u", 0, 7, 2.7419887],
-  ["i", 0, 8, 6.177734],
-  ["o", 0, 9, 7.6643543],
-  ["p", 0, 10, 1.4425724],
-  ["-", 0, 11, 0.2753001],
-  ["ctrl", 1, 0, 0],
-  ["a", 1, 1, 7.466138],
-  ["s", 1, 2, 5.5720735],
-  ["d", 1, 3, 4.2616453],
-  ["f", 1, 4, 2.0482326],
-  ["g", 1, 5, 2.2244246],
-  ["h", 1, 6, 6.519106],
-  ["j", 1, 7, 0.06607202],
-  ["k", 1, 8, 1.0571523],
-  ["l", 1, 9, 4.6030173],
-  [";", 1, 10, 0.4184561],
-  ["'", 1, 11, 0.3523841],
-  ["\\", 2, 0, 0],
-  ["z", 2, 1, 0.04404801],
-  ["x", 2, 2, 0.07708402],
-  ["c", 2, 3, 1.8830525],
-  ["v", 2, 4, 0.7488162],
-  ["b", 2, 5, 1.5526924],
-  ["n", 2, 6, 6.1446977],
-  ["m", 2, 7, 1.5857284],
-  [",", 2, 8, 1.9601365],
-  [".", 2, 9, 0.48452812],
-  ["/", 2, 10, 0.14315604],
-  ["enter", 2, 11, 0],
-  ["shift", 3, 4, 0.89197224],
-  ["mod", 3, 5, 0],
-  ["back", 3, 6, 0],
-  ["space", 3, 7, 0],
+  ["q", 0, 1, 0.06607202, 0, 0, 1],
+  ["w", 0, 2, 2.775025, 0, 0, 1],
+  ["e", 0, 3, 11.870939, 0, 0, 1],
+  ["r", 0, 4, 4.988437, 0, 0, 1],
+  ["t", 0, 5, 9.547406, 0, 0, 1],
+  ["y", 0, 6, 1.7949564, 0, 0, 1],
+  ["u", 0, 7, 2.7419887, 0, 0, 1],
+  ["i", 0, 8, 6.177734, 0, 0, 1],
+  ["o", 0, 9, 7.6643543, 0, 0, 1],
+  ["p", 0, 10, 1.4425724, 0, 0, 1],
+  ["-", 0, 11, 0.2753001, 0, 0, 1],
+  ["a", 1, 1, 7.466138, 0, 0, 1],
+  ["s", 1, 2, 5.5720735, 0, 0, 1],
+  ["d", 1, 3, 4.2616453, 0, 0, 1],
+  ["f", 1, 4, 2.0482326, 0, 0, 1],
+  ["g", 1, 5, 2.2244246, 0, 0, 1],
+  ["h", 1, 6, 6.519106, 0, 0, 1],
+  ["j", 1, 7, 0.06607202, 0, 0, 1],
+  ["k", 1, 8, 1.0571523, 0, 0, 1],
+  ["l", 1, 9, 4.6030173, 0, 0, 1],
+  [";", 1, 10, 0.4184561, 0, 0, 1],
+  ["'", 1, 11, 0.3523841, 0, 0, 1],
+  ["z", 2, 1, 0.04404801, 0, 0, 1],
+  ["x", 2, 2, 0.07708402, 0, 0, 1],
+  ["c", 2, 3, 1.8830525, 0, 0, 1],
+  ["v", 2, 4, 0.7488162, 0, 0, 1],
+  ["b", 2, 5, 1.5526924, 0, 0, 1],
+  ["n", 2, 6, 6.1446977, 0, 0, 1],
+  ["m", 2, 7, 1.5857284, 0, 0, 1],
+  [",", 2, 8, 1.9601365, 0, 0, 1],
+  [".", 2, 9, 0.48452812, 0, 0, 1],
+  ["/", 2, 10, 0.14315604, 0, 0, 1],
+  ["\\", 2, 0, 0, 0, 0, 1],
+  ["tab", 0, 0, 0, 0, 0, 1.5],
+  ["ctrl", 1, 0, 0, 0, 0, 1.75],
+  ["enter", 2, 11, 0, 0, 0, 1],
+  ["shift", 3, 4, 0, 0, 0, 1.25],
+  ["mod", 3, 5, 0, 0, 0, 1],
+  ["back", 3, 6, 0, 0, 0, 1],
+  ["space", 3, 7, 0, 0, 0, 1],
 ]
 
 var effort = [
@@ -192,24 +198,42 @@ function openImportPopup() {
   document.getElementById('importPopup').style.display = 'flex';
 }
 
+function containsOneCopyOfAllLetters(str) {
+  // Convert the string to uppercase
+  str = str.toUpperCase();
+
+  // Remove non-alphabetic characters
+  str = str.replace(/[^A-Z]/g, '');
+
+  // Check if the string has exactly one copy of each letter
+  const uniqueLetters = new Set(str);
+  return uniqueLetters.size === 26;
+}
+
 function closeImportPopup() {
   var importString = document.getElementById('importText').value;
   importString = importString.replace(/\s+/g, '');
   if (importString.length == 30){
     importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + "'" + importString.slice(20);
   }
-  if (importString.length == 32 || importString.length == 33){
-    importLayout(importString);
-    generateCoords();
-    measureDictionary();
-    measureWords();
-    generateLayout();
-    generatePlots();
-    document.getElementById('importPopup').style.display = 'none';
+  if (containsOneCopyOfAllLetters(importString)){
+    if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
+      document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
+    } else if (importString.length == 32 || importString.length == 33) {
+      importLayout(importString);
+      generateCoords();
+      measureDictionary();
+      measureWords();
+      generateLayout();
+      generatePlots();
+      document.getElementById('importPopup').style.display = 'none';
+    } else {
+      document.getElementById('importMessage').innerText = "Input string needs to be 30,32 or 33 characters"
+      // console.log(document.getElementById('importMessage'));
+      console.log("input string is length "+ importString.length + "  " + importString);
+    }
   } else {
-    document.getElementById('importMessage').innerText = "Input string needs to be 30,32 or 33 characters"
-    // console.log(document.getElementById('importMessage'));
-    console.log("input string is length "+ importString.length + "  " + importString);
+    document.getElementById('importMessage').innerText = "Doesn't have all the letters"
   }
 }
 
@@ -263,70 +287,189 @@ function hideTooltip() {
   tooltip.style.display = "none";
 }
 
-function importLayout(layout) {
-  // 01234567890123456789012345678901
-  // wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
-  for (let i = 0; i < 11; i++) {
-    if (layout.charAt(i) == "^"){
-      rcdata[i + 1][0] = "shift"
+function activateErgo() {
+  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1],
+  rcdata[33] = ["shift", 3, 4, 0, 0, 0, 1],
+  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1],
+  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1],
+  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1],
+  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1],
+  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1],
+  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1],
+  mode = "ergo"
+  fingerAssignment = [
+                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
+               ]
+
+  var queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("layout", exportLayout());
+  queryParams.set("mode",mode)
+  generateCoords();
+  measureDictionary();
+  measureWords();
+  generateLayout();
+  generatePlots();
+
+}
+
+function activateIso(anglemod) {
+  if (rcdata[33][0] == "shift") {
+    rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
+    rcdata[33] = ["shift", 2, 0, 0, 0, 0, 1.25]
+    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5]
+    rcdata[35] = ["back", 0, 12, 0, 0, 0, 2.25]
+    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75]
+    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2]
+    rcdata[38] = ["rshift", 2, 12, 0, 0, 0, 2.5]
+    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5]
+    if (anglemod){
+      fingerAssignment = [ // angle mod
+        [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+        [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+        [1, 2, 3, 4, 4, 4, 7, 7, 8, 9, 10, 10, 10]
+      ]
     } else {
-      rcdata[i + 1][0] = layout.charAt(i);
+      fingerAssignment = [
+        [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+        [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+        [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
+      ]
     }
-  }
-  for (let i = 11; i < 22; i++) {
-    if (layout.charAt(i) == "^"){
-      rcdata[i + 2][0] = "shift"
-    } else {
-      rcdata[i + 2][0] = layout.charAt(i);
-    }
-  }
-  for (let i = 22; i < 32; i++) {
-    if (layout.charAt(i) == "^"){
-      rcdata[i + 3][0] = "shift"
-    } else {
-      rcdata[i + 3][0] = layout.charAt(i);
-    }
-  }
-  if (layout.length >= 33) {
-    if (layout.charAt(32) == "^"){
-      rcdata[36][0] = "shift"
-    } else {
-      rcdata[36][0] = layout.charAt(32);
-    }
+    mode = "iso"
+    var queryParams = new URLSearchParams(window.location.search);
+    queryParams.set("layout", exportLayout());
+    queryParams.set("mode",mode)
+    generateCoords();
+    measureDictionary();
+    measureWords();
+    generateLayout();
+    generatePlots();
+  } else {
+    console.log("You can't have layouts with thumb letters on ISO/ANSI")
   }
 }
 
-function exportLayout(){
+function activateAnsi() {
+  if (rcdata[33][0] == "shift") {
+    rcdata[32] = [rcdata[32][0], 0, 12, 0.2753001, 0, 0, 1],
+    rcdata[33] = ["shift", 2, 0, 0, 0, 0, 2.25],
+    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5],
+    rcdata[35] = ["back", 0, 13, 0, 0, 0, 1.25],
+    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75],
+    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2],
+    rcdata[38] = ["rshift", 2, 11, 0, 0, 0, 2.5],
+    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5],
+    fingerAssignment = [
+      [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+      [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+      [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
+    ]
+    mode = "ansi"
+    var queryParams = new URLSearchParams(window.location.search);
+    queryParams.set("layout", exportLayout());
+    queryParams.set("mode",mode)
+    generateCoords();
+    measureDictionary();
+    measureWords();
+    generateLayout();
+    generatePlots();
+  } else {
+    console.log("You can't have layouts with thumb letters on ISO/ANSI")
+  }
+}
+
+function importLayout(layout) {
+  // 01234567890123456789012345678901
+  // wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
+  for (let i = 0; i < 32; i++) {
+    if (layout.charAt(i) == "^"){
+      rcdata[i][0] = "shift"
+    } else {
+      rcdata[i][0] = layout.charAt(i);
+    }
+  }
+  if (layout.length == 33 && mode == "ergo") {
+    console.log("layout is 33 long") // jgmpv;.'*/zrsntb,haoiqxcldw-fukye // xpdmq=you,-snthvgcaei;fbkljzw'/.r
+    rcdata[33][0] = layout.charAt(32);
+  } else {
+    console.log("this keyboard doesn't have thumb keys")
+  }
+}
+
+function exportLayout() {
   var str = "";
-  for (let i = 0; i < 11; i++) {
-    if (rcdata[i+1][0] == "shift"){
+  for (let i = 0; i < 32; i++) {
+    if (rcdata[i][0] == "shift") {
       str += "^";
     } else {
-      str += rcdata[i + 1][0];
+      str += rcdata[i][0];
     }
   }
-  for (let i = 11; i < 22; i++) {
-    if (rcdata[i + 2][0] == "shift"){
-      str += "^";
-    } else {
-      str += rcdata[i + 2][0];
-    }
+  if (rcdata[33][0].length == 1) {
+    str += rcdata[33][0];
   }
-  for (let i = 22; i < 32; i++) {
-    if (rcdata[i + 3][0] == "shift"){
-      str += "^";
-    } else {
-      str += rcdata[i + 3][0];
+  return str;
+}
+
+function getX(name, row, col) {
+  dx = 55;
+  if (mode == "iso") {
+    if (row == 0){
+      if (name === "tab") {
+        off = 0
+        // console.log(name);
+      } else {
+        off = w*0.5;
+      }
+    } else if (row == 1) {
+      if (name === "ctrl") {
+        off = 0;
+      } else {
+        off = w*0.75;
+      }
+    } else if (row >= 2) {
+      if (name === "shift" || name === "space") {
+        off = 0;
+      } else if (name == "rshift") {
+        off = w*0.25;
+      } else {
+        off = w*1.25;
+      }
     }
-  }
-  if (rcdata[36][0].length == 1) {
-    if (rcdata[36][0] == "shift"){
-      str += "^";
-    } else {
-      str += rcdata[36][0];
+    return dx + off + col * w
+  } else if (mode == "ansi") {
+    if (row == 0){
+      if (name === "tab") {
+        off = 0
+        // console.log(name);
+      } else {
+        off = w*0.5;
+      }
+    } else if (row == 1){
+      if (name === "ctrl") {
+        off = 0;
+      } else {
+        off = w*0.75;
+      }
+    } else if (row >= 2){
+      if (name === "shift" || name === "space") {
+        off = 0;
+      } else {
+        off = w*1.25;
+      }
     }
+    return dx + off + col * w
+  } else if (mode == "ergo") {
+    if (col > 5) {
+      dx = dx + 40;
+    }
+    return dx + col * w
   }
-  return str
+}
+function getY(name, row, col) {
+  return 10 + row * w
 }
 
 function colToX(col) {
@@ -334,11 +477,11 @@ function colToX(col) {
   if (col > 5) {
     dx = dx + 40;
   }
-  return dx + col * (w + gap)
+  return dx + col * w
 }
 
 function rowToY(row) {
-  return 10 + row * (w + gap)
+  return 10 + row * w
 }
 
 function getCol(letter) {
@@ -358,8 +501,16 @@ function getRow(letter) {
   }
   return -1;
 }
+function getChar(row,col) {
+  for (let i = 0; i < rcdata.length; i++) {
+    if (rcdata[i][1] == row && rcdata[i][2] == col) {
+      return rcdata[i][0];
+    }
+  }
+  return "!";
+}
 
-function getFinger(col, row) {
+function getFinger(row, col) {
   if (row > 2) {
     if (col <= 4) {
       return 5
@@ -367,7 +518,7 @@ function getFinger(col, row) {
       return 6
     }
   } else {
-    return finger[col];
+    return fingerAssignment[row][col];
   }
 }
 
@@ -375,27 +526,33 @@ function dist(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
 }
 
-var xydata = []
+// var xydata = []
 
 function generateCoords() {
   for (let i = 0; i < rcdata.length; i++) {
-    xydata[i] = [rcdata[i][0], rowToY(rcdata[i][1]), colToX(rcdata[i][2]), rcdata[i][3]];
+    rcdata[i][4] = getY(rcdata[i][0], rcdata[i][1],rcdata[i][2]); // Y
+    rcdata[i][5] = getX(rcdata[i][0], rcdata[i][1],rcdata[i][2]); // X
   }
 }
 
 function generateLayout() {
   svg.selectAll("*").remove();
-  svg.append("rect").attr("x", 45).attr("y", 0).attr("width", 530).attr("height", 170)
+  if (mode == "iso" || mode == "ansi"){
+    outlinewidth = 580;
+  } else  {
+    outlinewidth = 516;
+  }
+  svg.append("rect").attr("x", 45).attr("y", 0).attr("width", outlinewidth).attr("height", 170)
     .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
-  for (let i = 0; i < xydata.length; i++) {
-    letter = xydata[i][0];
-    x = xydata[i][2];
-    y = xydata[i][1];
-    per = xydata[i][3];
+  for (let i = 0; i < rcdata.length; i++) {
+    letter = rcdata[i][0];
+    x = rcdata[i][5];
+    y = rcdata[i][4];
+    per = rcdata[i][3];
+    keywidth = rcdata[i][6];
     red = Math.floor(127 * per / max) + 128
-    if (red < 16) {
-      red = 16;
-    }
+    if (red < 16) {  red = 16; }
+    if (red > 255) { red = 255;}
     hex_red = red.toString(16);
     hex_bg = green.toString(16);
 
@@ -405,7 +562,7 @@ function generateLayout() {
     }
 
     svg.append("rect").attr("x", x).attr("y", y)
-      .attr("width", w).attr("height", w).attr("rx", 4).attr("ry", 4)
+      .attr("width", keywidth*w-gap).attr("height", w-gap).attr("rx", 4).attr("ry", 4)
       .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", "black")
       .attr("stroke-width", "1").attr("class", "draggable");
     svg.append("text").attr("x", x + 15).attr("y", y + 19)
@@ -417,16 +574,44 @@ function generateLayout() {
     measureDictionary();
     measureWords();
   }
-  svg.append("text").attr("x", 600).attr("y", 135).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Total Word Effort "+(m_total_word_effort/100.0).toFixed(1))
+  svg.append("text").attr("x", 640).attr("y", 135).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Total Word Effort "+(m_total_word_effort/100.0).toFixed(1))
   // effort text
-  svg.append("text").attr("x", 600).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+(577*m_effort/m_input_length).toFixed(2))
+  svg.append("text").attr("x", 640).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+(577*m_effort/m_input_length).toFixed(2))
   // edit button
-  svg.append("rect").attr("x", 720).attr("y", 147).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  svg.append("rect").attr("x", 760).attr("y", 147).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "openPopup()")
   .attr("onmouseover", "showTooltip(evt,'Edit effort values for each key')").attr("onmouseout", "hideTooltip()")
 
-  svg.append("text").attr("x", 740).attr("y", 164).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 760+20).attr("y", 164).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("Edit")
+
+
+  // ergo button
+  svg.append("rect").attr("x", 640).attr("y", 10).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateErgo()")
+  .attr("onmouseover", "showTooltip(evt,'Switch layout to Ergo')").attr("onmouseout", "hideTooltip()")
+  svg.append("text").attr("x", 640+20).attr("y", 10+17).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("Ergo")
+  // iso button
+  svg.append("rect").attr("x", 640).attr("y", 10+35).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(false)")
+  .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO')").attr("onmouseout", "hideTooltip()")
+  svg.append("text").attr("x", 640+20).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ISO")
+
+  // anglemod button
+  svg.append("rect").attr("x", 690).attr("y", 10+35).attr("width", 80).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(true)")
+  .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO with angle mod')").attr("onmouseout", "hideTooltip()")
+  svg.append("text").attr("x", 690+40).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("anglemod")
+
+  // ansi button
+  svg.append("rect").attr("x", 640).attr("y", 10+35+35).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateAnsi()")
+  .attr("onmouseover", "showTooltip(evt,'Switch layout to ANSI')").attr("onmouseout", "hideTooltip()")
+  svg.append("text").attr("x", 640+20).attr("y", 10+17+35+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ANSI")
 
 }
 
@@ -448,7 +633,7 @@ var m_trigram_count = {};
 var m_input_length = 0;
 var m_effort = 0;
 var m_total_word_effort = 0;
-var m_simple_effort = {};
+// var m_simple_effort = {};
 var finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
 
 var word_effort = {}
@@ -573,6 +758,7 @@ function measureWords() {
   for (var word in words) {
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
     var count = words[word];
+    // if (count < 200){continue;}
     m_input_length += count * (word.length + 1);
 
     if (word_effort[word]){
@@ -590,6 +776,7 @@ function measureWords() {
       }
       m_letter_freq[char] += count;
       // finger usage //
+      row = getRow(char);
       col = getCol(char);
       if (col <= 5){
         hand = "L"
@@ -602,7 +789,6 @@ function measureWords() {
       }
       m_column_usage[col] += count;
       // finger usage //
-      row = getRow(char);
       // effort
       if (!m_effort_per_letter[char]){
         m_effort_per_letter[char] = 0
@@ -615,28 +801,41 @@ function measureWords() {
 
       m_effort += count * getEffort(row, col);
 
-
-      var finger = getFinger(col, row);
+      var finger = getFinger(row, col);
       if (!m_finger_usage[finger]) {
         m_finger_usage[finger] = 0;
       }
       m_finger_usage[finger] += count;
       // finger travel distance
       if (row < 0) { break; }
+      // console.log(word+"   "+char);
+      // console.log("    col: "+col);
+      // console.log("    row: "+row);
+      // console.log("prevcol: "+finger_pos[finger][1]);
+      // console.log("prevrow: "+finger_pos[finger][0]);
       d = dist(col, row, finger_pos[finger][1], finger_pos[finger][0]);
+      x1 = getX(char,row,col)
+      y1 = getY(char,row,col)
+      x2 = getX(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
+      y2 = getY(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
+      d = dist(x1, y1, x2, y2);
+      // console.log("   dist:"+d);
+      // console.log("      x:"+getX(char,row,col))
+      // console.log("      y:"+getY(char,row,col))
+      // console.log("      x:"+getX(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1]))
+      // console.log("      y:"+getY(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1]))
 
       if (!m_finger_distance[finger]) {
         m_finger_distance[finger] = 0;
       }
       m_finger_distance[finger] += d * count;
 
-      if (!m_simple_effort[word]) {
-        m_simple_effort[word] = 0
-      }
-      m_simple_effort[word] += d
+      // if (!m_simple_effort[word]) {
+      //   m_simple_effort[word] = 0
+      // }
+      // m_simple_effort[word] += d
 
-
-      finger_pos[finger] = [row, col];
+      finger_pos[finger] = [row, col]; // move finger to new position
 
       // finger row //
       if (!m_row_usage[row]) {
@@ -798,16 +997,16 @@ function measureWords() {
       prevchar = char;
       prevfinger = finger;
     }
-      if (samehand.length >= 4) {
-        if (!samehandstrings[samehand]) {
-          samehandstrings[samehand] = 0;
-        }
-        samehandstrings[samehand] += count;
+    if (samehand.length >= 4) {
+      if (!samehandstrings[samehand]) {
+        samehandstrings[samehand] = 0;
       }
-      if (!samehandcount[samehand.length]){
-        samehandcount[samehand.length] = 0;
-      }
-      samehandcount[samehand.length] += count
+      samehandstrings[samehand] += count;
+    }
+    if (!samehandcount[samehand.length]){
+      samehandcount[samehand.length] = 0;
+    }
+    samehandcount[samehand.length] += count
   }
   var sum = 0;
   for (var letter in m_letter_freq) {
@@ -818,9 +1017,9 @@ function measureWords() {
       if (rcdata[i][0] == letter) {
         rcdata[i][3] = 100 * m_letter_freq[letter] / sum
       }
-      if (xydata[i][0] == letter) {
-        xydata[i][3] = 100 * m_letter_freq[letter] / sum
-      }
+      // if (xydata[i][0] == letter) {
+      //   xydata[i][3] = 100 * m_letter_freq[letter] / sum
+      // }
     }
   }
 }
@@ -913,6 +1112,7 @@ function generatePlots() {
   var x = 250;
   var y = 0;
   var max = 201609;//from qwerty
+  max *= 37.24; // additional scaling because we're using x and y coords now instead of rows and cols.
   sum = 0
   left = 0;
   right = 0;
@@ -946,6 +1146,8 @@ function generatePlots() {
   }
   stats.append("text").attr("x", x + 57).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * left / sum).toFixed(2) + "%");
   stats.append("text").attr("x", x + 177).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * right / sum).toFixed(2) + "%");
+  stats.append("text").attr("x", x + 117).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * sum/max).toFixed(1));
+  // (100*sum/max).toFixed(1)
   ///////////////////////////////////   S A M E   F I N G E R   B I G R A M S    ///////////////////////////////
   var x = 0;
   var y = 180;
@@ -1333,13 +1535,13 @@ function makeDraggable(svg) {
         closestdist = 9999;
         starti = -1;
         var keyname = ""
-        for (let i = 0; i < xydata.length; i++) {
-          d = dist(x, y, xydata[i][2], xydata[i][1]);
+        for (let i = 0; i < rcdata.length; i++) {
+          d = dist(x, y, rcdata[i][5], rcdata[i][4]);
           if (d < closestdist) {
-            // console.log("dist = "+d+"  "+xydata[i][0]);
+            // console.log("dist = "+d+"  "+rcdata[i][0]);
             closestdist = d;
             starti = i;
-            keyname = xydata[i][0];
+            keyname = rcdata[i][0];
           }
         }
         // console.log("keyname = "+keyname);
@@ -1381,8 +1583,8 @@ function makeDraggable(svg) {
       sibling = false;
       // scan through xydata to find out which key are we closest to
       closestdist = 9999;
-      for (let i = 0; i < xydata.length; i++) {
-        d = dist(x, y, xydata[i][2], xydata[i][1]);
+      for (let i = 0; i < rcdata.length; i++) {
+        d = dist(x, y, rcdata[i][5], rcdata[i][4]);
         if (d < closestdist) {
           // console.log("dist = "+d+"  "+xydata[i][0]);
           closestdist = d;
@@ -1390,14 +1592,7 @@ function makeDraggable(svg) {
         }
       }
 
-      // swap x and y in xydata
-      tmp = xydata[starti][0];
-      xydata[starti][0] = xydata[dropi][0];
-      xydata[dropi][0] = tmp;
-      tmp = xydata[starti][3];
-      xydata[starti][3] = xydata[dropi][3];
-      xydata[dropi][3] = tmp;
-      // swap x and y in rcdata
+      // swap name and freq in rcdata
       tmp = rcdata[starti][0];
       rcdata[starti][0] = rcdata[dropi][0];
       rcdata[dropi][0] = tmp;
@@ -1407,6 +1602,7 @@ function makeDraggable(svg) {
 
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
+      queryParams.set("mode",mode)
       history.replaceState(null, null, "?"+queryParams.toString());
 
       d3.select(svg).selectAll("*").remove();
@@ -1417,7 +1613,7 @@ function makeDraggable(svg) {
     }
   }
 }
-
+activateErgo();
 if (url_layout) {
   importLayout(url_layout)
 }
