@@ -396,6 +396,9 @@ function importLayout(layout) {
   } else {
     console.log("this keyboard doesn't have thumb keys")
   }
+  var queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("layout", exportLayout());
+  queryParams.set("mode",mode)
 }
 
 function exportLayout() {
