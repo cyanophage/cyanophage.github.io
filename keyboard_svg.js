@@ -199,22 +199,48 @@ function openImportPopup() {
 }
 
 function containsOneCopyOfAllLetters(str) {
-  // Convert the string to uppercase
   str = str.toUpperCase();
+  if (strCount(str,",")!=1) {return false;}
+  if (strCount(str,".")!=1) {return false;}
+  if (strCount(str,";")>1) {return false;}
+  if (strCount(str,"/")>1) {return false;}
+  if (strCount(str,"'")>1) {return false;}
+  if (strCount(str,"\\")>1) {return false;}
+  if (strCount(str,"-")>1) {return false;}
+  // Convert the string to uppercase
 
   // Remove non-alphabetic characters
   str = str.replace(/[^A-Z]/g, '');
 
   // Check if the string has exactly one copy of each letter
   const uniqueLetters = new Set(str);
-  return uniqueLetters.size === 26;
+  return uniqueLetters.size === 26; //wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
+}
+
+function strCount(str,char) {
+  for(var count=-1,index=-2; index != -1; count++,index=str.indexOf(char,index+1) );
+  return count
 }
 
 function closeImportPopup() {
   var importString = document.getElementById('importText').value;
   importString = importString.replace(/\s+/g, '');
+  // if we import a string that is 30 characters long and doesn't contain - or ' then we add them in
+  // but then what if we add a 30 character string that does contain - or '. well then we should add something else in
   if (importString.length == 30){
-    importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + "'" + importString.slice(20);
+    if (strCount(importString,"-")==0 && strCount(importString,"'")==0){
+      importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + "'" + importString.slice(20);
+    } else if (strCount(importString,"-")==0 && strCount(importString,";")==0 ) {
+      importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + ";" + importString.slice(20);
+    } else if (strCount(importString,"'")==0 && strCount(importString,";")==0 ) {
+      importString = importString.slice(0, 10) + ";" + importString.slice(10,20) + "'" + importString.slice(20);
+    } else if (strCount(importString,"'")==0 && strCount(importString,"/")==0 ) {
+      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + "'" + importString.slice(20);
+    } else if (strCount(importString,";")==0 && strCount(importString,"/")==0 ) {
+      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + ";" + importString.slice(20);
+    } else {
+      importString = importString.slice(0, 10) + "+" + importString.slice(10,20) + "*" + importString.slice(20);
+    }
   }
   if (containsOneCopyOfAllLetters(importString)){
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
@@ -233,7 +259,7 @@ function closeImportPopup() {
       console.log("input string is length "+ importString.length + "  " + importString);
     }
   } else {
-    document.getElementById('importMessage').innerText = "Doesn't have all the letters"
+    document.getElementById('importMessage').innerText = "Imported layout should have only 1 of A-Z and . and , "
   }
 }
 
@@ -391,10 +417,10 @@ function importLayout(layout) {
     }
   }
   if (layout.length == 33 && mode == "ergo") {
-    console.log("layout is 33 long") // jgmpv;.'*/zrsntb,haoiqxcldw-fukye // xpdmq=you,-snthvgcaei;fbkljzw'/.r
+    // console.log("layout is 33 long") // jgmpv;.'*/zrsntb,haoiqxcldw-fukye // xpdmq=you,-snthvgcaei;fbkljzw'/.r
     rcdata[33][0] = layout.charAt(32);
   } else {
-    console.log("this keyboard doesn't have thumb keys")
+    // console.log("this keyboard doesn't have thumb keys")
   }
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
@@ -590,30 +616,30 @@ function generateLayout() {
 
 
   // ergo button
-  svg.append("rect").attr("x", 640).attr("y", 10).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  svg.append("rect").attr("x", 640).attr("y", 10).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateErgo()")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to Ergo')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 640+20).attr("y", 10+17).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 640+23).attr("y", 10+17).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("Ergo")
   // iso button
-  svg.append("rect").attr("x", 640).attr("y", 10+35).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  svg.append("rect").attr("x", 640).attr("y", 10+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(false)")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 640+20).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 640+23).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ISO")
 
   // anglemod button
-  svg.append("rect").attr("x", 690).attr("y", 10+35).attr("width", 80).attr("height", 25).attr("rx",0).attr("ry",0)
+  svg.append("rect").attr("x", 695).attr("y", 10+35).attr("width", 80).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(true)")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO with angle mod')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 690+40).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 695+40).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("anglemod")
 
   // ansi button
-  svg.append("rect").attr("x", 640).attr("y", 10+35+35).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
+  svg.append("rect").attr("x", 640).attr("y", 10+35+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateAnsi()")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to ANSI')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 640+20).attr("y", 10+17+35+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 640+23).attr("y", 10+17+35+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ANSI")
 
 }
