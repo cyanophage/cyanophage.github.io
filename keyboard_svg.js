@@ -19,6 +19,7 @@ var max = 11.870939;
 var red = 0;
 var green = 128;
 var mode = "iso";
+var needs_update = true;
 
 var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
 
@@ -37,6 +38,7 @@ function fetchData(){
     .then(response => response.json())
     .then(data => {
       words = data; // Assign data to the global variable
+      needs_update = true;
       measureWords();
       generateLayout();
       generatePlots();
@@ -261,6 +263,7 @@ function closeImportPopup() {
   } else {
     document.getElementById('importMessage').innerText = "Imported layout should have only 1 of A-Z and . and , "
   }
+  needs_update = true;
 }
 
 function closePopup() {
@@ -332,12 +335,12 @@ function activateErgo() {
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
+  needs_update = true;
   generateCoords();
   measureDictionary();
   measureWords();
   generateLayout();
   generatePlots();
-
 }
 
 function activateIso(anglemod) {
@@ -367,6 +370,7 @@ function activateIso(anglemod) {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
+    needs_update = true;
     generateCoords();
     measureDictionary();
     measureWords();
@@ -396,6 +400,7 @@ function activateAnsi() {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
+    needs_update = true;
     generateCoords();
     measureDictionary();
     measureWords();
@@ -552,7 +557,7 @@ function getFinger(row, col) {
 }
 
 function dist(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))/w;
 }
 
 // var xydata = []
@@ -753,6 +758,7 @@ function measureDictionary() {
 }
 
 function measureWords() {
+  if (!needs_update){return;}
   m_column_usage = {};
   m_finger_usage = {};
   m_finger_distance = {};
@@ -837,32 +843,17 @@ function measureWords() {
       m_finger_usage[finger] += count;
       // finger travel distance
       if (row < 0) { break; }
-      // console.log(word+"   "+char);
-      // console.log("    col: "+col);
-      // console.log("    row: "+row);
-      // console.log("prevcol: "+finger_pos[finger][1]);
-      // console.log("prevrow: "+finger_pos[finger][0]);
-      d = dist(col, row, finger_pos[finger][1], finger_pos[finger][0]);
+      // d = dist(col, row, finger_pos[finger][1], finger_pos[finger][0]);
       x1 = getX(char,row,col)
       y1 = getY(char,row,col)
       x2 = getX(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
       y2 = getY(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
       d = dist(x1, y1, x2, y2);
-      // console.log("   dist:"+d);
-      // console.log("      x:"+getX(char,row,col))
-      // console.log("      y:"+getY(char,row,col))
-      // console.log("      x:"+getX(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1]))
-      // console.log("      y:"+getY(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1]))
-
+      if (word == "no") { console.log("char:"+char+" d:"+d)}
       if (!m_finger_distance[finger]) {
         m_finger_distance[finger] = 0;
       }
       m_finger_distance[finger] += d * count;
-
-      // if (!m_simple_effort[word]) {
-      //   m_simple_effort[word] = 0
-      // }
-      // m_simple_effort[word] += d
 
       finger_pos[finger] = [row, col]; // move finger to new position
 
@@ -1051,6 +1042,7 @@ function measureWords() {
       // }
     }
   }
+  needs_update = false;
 }
 
 function generatePlots() {
@@ -1140,8 +1132,7 @@ function generatePlots() {
   ///////////////////////////////////////   F I N G E R   D I S T A N C E   //////////////////////////////////
   var x = 250;
   var y = 0;
-  var max = 201609;//from qwerty
-  max *= 37.24; // additional scaling because we're using x and y coords now instead of rows and cols.
+  var max = 196911;
   sum = 0
   left = 0;
   right = 0;
@@ -1635,6 +1626,7 @@ function makeDraggable(svg) {
       history.replaceState(null, null, "?"+queryParams.toString());
 
       d3.select(svg).selectAll("*").remove();
+      needs_update = true;
       measureDictionary();
       measureWords();
       generateLayout();
@@ -1642,7 +1634,6 @@ function makeDraggable(svg) {
     }
   }
 }
-activateErgo();
 if (url_layout) {
   importLayout(url_layout)
 }
@@ -1650,3 +1641,4 @@ generateCoords();
 fetchEffort();
 fetchData();
 fetchDictionary();
+activateErgo();
