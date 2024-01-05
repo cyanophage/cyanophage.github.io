@@ -33,12 +33,19 @@ let dictionary = {};
 let bigram_effort = {};
 
 // Fetch the JSON file
+let dataloaded = false
+let dictionaryloaded = false
+let effortloaded = false
 function fetchData(){
   fetch(word_list_url)
     .then(response => response.json())
     .then(data => {
       words = data; // Assign data to the global variable
       needs_update = true;
+      console.log("fetchData");
+      dataloaded = true;
+      activateErgo();
+      measureDictionary();
       measureWords();
       generateLayout();
       generatePlots();
@@ -54,7 +61,11 @@ function fetchDictionary(){
       } else {
         console.log("something went wrong with loading the dictionary");
       }
+      console.log("fetchDictionary");
+      dictionaryloaded = true;
+      activateErgo();
       measureDictionary();
+      measureWords();
       generateLayout();
       generatePlots();
     })
@@ -65,9 +76,13 @@ function fetchEffort(){
     .then(response => response.json())
     .then(data => {
       bigram_effort = data;
+      console.log("fetchEffort");
+      effortloaded = true;
+      activateErgo();
       measureDictionary();
+      measureWords();
+      generateLayout();
       generatePlots();
-      // console.log("effort loaded");
     })
     .catch(error => console.error('Error loading effort JSON file:', error));
 }
@@ -248,6 +263,7 @@ function closeImportPopup() {
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
     } else if (importString.length == 32 || importString.length == 33) {
+      needs_update = true;
       importLayout(importString);
       generateCoords();
       measureDictionary();
@@ -317,6 +333,8 @@ function hideTooltip() {
 }
 
 function activateErgo() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("activateErgo");
   rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1],
   rcdata[33] = ["shift", 3, 4, 0, 0, 0, 1],
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1],
@@ -337,13 +355,14 @@ function activateErgo() {
   queryParams.set("mode",mode)
   needs_update = true;
   generateCoords();
-  measureDictionary();
-  measureWords();
-  generateLayout();
-  generatePlots();
+  // measureDictionary();
+  // measureWords();
+  // generateLayout();
+  // generatePlots();
 }
 
 function activateIso(anglemod) {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   if (rcdata[33][0] == "shift") {
     rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
     rcdata[33] = ["shift", 2, 0, 0, 0, 0, 1.25]
@@ -382,6 +401,7 @@ function activateIso(anglemod) {
 }
 
 function activateAnsi() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   if (rcdata[33][0] == "shift") {
     rcdata[32] = [rcdata[32][0], 0, 12, 0.2753001, 0, 0, 1],
     rcdata[33] = ["shift", 2, 0, 0, 0, 0, 2.25],
@@ -563,6 +583,7 @@ function dist(x1, y1, x2, y2) {
 // var xydata = []
 
 function generateCoords() {
+  console.log("generateCoords")
   for (let i = 0; i < rcdata.length; i++) {
     rcdata[i][4] = getY(rcdata[i][0], rcdata[i][1],rcdata[i][2]); // Y
     rcdata[i][5] = getX(rcdata[i][0], rcdata[i][1],rcdata[i][2]); // X
@@ -570,6 +591,8 @@ function generateCoords() {
 }
 
 function generateLayout() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("generateLayout")
   svg.selectAll("*").remove();
   if (mode == "iso" || mode == "ansi"){
     outlinewidth = 580;
@@ -605,6 +628,7 @@ function generateLayout() {
   }
   //
   if (m_total_word_effort == 0){
+    console.log("m_total_word_effort == 0")
     measureDictionary();
     measureWords();
   }
@@ -673,7 +697,10 @@ var finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7]
 var word_effort = {}
 var samehandstrings = {};
 var samehandcount = {};
+
 function measureDictionary() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("measureDictionary");
   // console.log("measuring effort of each word in the dictionary");
   var total=0, word, char1, char2, col1, row1, col2, row2, hand1, hand2, samehand,count = 0;
   for(var wordi in dictionary) {
@@ -758,6 +785,8 @@ function measureDictionary() {
 }
 
 function measureWords() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("measureWords");
   if (!needs_update){return;}
   m_column_usage = {};
   m_finger_usage = {};
@@ -849,7 +878,6 @@ function measureWords() {
       x2 = getX(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
       y2 = getY(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
       d = dist(x1, y1, x2, y2);
-      if (word == "no") { console.log("char:"+char+" d:"+d)}
       if (!m_finger_distance[finger]) {
         m_finger_distance[finger] = 0;
       }
@@ -1046,6 +1074,7 @@ function measureWords() {
 }
 
 function generatePlots() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   stats.selectAll("*").remove();
   ///////////////////////////////////////  C O L U M N   U S A G E  ////////////////////////////////////////////
   var x = 500;
@@ -1637,8 +1666,7 @@ function makeDraggable(svg) {
 if (url_layout) {
   importLayout(url_layout)
 }
-generateCoords();
+// generateCoords();
 fetchEffort();
 fetchData();
 fetchDictionary();
-activateErgo();
