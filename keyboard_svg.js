@@ -44,7 +44,7 @@ function fetchData(){
       needs_update = true;
       console.log("fetchData");
       dataloaded = true;
-      activateErgo();
+      setErgo();
       measureDictionary();
       measureWords();
       generateLayout();
@@ -63,7 +63,7 @@ function fetchDictionary(){
       }
       console.log("fetchDictionary");
       dictionaryloaded = true;
-      activateErgo();
+      setErgo();
       measureDictionary();
       measureWords();
       generateLayout();
@@ -78,7 +78,7 @@ function fetchEffort(){
       bigram_effort = data;
       console.log("fetchEffort");
       effortloaded = true;
-      activateErgo();
+      setErgo();
       measureDictionary();
       measureWords();
       generateLayout();
@@ -255,6 +255,10 @@ function closeImportPopup() {
       importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + "'" + importString.slice(20);
     } else if (strCount(importString,";")==0 && strCount(importString,"/")==0 ) {
       importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + ";" + importString.slice(20);
+    } else if (strCount(importString,";")==0 && strCount(importString,"'")==0 ) {
+      importString = importString.slice(0, 10) + ";" + importString.slice(10,20) + "'" + importString.slice(20);
+    } else if (strCount(importString,"/")==0 && strCount(importString,"-")==0 ) {
+      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + "-" + importString.slice(20);
     } else {
       importString = importString.slice(0, 10) + "+" + importString.slice(10,20) + "*" + importString.slice(20);
     }
@@ -332,6 +336,30 @@ function hideTooltip() {
   tooltip.style.display = "none";
 }
 
+function setErgo() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("activateErgo");
+  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1],
+  rcdata[33] = ["shift", 3, 4, 0, 0, 0, 1],
+  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1],
+  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1],
+  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1],
+  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1],
+  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1],
+  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1],
+  mode = "ergo"
+  fingerAssignment = [
+                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
+               ]
+
+  var queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("layout", exportLayout());
+  queryParams.set("mode",mode)
+  generateCoords()
+}
+
 function activateErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("activateErgo");
@@ -355,10 +383,10 @@ function activateErgo() {
   queryParams.set("mode",mode)
   needs_update = true;
   generateCoords();
-  // measureDictionary();
-  // measureWords();
-  // generateLayout();
-  // generatePlots();
+  measureDictionary();
+  measureWords();
+  generateLayout();
+  generatePlots();
 }
 
 function activateIso(anglemod) {
