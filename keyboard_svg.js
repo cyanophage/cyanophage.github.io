@@ -676,27 +676,27 @@ function generateLayout() {
   svg.append("rect").attr("x", 640).attr("y", 10).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateErgo()")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to Ergo')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 640+23).attr("y", 10+17).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 640+23).attr("y", 10+18).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("Ergo")
   // iso button
   svg.append("rect").attr("x", 640).attr("y", 10+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(false)")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 640+23).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 640+23).attr("y", 10+18+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ISO")
 
   // anglemod button
   svg.append("rect").attr("x", 695).attr("y", 10+35).attr("width", 80).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(true)")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO with angle mod')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 695+40).attr("y", 10+17+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 695+40).attr("y", 10+18+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("anglemod")
 
   // ansi button
   svg.append("rect").attr("x", 640).attr("y", 10+35+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateAnsi()")
   .attr("onmouseover", "showTooltip(evt,'Switch layout to ANSI')").attr("onmouseout", "hideTooltip()")
-  svg.append("text").attr("x", 640+23).attr("y", 10+17+35+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
+  svg.append("text").attr("x", 640+23).attr("y", 10+18+35+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ANSI")
 
 }
