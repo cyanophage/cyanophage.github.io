@@ -1623,7 +1623,7 @@ function makeDraggable(svg) {
           }
         }
         // console.log("keyname = "+keyname);
-        if (keyname == "mod" || keyname == "back" || keyname == "space"){
+        if (keyname == "mod" || keyname == "back" || keyname == "space" || keyname == "tab" || keyname == "ctrl" || keyname == "enter"){
           selectedElement = null;
           return;
         }
@@ -1659,7 +1659,7 @@ function makeDraggable(svg) {
       // console.log("drop at "+x+"  "+y);
       selectedElement = false;
       sibling = false;
-      // scan through xydata to find out which key are we closest to
+      // scan through rcdata to find out which key are we closest to
       closestdist = 9999;
       for (let i = 0; i < rcdata.length; i++) {
         d = dist(x, y, rcdata[i][5], rcdata[i][4]);
