@@ -294,6 +294,7 @@ function closePopup() {
     }
   }
   document.getElementById('popup').style.display = 'none';
+  needs_update = true;
   measureWords();
   generateLayout();
 }
