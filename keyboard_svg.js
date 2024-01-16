@@ -411,7 +411,7 @@ function activateErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("activateErgo");
   rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
-  // rcdata[33] = ["shift", 3, 4, 0, 0, 0, 1]
+  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1]
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
   rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
@@ -659,13 +659,14 @@ function generateLayout() {
   console.log("generateLayout")
   svg.selectAll("*").remove();
   if (mode == "iso" || mode == "ansi") {
-    outlinewidth = 580;
+    outlinewidth = 572;
   } else  {
-    outlinewidth = 516;
+    outlinewidth = 510;
   }
   svg.append("rect").attr("x", 45).attr("y", 0).attr("width", outlinewidth).attr("height", 170)
-    .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
+  .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
   for (let i = 0; i < rcdata.length; i++) {
+    dtx = 0;
     letter = rcdata[i][0];
     x = rcdata[i][5];
     y = rcdata[i][4];
@@ -678,17 +679,22 @@ function generateLayout() {
     hex_bg = green.toString(16);
 
     fontsize = 16;
-    if (letter.length > 1) {
-      fontsize = 10;
-    }
+    if (letter.length > 1) { fontsize = 10; }
+    if (letter.length > 4 && mode == "ergo") { fontsize = 9; }
 
     svg.append("rect").attr("x", x).attr("y", y)
       .attr("width", keywidth*w-gap).attr("height", w-gap).attr("rx", 4).attr("ry", 4)
       .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", "black")
       .attr("stroke-width", "1").attr("class", "draggable");
-    svg.append("text").attr("x", x + 15).attr("y", y + 19)
-      .attr("font-size", fontsize).attr("font-family", "Sans,Arial")
-      .attr("text-anchor", "middle").attr("class", "draggable legend").text(letter);
+    if (letter.length > 1 && mode != "ergo") {
+      svg.append("text").attr("x", x + 5).attr("y", y + 19)
+      .attr("font-size", fontsize).attr("font-family", "Roboto Mono")
+      .attr("text-anchor", "left").attr("class", "draggable legend").text(letter);
+    } else {
+      svg.append("text").attr("x", x + 15).attr("y", y + 19)
+        .attr("font-size", fontsize).attr("font-family", "Roboto Mono")
+        .attr("text-anchor", "middle").attr("class", "draggable legend").text(letter);
+    }
   }
   //
   if (m_total_word_effort == 0){
@@ -1046,7 +1052,7 @@ function measureWords() {
             // m_redirects[trigram] += count;
             if (ppfinger == 4 || prevfinger == 4 || finger == 4) {
             } else {
-              cat = "bad redirect"
+              cat = "weak redirect"
             }
           }
         }
@@ -1063,7 +1069,7 @@ function measureWords() {
             // m_redirects[trigram] += count;
             if (ppfinger == 7 || prevfinger == 7 || finger == 7) {
             } else {
-              cat = "bad redirect"
+              cat = "weak redirect"
             }
           }
         }
@@ -1283,7 +1289,7 @@ function generatePlots() {
       if (width > 200) { width = 200; }
       stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10)
         .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
+      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
       stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] / m_input_length)).toFixed(2) + "%");
       //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
       i += 1;
@@ -1345,7 +1351,7 @@ function generatePlots() {
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 17).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
+    stats.append("text").attr("x", x + 17).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
     stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
@@ -1368,7 +1374,7 @@ function generatePlots() {
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
     stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_lat_stretch[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
@@ -1404,7 +1410,7 @@ function generatePlots() {
     if (height > 180) { height = 180; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(bigram);
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
     stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
@@ -1423,9 +1429,9 @@ function generatePlots() {
   const trigram_desc = {
     "alt":"the hands used to type the trigram are either LRL or RLR",
     "alt sfs":"trigram is typed LRL or RLR but finger1 and finger3 are the same and type a different character",
-    "bigram roll in":"two of the characters in the trigram are typed with the same hand and the first is outside the second",
-    "bigram roll out":"two of the characters in the trigram are typed with the same hand and the first is inside the second",
-    "bad redirect":"a redirect but none of the fingers used are the index finger",
+    "bigram roll in":"two adjacent characters in the trigram are typed with the same hand and the first is outside the second",
+    "bigram roll out":"two adjacent characters in the trigram are typed with the same hand and the first is inside the second",
+    "weak redirect":"a redirect but none of the fingers used are the index finger",
     "redirect":"the three characters of the trigram are typed with the same hand and the direction changes",
     "roll out":"the three characters of the trigram are typed with the same hand and go from the inside to the outside",
     "roll in":"the three characters of the trigram are typed with the same hand and go from the outside to the inside",
@@ -1442,10 +1448,10 @@ function generatePlots() {
   for (var cat in m_trigram_count) {
     var height = 200 * m_trigram_count[cat] / sum;
     if (height > 200) { height = 200; }
-    stats.append("rect").attr("x", x + 88).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+    stats.append("rect").attr("x", x + 105).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(cat);
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
     stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_trigram_count[cat] / sum)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
@@ -1468,7 +1474,7 @@ function generatePlots() {
     var width = 0.03 * word.length * count;
     if (width > 100) {width = 100;}
     stats.append("rect").attr("x", x + 70).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(word);
     stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(word.length*count);
     i += 1;
     if (i > 10) { break; }
@@ -1492,7 +1498,7 @@ function generatePlots() {
     // var width = 25 * count;
     if (width > 100) {width = 100;}
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(len);
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(len);
     stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text((count/1000).toFixed(1));
     // stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(count);
     i += 1;
@@ -1513,7 +1519,7 @@ function generatePlots() {
     if (word.length > 3 && words[word] > 4){
       stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
         .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
+      stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(word);
       stats.append("text").attr("x", x + 165).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
       i += 1;
       if (i > 10) { break; }
