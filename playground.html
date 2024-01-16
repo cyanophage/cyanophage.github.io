@@ -64,7 +64,10 @@
   <body>
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
     <a href="index.html">back</a>
+    |
     <a onclick="openImportPopup()">import</a>
+    |
+    <a onclick="openCorpusPopup()">corpus</a>
     <div class="layout-svg" id = "svglayout"></div>
     <br>
     <div class="stats-svg" id = "svgstats"></div>
@@ -125,6 +128,14 @@
         <input type="text" id="importText" class="importText">
         <br>
         <button onclick="closeImportPopup()">OK</button>
+      </div>
+    </div>
+    <div id="corpusPopup" class="overlay">
+      <div class="popup2">
+        <p id="corpusMessage">Text</p>
+        <input type="text" id="corpusText" class="importText">
+        <br>
+        <button onclick="closeCorpusPopup()">OK</button>
       </div>
     </div>
 
