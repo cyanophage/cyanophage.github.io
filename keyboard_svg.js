@@ -18,7 +18,7 @@ var per;
 var max = 11.870939;
 var red = 0;
 var green = 128;
-var mode = "iso";
+var mode = "ergo";
 var needs_update = true;
 
 var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
@@ -132,10 +132,10 @@ var rcdata = [
   [".", 2, 9, 0.48452812, 0, 0, 1],
   ["/", 2, 10, 0.14315604, 0, 0, 1],
   ["\\", 2, 0, 0, 0, 0, 1],
-  ["tab", 0, 0, 0, 0, 0, 1.5],
-  ["ctrl", 1, 0, 0, 0, 0, 1.75],
+  ["shift", 3, 4, 0, 0, 0, 1],
+  ["tab", 0, 0, 0, 0, 0, 1],
+  ["ctrl", 1, 0, 0, 0, 0, 1],
   ["enter", 2, 11, 0, 0, 0, 1],
-  ["shift", 3, 4, 0, 0, 0, 1.25],
   ["mod", 3, 5, 0, 0, 0, 1],
   ["back", 3, 6, 0, 0, 0, 1],
   ["space", 3, 7, 0, 0, 0, 1],
@@ -215,6 +215,10 @@ function openImportPopup() {
   document.getElementById('importPopup').style.display = 'flex';
 }
 
+function openCorpusPopup() {
+  document.getElementById('corpusPopup').style.display = 'flex';
+}
+
 function containsOneCopyOfAllLetters(str) {
   str = str.toUpperCase();
   if (strCount(str,",")!=1) {return false;}
@@ -286,6 +290,48 @@ function closeImportPopup() {
   needs_update = true;
 }
 
+function closeCorpusPopup() {
+  var massive_string = document.getElementById('corpusText').value;
+  massive_string = massive_string.toLowerCase().replace(/\s+/g, ' ');
+  words = {};
+  if (massive_string.length == 0) {
+    document.getElementById('corpusPopup').style.display = 'none';
+    return;
+  }
+  if (massive_string.length < 1000) {
+    document.getElementById('corpusMessage').innerText = "You call that a corpus?";
+    return;
+  }
+  list = massive_string.split(" ")
+  list.forEach(element => {
+    console.log(element);
+    // i don't know what to do with these at the moment. just replacing them for now
+    element = element.replace("ä","a")
+    element = element.replace("å","a")
+    element = element.replace("à","a")
+    element = element.replace("â","a")
+    element = element.replace("ö","o")
+    element = element.replace("ó","o")
+    element = element.replace("ü","u")
+    element = element.replace("é","e")
+    element = element.replace("è","e")
+    element = element.replace("ç","e")
+    element = element.replace("æ","ae")
+    element = element.replace("ß","ss")
+    element = element.replace("ğ","g")
+    if (words[element]) {
+      words[element] += 1
+    } else {
+      words[element] = 1
+    }
+  });
+
+  document.getElementById('corpusPopup').style.display = 'none';
+  needs_update = true;
+  measureWords();
+  generatePlots();
+}
+
 function closePopup() {
   for (var row = 0; row < 3; row++){
     for (var col = 0; col < 12; col++){
@@ -339,15 +385,15 @@ function hideTooltip() {
 
 function setErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-  console.log("activateErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1],
-  rcdata[33] = ["shift", 3, 4, 0, 0, 0, 1],
-  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1],
-  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1],
-  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1],
-  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1],
-  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1],
-  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1],
+  console.log("setErgo");
+  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
+  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1]
+  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
+  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
+  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
+  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1]
+  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1]
+  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1]
   mode = "ergo"
   fingerAssignment = [
                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -364,14 +410,14 @@ function setErgo() {
 function activateErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("activateErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1],
-  rcdata[33] = ["shift", 3, 4, 0, 0, 0, 1],
-  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1],
-  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1],
-  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1],
-  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1],
-  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1],
-  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1],
+  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
+  // rcdata[33] = ["shift", 3, 4, 0, 0, 0, 1]
+  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
+  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
+  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
+  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1]
+  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1]
+  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1]
   mode = "ergo"
   fingerAssignment = [
                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -493,6 +539,9 @@ function exportLayout() {
   if (rcdata[33][0].length == 1) {
     str += rcdata[33][0];
   }
+  // } else if (rcdata[33][0] == "shift") {
+  //   str += "^";
+  // }
   return str;
 }
 
@@ -555,18 +604,6 @@ function getY(name, row, col) {
   return 10 + row * w
 }
 
-function colToX(col) {
-  dx = 55;
-  if (col > 5) {
-    dx = dx + 40;
-  }
-  return dx + col * w
-}
-
-function rowToY(row) {
-  return 10 + row * w
-}
-
 function getCol(letter) {
   for (let i = 0; i < rcdata.length; i++) {
     if (rcdata[i][0] === letter) {
@@ -609,8 +646,6 @@ function dist(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))/w;
 }
 
-// var xydata = []
-
 function generateCoords() {
   console.log("generateCoords")
   for (let i = 0; i < rcdata.length; i++) {
@@ -623,7 +658,7 @@ function generateLayout() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("generateLayout")
   svg.selectAll("*").remove();
-  if (mode == "iso" || mode == "ansi"){
+  if (mode == "iso" || mode == "ansi") {
     outlinewidth = 580;
   } else  {
     outlinewidth = 516;
@@ -876,7 +911,7 @@ function measureWords() {
       } else {
         hand = "R"
       }
-      if (col < 0) { break; } // this is the part that just skips numbers and other characters
+      if (col < 0) { continue; } // this is the part that just skips numbers and other characters
       if (!m_column_usage[col]) {
         m_column_usage[col] = 0;
       }
@@ -1094,9 +1129,6 @@ function measureWords() {
       if (rcdata[i][0] == letter) {
         rcdata[i][3] = 100 * m_letter_freq[letter] / sum
       }
-      // if (xydata[i][0] == letter) {
-      //   xydata[i][3] = 100 * m_letter_freq[letter] / sum
-      // }
     }
   }
   needs_update = false;
@@ -1609,14 +1641,13 @@ function makeDraggable(svg) {
 
         x = selectedElement.getAttributeNS(null, "x");
         y = selectedElement.getAttributeNS(null, "y");
-        // scan through xydata to find out which key are we closest to
+        // scan through rcdata to find out which key are we closest to
         closestdist = 9999;
         starti = -1;
         var keyname = ""
         for (let i = 0; i < rcdata.length; i++) {
           d = dist(x, y, rcdata[i][5], rcdata[i][4]);
           if (d < closestdist) {
-            // console.log("dist = "+d+"  "+rcdata[i][0]);
             closestdist = d;
             starti = i;
             keyname = rcdata[i][0];
@@ -1627,7 +1658,6 @@ function makeDraggable(svg) {
           selectedElement = null;
           return;
         }
-        // console.log("picked up "+xydata[starti][0]);
         offset = getMousePosition(evt);
         offset2 = getMousePosition(evt);
         offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
@@ -1664,7 +1694,6 @@ function makeDraggable(svg) {
       for (let i = 0; i < rcdata.length; i++) {
         d = dist(x, y, rcdata[i][5], rcdata[i][4]);
         if (d < closestdist) {
-          // console.log("dist = "+d+"  "+xydata[i][0]);
           closestdist = d;
           dropi = i;
         }
@@ -1695,7 +1724,6 @@ function makeDraggable(svg) {
 if (url_layout) {
   importLayout(url_layout)
 }
-// generateCoords();
 fetchEffort();
 fetchData();
 fetchDictionary();
