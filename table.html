@@ -781,6 +781,24 @@
         <td>18.01%</td>
       </tr>
     </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index.html#layout40">nordrassil</a></td>
+        <td>t</td>
+        <td>438.42</td>
+        <td>184.67</td>
+        <td>0.79%</td>
+        <td>0.48%</td>
+        <td>3.39%</td>
+        <td>0.82%</td>
+        <td>0.24%</td>
+        <td>0.05%</td>
+        <td>34.1%</td>
+        <td>1.29%</td>
+        <td>24.13%</td>
+        <td>15.92%</td>
+      </tr>
+    </tbody>
   </table>
 <script>  var up = -1;  function sortTable(columnIndex) {    up *= -1;    var table, rows, i, j, x, y, lowest;    table = document.getElementById("sortableTable");    rows = table.getElementsByTagName("tr");    for (i = 1; i < rows.length-1; i++) {      x = rows[i].getElementsByTagName("td")[columnIndex];      best = x;      lowest = i;      for (j = i+1; j < rows.length; j++) {        y = rows[j].getElementsByTagName("td")[columnIndex];        if (up > 0) {          if (parseFloat(y.innerHTML) < parseFloat(best.innerHTML)) {            lowest = j;            best = rows[j].getElementsByTagName("td")[columnIndex];          }        } else {          if (parseFloat(y.innerHTML) > parseFloat(best.innerHTML)) {            lowest = j;            best = rows[j].getElementsByTagName("td")[columnIndex];          }        }      }      rows[i].parentNode.insertBefore(rows[lowest], rows[i]);    }  }</script></body>
 </html>
