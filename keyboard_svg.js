@@ -1228,7 +1228,7 @@ function generatePlots() {
   ///////////////////////////////////////   F I N G E R   D I S T A N C E   //////////////////////////////////
   var x = 250;
   var y = 0;
-  var max = 196911;
+  var max = m_input_length / 5.110882176;
   sum = 0
   left = 0;
   right = 0;
