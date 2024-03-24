@@ -248,6 +248,10 @@ function closeImportPopup() {
   importString = importString.replace(/\s+/g, '');
   // if we import a string that is 30 characters long and doesn't contain - or ' then we add them in
   // but then what if we add a 30 character string that does contain - or '. well then we should add something else in
+  if (importString.length == 0) {
+    document.getElementById('importPopup').style.display = 'none';
+    return
+  }
   if (importString.length == 30){
     if (strCount(importString,"-")==0 && strCount(importString,"'")==0){
       importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + "'" + importString.slice(20);
@@ -303,8 +307,8 @@ function closeCorpusPopup() {
     return;
   }
   list = massive_string.split(" ")
+  var regex = /\d/;
   list.forEach(element => {
-    console.log(element);
     // i don't know what to do with these at the moment. just replacing them for now
     element = element.replace("ä","a")
     element = element.replace("å","a")
@@ -312,23 +316,36 @@ function closeCorpusPopup() {
     element = element.replace("â","a")
     element = element.replace("ö","o")
     element = element.replace("ó","o")
+    element = element.replace("í","i")
     element = element.replace("ü","u")
     element = element.replace("é","e")
     element = element.replace("è","e")
-    element = element.replace("ç","e")
+    element = element.replace("ç","c")
     element = element.replace("æ","ae")
     element = element.replace("ß","ss")
     element = element.replace("ğ","g")
-    if (words[element]) {
-      words[element] += 1
+    if (regex.test(element)){
+
     } else {
-      words[element] = 1
+      if (words[element]) {
+        words[element] += 1
+      } else {
+        words[element] = 1
+      }
     }
   });
+  dictionary = [];
+  count = 0;
+  for(var word in words) {
+    dictionary.push(word)
+    count += 1
+  }
+  // console.log(count);
 
   document.getElementById('corpusPopup').style.display = 'none';
   needs_update = true;
   measureWords();
+  measureDictionary();
   generatePlots();
 }
 
@@ -343,6 +360,57 @@ function closePopup() {
   needs_update = true;
   measureWords();
   generateLayout();
+}
+
+function copyEffortGridToClipboard() {
+  values = []
+  for (var row = 0; row < 3; row++){
+    for (var col = 0; col < 12; col++){
+      var name = "textInput-" + row + "-" + col
+      values.push(document.getElementById(name).value);
+    }
+  }
+  var str = values.join(",");
+
+  if (!navigator.clipboard) {
+    console.error("Clipboard API not supported");
+    return;
+  }
+
+  navigator.clipboard.writeText(str)
+  .then(
+    // console.log("copied!")
+  )
+  .catch(err => {
+    console.error("Failed to copy to clipboard contents:", err);
+  });
+
+}
+
+function pasteEffortGridFromClipboard() {
+  if (!navigator.clipboard) {
+    console.error("Clipboard API not supported");
+    return;
+  }
+  // Retrieve clipboard content
+  navigator.clipboard.readText()
+  .then(text => {
+    // console.log("Clipboard content:", text);
+    var numbersArray = text.split(",").map(Number);
+    if (numbersArray.length != 36) {
+      return
+    }
+
+    for (var row = 0; row < 3; row++){
+      for (var col = 0; col < 12; col++){
+        var name = "textInput-" + row + "-" + col
+        document.getElementById(name).value = numbersArray[row * 12 + col]
+      }
+    }
+  })
+  .catch(err => {
+    console.error("Failed to read clipboard contents:", err);
+  });
 }
 
 function getEffort(row, column){
@@ -698,7 +766,7 @@ function generateLayout() {
   }
   //
   if (m_total_word_effort == 0){
-    console.log("m_total_word_effort == 0")
+    // console.log("m_total_word_effort == 0")
     measureDictionary();
     measureWords();
   }
@@ -889,7 +957,9 @@ function measureWords() {
   var col,row,hand,prevhand;
   var m_effort_per_letter = {};
   var m_effort_per_word = {};
+  var word_count = 0
   for (var word in words) {
+    word_count += 1
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
     var count = words[word];
     // if (count < 200){continue;}
@@ -1126,6 +1196,7 @@ function measureWords() {
     }
     samehandcount[samehand.length] += count
   }
+  // console.log("word count "+word_count)
   var sum = 0;
   for (var letter in m_letter_freq) {
     sum += m_letter_freq[letter]
@@ -1467,15 +1538,19 @@ function generatePlots() {
   keyValueArray.sort((a, b) => b[1]*b[0].length - a[1]*a[0].length);
   samehandstrings = Object.fromEntries(keyValueArray);
 
+  scale = m_input_length / 33546433.33 // weird values here to keep website values the same while using new scale system
+  // console.log("input length: "+m_input_length)
+  // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings")
   var i = 0
   for (var word in samehandstrings) {
     var count = samehandstrings[word];
-    var width = 0.03 * word.length * count;
+    // console.log(word + " " + count)
+    var width = scale * word.length * count;
     if (width > 100) {width = 100;}
     stats.append("rect").attr("x", x + 70).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(word);
-    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(word.length*count);
+    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word.length*count)).toFixed(0));//
     i += 1;
     if (i > 10) { break; }
   }
@@ -1489,17 +1564,17 @@ function generatePlots() {
   // var keyValueArray = Object.entries(samehandcount);
   // keyValueArray.sort((a, b) => b - a);
   // samehandcount = Object.fromEntries(keyValueArray);
-
+  scale = m_input_length/7188521428.57142857142857142
+  // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Count")
   var i = 0
   for (var len in samehandcount) {
     var count = samehandcount[len];
-    var width = 0.00014 * count;
-    // var width = 25 * count;
+    var width = scale * count;
     if (width > 100) {width = 100;}
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(len);
-    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text((count/1000).toFixed(1));
+    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text((scale*7.14285714285714285714285*count).toFixed(1));
     // stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(count);
     i += 1;
     if (i > 10) { break; }
