@@ -991,7 +991,7 @@ function measureWords() {
       if (!m_column_usage[col]) {
         m_column_usage[col] = 0;
       }
-      m_column_usage[col] += count;
+      if (row < 3){ m_column_usage[col] += count;}
       // finger usage //
       // effort
       if (!m_effort_per_letter[char]){
