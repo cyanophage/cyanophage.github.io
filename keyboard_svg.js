@@ -972,7 +972,7 @@ function updateRcData(lan) {
   } else if (lan == 'dutch') {
     letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
   } else if (lan == 'french') {
-    letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ê', 'à']
+    letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
   } else if (lan == 'swedish') {
     letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
   } else if (lan == 'spanish') {
