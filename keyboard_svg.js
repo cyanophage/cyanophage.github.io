@@ -87,6 +87,27 @@ function fetchEffort(){
     .catch(error => console.error('Error loading effort JSON file:', error));
 }
 
+function selectLanguage(lan) {
+  var word_list = 'words-'+lan+'.json'; // words-german.json
+  console.log(word_list)
+  fetch(word_list)
+    .then(response => response.json())
+    .then(data => {
+      words = data; // Assign data to the global variable
+      needs_update = true;
+      console.log("fetchData");
+      dataloaded = true;
+      updateRcData(lan);
+      setErgo();
+      getDictionaryFromWords();
+      measureDictionary();
+      measureWords();
+      generateLayout();
+      generatePlots();
+    })
+    .catch(error => console.error('Error loading JSON file:', error));
+}
+
 makeDraggable(svg.node());
 
 // col         0  1  2  3  4  5  6  7  8  9 10 11
@@ -312,6 +333,7 @@ function closeCorpusPopup() {
     // i don't know what to do with these at the moment. just replacing them for now
     element = element.replace("ä","a")
     element = element.replace("å","a")
+    element = element.replace("á","a")
     element = element.replace("à","a")
     element = element.replace("â","a")
     element = element.replace("ö","o")
@@ -922,6 +944,52 @@ function measureDictionary() {
   // console.log("count "+count);
 }
 
+function getDictionaryFromWords() {
+  dictionary = [];
+  for (var word in words) {
+    if (words[word] > 10){
+      dictionary.push(word);
+    }
+  }
+}
+
+function updateRcData(lan) {
+  // what are the 33 letters ?
+  var letters = []
+  for (var word in words) {
+    if (letters.length>=32){
+      break;
+    }
+    var wordLetters = word.split(""); // Split the word into individual letters
+    for (var i = 0; i < wordLetters.length; i++) {
+      if (letters.indexOf(wordLetters[i]) === -1) {
+        letters.push(wordLetters[i]); // Add letter to the list if not already present
+      }
+    }
+  }
+  if (lan == 'german'){
+    letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
+  } else if (lan == 'dutch') {
+    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+  } else if (lan == 'french') {
+    letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ê', 'à']
+  } else if (lan == 'swedish') {
+    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
+  } else if (lan == 'spanish') {
+    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '\'', 'z','x', 'c', 'v',  'b', 'n', 'm',',', '.',  '/', '\\']
+  } else if (lan == 'portuguese') {
+    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+  } else if (lan == 'norweigan') {
+    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', 'z', 'x','c','v', 'b', 'm', 'n', '.', ',',  '\'', '\\']
+  } else if (lan == 'finnish') {
+    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\\']
+  }
+  console.log(letters+"  "+letters.length)
+  for (var i = 0; i < letters.length; i++){
+    rcdata[i][0] = letters[i];
+  }
+}
+
 function measureWords() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("measureWords");
@@ -959,10 +1027,10 @@ function measureWords() {
   var m_effort_per_word = {};
   var word_count = 0
   for (var word in words) {
+    if (word_count > 40000){break;}
     word_count += 1
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
     var count = words[word];
-    // if (count < 200){continue;}
     m_input_length += count * (word.length + 1);
 
     if (word_effort[word]){
@@ -1538,7 +1606,7 @@ function generatePlots() {
   keyValueArray.sort((a, b) => b[1]*b[0].length - a[1]*a[0].length);
   samehandstrings = Object.fromEntries(keyValueArray);
 
-  scale = m_input_length / 33546433.33 // weird values here to keep website values the same while using new scale system
+  scale = 30191.79 / m_input_length
   // console.log("input length: "+m_input_length)
   // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings")
@@ -1564,7 +1632,8 @@ function generatePlots() {
   // var keyValueArray = Object.entries(samehandcount);
   // keyValueArray.sort((a, b) => b - a);
   // samehandcount = Object.fromEntries(keyValueArray);
-  scale = m_input_length/7188521428.57142857142857142
+  scale = 140.89502 / m_input_length
+  // console.log("input length: "+m_input_length)
   // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Count")
   var i = 0

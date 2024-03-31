@@ -7,7 +7,9 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
     <style>
       body {
-        background-color:#1b1c1f; color: #999;font-family: Arial, sans-serif;
+        background-color:#1b1c1f;
+        color: #999;
+        font-family: Arial, sans-serif;
       }
       .static {
         cursor: not-allowed;
@@ -60,6 +62,61 @@
         font-family:Arial, Helvetica, sans-serif
       }
       #tooltip {background:#333333; color:#cccccc; border: 1px solid #cccccc; padding:5px;}
+
+      /* Resetting default styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Styling the dropdown container */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      /* Styling the dropdown button */
+      .dropbtn {
+        background-color: #1b1c1f;
+        color: #999999;
+        font-family: Arial, sans-serif;
+        padding: 1px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        border-radius: 0px;
+      }
+
+      /* Styling the dropdown content (hidden by default) */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+
+        background-color: #dddddd;
+        min-width: 160px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.75);
+        z-index: 1;
+      }
+
+      /* Styling the links inside the dropdown */
+      .dropdown-content a {
+        color: black;
+        padding: 8px 8px;
+        text-decoration: none;
+        display: block;
+      }
+
+      /* Change color of dropdown links on hover */
+      .dropdown-content a:hover {
+        background-color: #bbb;
+      }
+
+      /* Show the dropdown content when hovering over dropdown container */
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
       </style>
   </head>
   <body>
@@ -69,6 +126,20 @@
     <a onclick="openImportPopup()">import</a>
     |
     <a onclick="openCorpusPopup()">corpus</a>
+    |
+    <div class="dropdown">
+      <button class="dropbtn">Language</button>
+      <div class="dropdown-content">
+        <a onclick="selectLanguage('dutch')">Dutch</a>
+        <a onclick="selectLanguage('finnish')">Finnish</a>
+        <a onclick="selectLanguage('french')">French</a>
+        <a onclick="selectLanguage('german')">German</a>
+        <a onclick="selectLanguage('norweigan')">Norweigan</a>
+        <a onclick="selectLanguage('portuguese')">Portuguese</a>
+        <a onclick="selectLanguage('spanish')">Spanish</a>
+        <a onclick="selectLanguage('swedish')">Swedish</a>
+      </div>
+    </div>
     <div class="layout-svg" id = "svglayout"></div>
     <br>
     <div class="stats-svg" id = "svgstats"></div>
