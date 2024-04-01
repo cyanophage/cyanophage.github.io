@@ -44,6 +44,7 @@ function fetchData(){
       needs_update = true;
       console.log("fetchData");
       dataloaded = true;
+      needs_update = true;
       setErgo();
       measureDictionary();
       measureWords();
@@ -63,6 +64,7 @@ function fetchDictionary(){
       }
       console.log("fetchDictionary");
       dictionaryloaded = true;
+      needs_update = true;
       setErgo();
       measureDictionary();
       measureWords();
@@ -71,6 +73,7 @@ function fetchDictionary(){
     })
     .catch(error => console.error('Error loading dictionary JSON file:', error));
 }
+
 function fetchEffort(){
   fetch(effort_url)
     .then(response => response.json())
@@ -88,7 +91,18 @@ function fetchEffort(){
 }
 
 function selectLanguage(lan) {
+  document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+  if (lan == "english"){
+    console.log("============ ENGLISH ============")
+    updateRcData(lan);
+    dataloaded = false
+    dictionaryloaded = false
+    fetchData()
+    fetchDictionary()
+    return;
+  }
   var word_list = 'words-'+lan+'.json'; // words-german.json
+  console.log("============ "+lan.toUpperCase()+" ============")
   console.log(word_list)
   fetch(word_list)
     .then(response => response.json())
@@ -258,6 +272,10 @@ function containsOneCopyOfAllLetters(str) {
   // Check if the string has exactly one copy of each letter
   const uniqueLetters = new Set(str);
   return uniqueLetters.size === 26; //wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
+}
+
+function deepCopy(arr) {
+  return arr.map(item => Array.isArray(item) ? deepCopy(item) : item);
 }
 
 function strCount(str,char) {
@@ -600,13 +618,33 @@ function activateAnsi() {
 function importLayout(layout) {
   // 01234567890123456789012345678901
   // wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
+
+  // make a copy of rcdata
+  rccopy = deepCopy(rcdata)
+  // insert the layout into it with a for loop
   for (let i = 0; i < 32; i++) {
     if (layout.charAt(i) == "^"){
-      rcdata[i][0] = "shift"
+      rccopy[i][0] = "shift"
     } else {
-      rcdata[i][0] = layout.charAt(i);
+      rccopy[i][0] = layout.charAt(i);
     }
   }
+  // rearrange the items in the list so that q is in position 0, w is in pos 1, e is in pos 2 etc
+  for (let i = 0; i < 32; i++) {
+    var char = rcdata[i][0]
+    // look for char in rccopy
+    var f = -1;
+    for (let j = 0; j < 32; j++) {
+      if (rccopy[j][0] == char) {
+        f = j;
+      }
+    }
+    indices = [1,2,4,5,6]
+    for (let x = 0; x < indices.length; x++){
+      rcdata[i][x] = rccopy[f][x]
+    }
+  }
+
   if (layout.length == 33 && mode == "ergo") {
     // console.log("layout is 33 long") // jgmpv;.'*/zrsntb,haoiqxcldw-fukye // xpdmq=you,-snthvgcaei;fbkljzw'/.r
     rcdata[33][0] = layout.charAt(32);
@@ -855,7 +893,7 @@ var m_total_word_effort = 0;
 // var m_simple_effort = {};
 var finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
 
-var word_effort = {}
+var word_effort = Object.create(null)
 var samehandstrings = {};
 var samehandcount = {};
 
@@ -864,7 +902,7 @@ function measureDictionary() {
   console.log("measureDictionary");
   // console.log("measuring effort of each word in the dictionary");
   var total=0, word, char1, char2, col1, row1, col2, row2, hand1, hand2, samehand,count = 0;
-  word_effort = {}
+  word_effort = Object.create(null)
   for(var wordi in dictionary) {
     count += 1;
     total = 0.0;
@@ -940,12 +978,15 @@ function measureDictionary() {
         }
       }
     }
+    if (isNaN(total)){
+      console.log(word + " gives NaN for effort")
+    }
     word_effort[word] = total/10;
   }
-  // console.log("count "+count);
 }
 
 function getDictionaryFromWords() {
+  console.log("getDictionaryFromWords");
   dictionary = [];
   for (var word in words) {
     if (words[word] > 100) {
@@ -969,24 +1010,68 @@ function updateRcData(lan) {
     }
   }
   if (lan == 'german'){
-    letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
+    // letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
+    rcdata[10][0] = 'ü'
+    rcdata[20][0] = 'ö'
+    rcdata[21][0] = '\''
+    rcdata[31][0] = 'ä'
+    rcdata[32][0] = 'ß'
+  } else if (lan == 'english') {
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+    rcdata[10][0] = '-'
+    rcdata[20][0] = ';'
+    rcdata[21][0] = '\''
+    rcdata[31][0] = '/'
+    rcdata[32][0] = '\\'
   } else if (lan == 'dutch') {
-    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+    rcdata[10][0] = '-'
+    rcdata[20][0] = ';'
+    rcdata[21][0] = '\''
+    rcdata[31][0] = '/'
+    rcdata[32][0] = '\\'
   } else if (lan == 'french') {
-    letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
+    // letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
+    rcdata[10][0] = 'é'
+    rcdata[20][0] = 'è'
+    rcdata[21][0] = '\''
+    rcdata[31][0] = 'ç'
+    rcdata[32][0] = 'à'
   } else if (lan == 'swedish') {
-    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
+    rcdata[10][0] = 'å'
+    rcdata[20][0] = 'ö'
+    rcdata[21][0] = 'ä'
+    rcdata[31][0] = '\''
+    rcdata[32][0] = '\\'
   } else if (lan == 'spanish') {
-    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '\'', 'z','x', 'c', 'v',  'b', 'n', 'm',',', '.',  '/', '\\']
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '\'', 'z','x', 'c', 'v',  'b', 'n', 'm',',', '.',  '/', '\\']
+    rcdata[10][0] = '-'
+    rcdata[20][0] = 'ñ'
+    rcdata[21][0] = '\''
+    rcdata[31][0] = '/'
+    rcdata[32][0] = '\\'
   } else if (lan == 'portuguese') {
-    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+    rcdata[10][0] = '-'
+    rcdata[20][0] = 'ç'
+    rcdata[21][0] = '\''
+    rcdata[31][0] = '/'
+    rcdata[32][0] = '\\'
   } else if (lan == 'norweigan') {
-    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', 'z', 'x','c','v', 'b', 'm', 'n', '.', ',',  '\'', '\\']
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', 'z', 'x','c','v', 'b', 'm', 'n', '.', ',',  '\'', '\\']
+    rcdata[10][0] = 'å'
+    rcdata[20][0] = 'ø'
+    rcdata[21][0] = 'æ'
+    rcdata[31][0] = '\''
+    rcdata[32][0] = '\\'
   } else if (lan == 'finnish') {
-    letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\\']
-  }
-  for (var i = 0; i < letters.length; i++){
-    rcdata[i][0] = letters[i];
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', '\\']
+    rcdata[10][0] = 'å'
+    rcdata[20][0] = 'ö'
+    rcdata[21][0] = 'ä'
+    rcdata[31][0] = '\''
+    rcdata[32][0] = '\\'
   }
 }
 
@@ -1264,6 +1349,8 @@ function measureWords() {
     }
     samehandcount[samehand.length] += count
   }
+  var scale = 1006393/m_input_length;
+  m_total_word_effort *= scale;
   // console.log("word count "+word_count)
   var sum = 0;
   for (var letter in m_letter_freq) {
@@ -1849,13 +1936,13 @@ function makeDraggable(svg) {
         }
       }
 
-      // swap name and freq in rcdata
-      tmp = rcdata[starti][0];
-      rcdata[starti][0] = rcdata[dropi][0];
-      rcdata[dropi][0] = tmp;
-      tmp = rcdata[starti][3];
-      rcdata[starti][3] = rcdata[dropi][3];
-      rcdata[dropi][3] = tmp;
+      indices = [1,2,4,5,6]
+      for (let i = 0; i < indices.length; i++){
+        var k = indices[i];
+        tmp = rcdata[starti][k];
+        rcdata[starti][k] = rcdata[dropi][k];
+        rcdata[dropi][k] = tmp;
+      }
 
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
