@@ -17,13 +17,24 @@ var fontsize;
 var per;
 var max = 11.870939;
 var red = 0;
+var scroll_amount = 0;
 var green = 128;
 var mode = "ergo";
 var needs_update = true;
+function scroll(event){
+  event.preventDefault();
+  scroll_amount += event.deltaY/125;
+  if (scroll_amount < 0){scroll_amount = 0;}
+  generatePlots();
+}
 
 var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
 
 var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("height", 600)
+
+
+const el = document.querySelector("#svgstats");
+el.onwheel = scroll;
 
 const word_list_url = 'word_list.json';
 const dictionary_url = 'dictionary.json';
@@ -1509,12 +1520,16 @@ function generatePlots() {
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
     // stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
 
-    var i = 0
+    var i = 0;
+    var t = scroll_amount;
     for (var bigram in m_same_finger) {
+      if (t > 0){
+        t -= 1;
+        continue;
+      }
       var width = 18000 * m_same_finger[bigram] / m_input_length;
       if (width > 200) { width = 200; }
-      stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10)
-        .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+      stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
       stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] / m_input_length)).toFixed(2) + "%");
       //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
@@ -1572,7 +1587,12 @@ function generatePlots() {
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle()")
   var i = 0;
+  var t = scroll_amount;
   for (var bigram in tmp) {
+    if (t > 0){
+      t -= 1;
+      continue;
+    }
     var height = 36000 * tmp[bigram] / m_input_length;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
@@ -1594,8 +1614,13 @@ function generatePlots() {
     sum += m_lat_stretch[bigram] / m_input_length;
   }
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
-  var i = 0
+  var i = 0;
+  var t = scroll_amount;
   for (var bigram in m_lat_stretch) {
+    if (t > 0){
+      t -= 1;
+      continue;
+    }
     var height = 10000 * m_lat_stretch[bigram] / m_input_length;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
@@ -1631,7 +1656,12 @@ function generatePlots() {
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle()")
   var i = 0;
+  var t = scroll_amount;
   for (var bigram in tmp) {
+    if (t > 0){
+      t -= 1;
+      continue;
+    }
     var height = 36000 * tmp[bigram] / m_input_length;
     if (height > 180) { height = 180; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
