@@ -29,7 +29,7 @@ const word_list_url = 'word_list.json';
 const dictionary_url = 'dictionary.json';
 const effort_url = 'bigram_effort.json';
 let words = {};
-let dictionary = {};
+let dictionary = [];
 let bigram_effort = {};
 
 // Fetch the JSON file
@@ -100,6 +100,7 @@ function selectLanguage(lan) {
       updateRcData(lan);
       setErgo();
       getDictionaryFromWords();
+      dictionaryloaded = true;
       measureDictionary();
       measureWords();
       generateLayout();
@@ -863,6 +864,7 @@ function measureDictionary() {
   console.log("measureDictionary");
   // console.log("measuring effort of each word in the dictionary");
   var total=0, word, char1, char2, col1, row1, col2, row2, hand1, hand2, samehand,count = 0;
+  word_effort = {}
   for(var wordi in dictionary) {
     count += 1;
     total = 0.0;
@@ -938,7 +940,6 @@ function measureDictionary() {
         }
       }
     }
-
     word_effort[word] = total/10;
   }
   // console.log("count "+count);
@@ -947,7 +948,7 @@ function measureDictionary() {
 function getDictionaryFromWords() {
   dictionary = [];
   for (var word in words) {
-    if (words[word] > 10){
+    if (words[word] > 100) {
       dictionary.push(word);
     }
   }
@@ -984,7 +985,6 @@ function updateRcData(lan) {
   } else if (lan == 'finnish') {
     letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\\']
   }
-  console.log(letters+"  "+letters.length)
   for (var i = 0; i < letters.length; i++){
     rcdata[i][0] = letters[i];
   }
