@@ -114,7 +114,6 @@ function selectLanguage(lan) {
   }
   var word_list = 'words-'+lan+'.json'; // words-german.json
   console.log("============ "+lan.toUpperCase()+" ============")
-  console.log(word_list)
   fetch(word_list)
     .then(response => response.json())
     .then(data => {
@@ -144,42 +143,50 @@ var fingerAssignment = [
              ]
 // var hand = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
 
-// char, row, col, freq, y, x, width
+// TODO:
+// ok this needs some thinking
+// one of the problems is that some layouts have shift and some don't. i think the solve for this is to treat shift just like any other key. use it as a ^ all the time. just draw it as a shift in the rendering step
+// another problem is that not all layouts defined in index have all the same chars. this causes havoc with the rcdata/rccopy thingy. the key thing is that positions 10 20 21 32 can be used for other letters eg áéå
+// another problem is that iso and ansi have shifts but some layouts don't. i need to make sure that if the layout doesn't have shift the you can't convert it to iso.
+// also make sure that shift is put in the right place when you go from ISO back to ERGO. and that the setErgo() function doesn't move shift if the layout doesn't have one.
+//
+
+// char, row, col, freq, y, x, width, keyname
 var rcdata = [
-  ["q", 0, 1, 0.06607202, 0, 0, 1],
-  ["w", 0, 2, 2.775025, 0, 0, 1],
-  ["e", 0, 3, 11.870939, 0, 0, 1],
-  ["r", 0, 4, 4.988437, 0, 0, 1],
-  ["t", 0, 5, 9.547406, 0, 0, 1],
-  ["y", 0, 6, 1.7949564, 0, 0, 1],
-  ["u", 0, 7, 2.7419887, 0, 0, 1],
-  ["i", 0, 8, 6.177734, 0, 0, 1],
-  ["o", 0, 9, 7.6643543, 0, 0, 1],
-  ["p", 0, 10, 1.4425724, 0, 0, 1],
-  ["-", 0, 11, 0.2753001, 0, 0, 1],
-  ["a", 1, 1, 7.466138, 0, 0, 1],
-  ["s", 1, 2, 5.5720735, 0, 0, 1],
-  ["d", 1, 3, 4.2616453, 0, 0, 1],
-  ["f", 1, 4, 2.0482326, 0, 0, 1],
-  ["g", 1, 5, 2.2244246, 0, 0, 1],
-  ["h", 1, 6, 6.519106, 0, 0, 1],
-  ["j", 1, 7, 0.06607202, 0, 0, 1],
-  ["k", 1, 8, 1.0571523, 0, 0, 1],
-  ["l", 1, 9, 4.6030173, 0, 0, 1],
-  [";", 1, 10, 0.4184561, 0, 0, 1],
-  ["'", 1, 11, 0.3523841, 0, 0, 1],
-  ["z", 2, 1, 0.04404801, 0, 0, 1],
-  ["x", 2, 2, 0.07708402, 0, 0, 1],
-  ["c", 2, 3, 1.8830525, 0, 0, 1],
-  ["v", 2, 4, 0.7488162, 0, 0, 1],
-  ["b", 2, 5, 1.5526924, 0, 0, 1],
-  ["n", 2, 6, 6.1446977, 0, 0, 1],
-  ["m", 2, 7, 1.5857284, 0, 0, 1],
-  [",", 2, 8, 1.9601365, 0, 0, 1],
-  [".", 2, 9, 0.48452812, 0, 0, 1],
-  ["/", 2, 10, 0.14315604, 0, 0, 1],
-  ["\\", 2, 0, 0, 0, 0, 1],
-  ["shift", 3, 4, 0, 0, 0, 1],
+  ["q", 0, 1, 0.06607202, 0, 0, 1, 0],
+  ["w", 0, 2, 2.775025, 0, 0, 1, 1],
+  ["e", 0, 3, 11.870939, 0, 0, 1, 2],
+  ["r", 0, 4, 4.988437, 0, 0, 1, 3],
+  ["t", 0, 5, 9.547406, 0, 0, 1, 4],
+  ["y", 0, 6, 1.7949564, 0, 0, 1, 5],
+  ["u", 0, 7, 2.7419887, 0, 0, 1, 6],
+  ["i", 0, 8, 6.177734, 0, 0, 1, 7],
+  ["o", 0, 9, 7.6643543, 0, 0, 1, 8],
+  ["p", 0, 10, 1.4425724, 0, 0, 1, 9],
+  ["-", 0, 11, 0.2753001, 0, 0, 1, 10],
+  ["a", 1, 1, 7.466138, 0, 0, 1, 11],
+  ["s", 1, 2, 5.5720735, 0, 0, 1, 12],
+  ["d", 1, 3, 4.2616453, 0, 0, 1, 13],
+  ["f", 1, 4, 2.0482326, 0, 0, 1, 14],
+  ["g", 1, 5, 2.2244246, 0, 0, 1, 15],
+  ["h", 1, 6, 6.519106, 0, 0, 1, 16],
+  ["j", 1, 7, 0.06607202, 0, 0, 1, 17],
+  ["k", 1, 8, 1.0571523, 0, 0, 1, 18],
+  ["l", 1, 9, 4.6030173, 0, 0, 1, 19],
+  [";", 1, 10, 0.4184561, 0, 0, 1, 20],
+  ["'", 1, 11, 0.3523841, 0, 0, 1, 21],
+  ["z", 2, 1, 0.04404801, 0, 0, 1, 22],
+  ["x", 2, 2, 0.07708402, 0, 0, 1, 23],
+  ["c", 2, 3, 1.8830525, 0, 0, 1, 24],
+  ["v", 2, 4, 0.7488162, 0, 0, 1, 25],
+  ["b", 2, 5, 1.5526924, 0, 0, 1, 26],
+  ["n", 2, 6, 6.1446977, 0, 0, 1, 27],
+  ["m", 2, 7, 1.5857284, 0, 0, 1, 28],
+  [",", 2, 8, 1.9601365, 0, 0, 1, 29],
+  [".", 2, 9, 0.48452812, 0, 0, 1, 30],
+  ["/", 2, 10, 0.14315604, 0, 0, 1, 31],
+  ["\\", 2, 0, 0, 0, 0, 1, 32],
+  ["shift", 3, 4, 0, 0, 0, 1, 33],
   ["tab", 0, 0, 0, 0, 0, 1],
   ["ctrl", 1, 0, 0, 0, 0, 1],
   ["enter", 2, 11, 0, 0, 0, 1],
@@ -303,31 +310,34 @@ function closeImportPopup() {
     document.getElementById('importPopup').style.display = 'none';
     return
   }
-  if (importString.length == 30){
+  if (importString.length == 30){ // probably cmini
     if (strCount(importString,"-")==0 && strCount(importString,"'")==0){
-      importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + "'" + importString.slice(20);
+      importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + "'" + importString.slice(20) + "\\^";
     } else if (strCount(importString,"-")==0 && strCount(importString,";")==0 ) {
-      importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + ";" + importString.slice(20);
+      importString = importString.slice(0, 10) + "-" + importString.slice(10,20) + ";" + importString.slice(20) + "\\^";
     } else if (strCount(importString,"'")==0 && strCount(importString,";")==0 ) {
-      importString = importString.slice(0, 10) + ";" + importString.slice(10,20) + "'" + importString.slice(20);
+      importString = importString.slice(0, 10) + ";" + importString.slice(10,20) + "'" + importString.slice(20) + "\\^";
     } else if (strCount(importString,"'")==0 && strCount(importString,"/")==0 ) {
-      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + "'" + importString.slice(20);
+      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + "'" + importString.slice(20) + "\\^";
     } else if (strCount(importString,";")==0 && strCount(importString,"/")==0 ) {
-      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + ";" + importString.slice(20);
+      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + ";" + importString.slice(20) + "\\^";
     } else if (strCount(importString,";")==0 && strCount(importString,"'")==0 ) {
-      importString = importString.slice(0, 10) + ";" + importString.slice(10,20) + "'" + importString.slice(20);
+      importString = importString.slice(0, 10) + ";" + importString.slice(10,20) + "'" + importString.slice(20) + "\\^";
     } else if (strCount(importString,"/")==0 && strCount(importString,"-")==0 ) {
-      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + "-" + importString.slice(20);
+      importString = importString.slice(0, 10) + "/" + importString.slice(10,20) + "-" + importString.slice(20) + "\\^";
     } else {
-      importString = importString.slice(0, 10) + "+" + importString.slice(10,20) + "*" + importString.slice(20);
+      importString = importString.slice(0, 10) + "+" + importString.slice(10,20) + "*" + importString.slice(20) + "\\^";
     }
   }
-  if (containsOneCopyOfAllLetters(importString)){
+  if (containsOneCopyOfAllLetters(importString)){ // fwhmzqouybjsnrtk-aeicxvpld/;,'.g\^
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
-    } else if (importString.length == 32 || importString.length == 33) {
+    } else if (importString.length == 33 || importString.length == 34) {
       needs_update = true;
       importLayout(importString);
+      var queryParams = new URLSearchParams(window.location.search);
+      queryParams.set("layout", exportLayout());
+      queryParams.set("mode",mode)
       generateCoords();
       measureDictionary();
       measureWords();
@@ -558,7 +568,13 @@ function activateErgo() {
 
 function activateIso(anglemod) {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-  if (rcdata[33][0] == "shift") {
+  hasshift = false
+  for(let i = 0; i < 34; i++){
+    if (rcdata[i][0] == "shift" || rcdata[i][0] == "^") {
+      hasshift = true
+    }
+  }
+  if (hasshift == true) {
     rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
     rcdata[33] = ["shift", 2, 0, 0, 0, 0, 1.25]
     rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5]
@@ -627,41 +643,37 @@ function activateAnsi() {
 }
 
 function importLayout(layout) {
+  var decodedString = decodeURIComponent(layout);
+  console.log("importing: "+decodedString)
+  layout = decodedString
   // 01234567890123456789012345678901
   // wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
-
-  // make a copy of rcdata
-  rccopy = deepCopy(rcdata)
-  // insert the layout into it with a for loop
-  for (let i = 0; i < 32; i++) {
-    if (layout.charAt(i) == "^"){
-      rccopy[i][0] = "shift"
+  for (let i = 0; i < 34; i++) {
+    if (layout.charAt(i) == "^") {
+      rcdata[i][0] = "shift"
     } else {
-      rccopy[i][0] = layout.charAt(i);
+      rcdata[i][0] = layout.charAt(i);
     }
+    rcdata[i][7] = 0
   }
-  // rearrange the items in the list so that q is in position 0, w is in pos 1, e is in pos 2 etc
-  for (let i = 0; i < 32; i++) {
-    var char = rcdata[i][0]
-    // look for char in rccopy
-    var f = -1;
-    for (let j = 0; j < 32; j++) {
-      if (rccopy[j][0] == char) {
-        f = j;
-      }
+  for (let i = 0; i < 34; i++) {
+    if (rcdata[i][0] == "-") {
+      rcdata[i][7] = 10
     }
-    indices = [1,2,4,5,6]
-    for (let x = 0; x < indices.length; x++){
-      rcdata[i][x] = rccopy[f][x]
+    if (rcdata[i][0] == "/") {
+      rcdata[i][7] = 31
+    }
+    if (rcdata[i][0] == ";") {
+      rcdata[i][7] = 20
+    }
+    if (rcdata[i][0] == "\\") {
+      rcdata[i][7] = 32
+    }
+    if (rcdata[i][0] == "\'") {
+      rcdata[i][7] = 21
     }
   }
 
-  if (layout.length == 33 && mode == "ergo") {
-    // console.log("layout is 33 long") // jgmpv;.'*/zrsntb,haoiqxcldw-fukye // xpdmq=you,-snthvgcaei;fbkljzw'/.r
-    rcdata[33][0] = layout.charAt(32);
-  } else {
-    // console.log("this keyboard doesn't have thumb keys")
-  }
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
@@ -1006,6 +1018,16 @@ function getDictionaryFromWords() {
   }
 }
 
+function getIndexOfKey(name){
+  var x = 0;
+  for (var i = 0; i < 34; i++) {
+    if (rcdata[i][7] == name) {
+      x = i;
+    }
+  }
+  return x;
+}
+
 function updateRcData(lan) {
   // what are the 33 letters ?
   var letters = []
@@ -1020,69 +1042,72 @@ function updateRcData(lan) {
       }
     }
   }
+  // my new idea for fixing this issue still didn't work
+  // the problem is that the keys that I want to change when switching languages aren't in a consistent position in the grid, or at a consistent position in the array,
+  // or have a consistent letter on them. Even the index I added to try to make them consistent didn't work because of the way the import process works
   if (lan == 'german'){
     // letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
-    rcdata[10][0] = 'ü'
-    rcdata[20][0] = 'ö'
-    rcdata[21][0] = '\''
-    rcdata[31][0] = 'ä'
-    rcdata[32][0] = 'ß'
+    rcdata[getIndexOfKey(10)][0] = 'ü'
+    rcdata[getIndexOfKey(20)][0] = 'ö'
+    rcdata[getIndexOfKey(21)][0] = '\''
+    rcdata[getIndexOfKey(31)][0] = 'ä'
+    rcdata[getIndexOfKey(32)][0] = 'ß'
   } else if (lan == 'english') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[10][0] = '-'
-    rcdata[20][0] = ';'
-    rcdata[21][0] = '\''
-    rcdata[31][0] = '/'
-    rcdata[32][0] = '\\'
+    rcdata[getIndexOfKey(10)][0] = '-'
+    rcdata[getIndexOfKey(20)][0] = ';'
+    rcdata[getIndexOfKey(21)][0] = '\''
+    rcdata[getIndexOfKey(31)][0] = '/'
+    rcdata[getIndexOfKey(32)][0] = '\\'
   } else if (lan == 'dutch') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[10][0] = '-'
-    rcdata[20][0] = ';'
-    rcdata[21][0] = '\''
-    rcdata[31][0] = '/'
-    rcdata[32][0] = '\\'
+    rcdata[getIndexOfKey(10)][0] = '-'
+    rcdata[getIndexOfKey(20)][0] = ';'
+    rcdata[getIndexOfKey(21)][0] = '\''
+    rcdata[getIndexOfKey(31)][0] = '/'
+    rcdata[getIndexOfKey(32)][0] = '\\'
   } else if (lan == 'french') {
     // letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
-    rcdata[10][0] = 'é'
-    rcdata[20][0] = 'è'
-    rcdata[21][0] = '\''
-    rcdata[31][0] = 'ç'
-    rcdata[32][0] = 'à'
+    rcdata[getIndexOfKey(10)][0] = 'é'
+    rcdata[getIndexOfKey(20)][0] = 'è'
+    rcdata[getIndexOfKey(21)][0] = '\''
+    rcdata[getIndexOfKey(31)][0] = 'ç'
+    rcdata[getIndexOfKey(32)][0] = 'à'
   } else if (lan == 'swedish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
-    rcdata[10][0] = 'å'
-    rcdata[20][0] = 'ö'
-    rcdata[21][0] = 'ä'
-    rcdata[31][0] = '\''
-    rcdata[32][0] = '\\'
+    rcdata[getIndexOfKey(10)][0] = 'å'
+    rcdata[getIndexOfKey(20)][0] = 'ö'
+    rcdata[getIndexOfKey(21)][0] = 'ä'
+    rcdata[getIndexOfKey(31)][0] = '\''
+    rcdata[getIndexOfKey(32)][0] = '\\'
   } else if (lan == 'spanish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '\'', 'z','x', 'c', 'v',  'b', 'n', 'm',',', '.',  '/', '\\']
-    rcdata[10][0] = '-'
-    rcdata[20][0] = 'ñ'
-    rcdata[21][0] = '\''
-    rcdata[31][0] = '/'
-    rcdata[32][0] = '\\'
+    rcdata[getIndexOfKey(10)][0] = '-'
+    rcdata[getIndexOfKey(20)][0] = 'ñ'
+    rcdata[getIndexOfKey(21)][0] = '\''
+    rcdata[getIndexOfKey(31)][0] = '/'
+    rcdata[getIndexOfKey(32)][0] = '\\'
   } else if (lan == 'portuguese') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[10][0] = '-'
-    rcdata[20][0] = 'ç'
-    rcdata[21][0] = '\''
-    rcdata[31][0] = '/'
-    rcdata[32][0] = '\\'
+    rcdata[getIndexOfKey(10)][0] = '-'
+    rcdata[getIndexOfKey(20)][0] = 'ç'
+    rcdata[getIndexOfKey(21)][0] = '\''
+    rcdata[getIndexOfKey(31)][0] = '/'
+    rcdata[getIndexOfKey(32)][0] = '\\'
   } else if (lan == 'norweigan') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', 'z', 'x','c','v', 'b', 'm', 'n', '.', ',',  '\'', '\\']
-    rcdata[10][0] = 'å'
-    rcdata[20][0] = 'ø'
-    rcdata[21][0] = 'æ'
-    rcdata[31][0] = '\''
-    rcdata[32][0] = '\\'
+    rcdata[getIndexOfKey(10)][0] = 'å'
+    rcdata[getIndexOfKey(20)][0] = 'ø'
+    rcdata[getIndexOfKey(21)][0] = 'æ'
+    rcdata[getIndexOfKey(31)][0] = '\''
+    rcdata[getIndexOfKey(32)][0] = '\\'
   } else if (lan == 'finnish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', '\\']
-    rcdata[10][0] = 'å'
-    rcdata[20][0] = 'ö'
-    rcdata[21][0] = 'ä'
-    rcdata[31][0] = '\''
-    rcdata[32][0] = '\\'
+    rcdata[getIndexOfKey(10)][0] = 'å'
+    rcdata[getIndexOfKey(20)][0] = 'ö'
+    rcdata[getIndexOfKey(21)][0] = 'ä'
+    rcdata[getIndexOfKey(31)][0] = '\''
+    rcdata[getIndexOfKey(32)][0] = '\\'
   }
 }
 
@@ -1890,7 +1915,7 @@ function makeDraggable(svg) {
   }
 
   var selectedElement, offset, offset2, sibling;
-  var starti, dropi;
+  var starti, dropi, startx, starty;
 
   function startDrag(evt) {
     if (evt.target.classList.contains('draggable')) {
@@ -1908,6 +1933,8 @@ function makeDraggable(svg) {
 
         x = selectedElement.getAttributeNS(null, "x");
         y = selectedElement.getAttributeNS(null, "y");
+        startx = x;
+        starty = y;
         // scan through rcdata to find out which key are we closest to
         closestdist = 9999;
         starti = -1;
@@ -1948,25 +1975,48 @@ function makeDraggable(svg) {
     }
   }
 
-
   function endDrag(evt) {
     if (selectedElement) {
       x = selectedElement.getAttributeNS(null, "x");
       y = selectedElement.getAttributeNS(null, "y");
       // console.log("drop at "+x+"  "+y);
-      selectedElement = false;
-      sibling = false;
       // scan through rcdata to find out which key are we closest to
       closestdist = 9999;
+      var keyname = ""
       for (let i = 0; i < rcdata.length; i++) {
         d = dist(x, y, rcdata[i][5], rcdata[i][4]);
+        keyname = rcdata[i][0];
         if (d < closestdist) {
-          closestdist = d;
-          dropi = i;
+          if (keyname == "mod" || keyname == "back" || keyname == "space" || keyname == "tab" || keyname == "ctrl" || keyname == "enter") {
+          } else {
+            closestdist = d;
+            dropi = i;
+          }
         }
       }
+      if (dropi == starti) {
+        selectedElement.setAttributeNS(null, "x", startx);
+        selectedElement.setAttributeNS(null, "y", starty);
+        sibling.setAttributeNS(null, "x", parseInt(startx)+15);
+        sibling.setAttributeNS(null, "y", parseInt(starty)+19);
+        selectedElement = false;
+        sibling = false;
+        return;
+      }
+      if (closestdist > 0.8){
+        selectedElement.setAttributeNS(null, "x", startx);
+        selectedElement.setAttributeNS(null, "y", starty);
+        sibling.setAttributeNS(null, "x", parseInt(startx)+15);
+        sibling.setAttributeNS(null, "y", parseInt(starty)+19);
+        selectedElement = false;
+        sibling = false;
+        return;
+      }
+      selectedElement = false;
+      sibling = false;
 
-      indices = [1,2,4,5,6]
+      // indices = [1,2,4,5,6]
+      indices = [0, 3, 7]
       for (let i = 0; i < indices.length; i++){
         var k = indices[i];
         tmp = rcdata[starti][k];
