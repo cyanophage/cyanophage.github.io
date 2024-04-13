@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Keyboard Layout</title>
+    <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
+    <style>
+      body {
+        background-color:#1b1c1f;
+        color: #999;
+        font-family: Arial, sans-serif;
+      }
+      svg text{
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      .static {
+        cursor: not-allowed;
+      }
+      .draggable {
+        cursor: move;
+      }
+      .layout-svg{margin:auto;width:1000px;}
+      .stats-svg{margin:auto;width:1000px;}
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0.0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .popup {
+        background-color: #aaa;
+        color: #333;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+      .popup2 {
+        background-color: #aaa;
+        color: #333;
+        width: 300px;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+      .popup3 {
+        background-color: #aaa;
+        color: #333;
+        width: 180px;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+      .popup4 {
+        background-color: #aaa;
+        color: #333;
+        width: 180px;
+        padding: 20px;
+        border-radius: 5px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+      .letter {
+        width: 18px;
+        display: inline-block;
+      }
+
+      .effort {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
+      .importText {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
+      .changeKey {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 40px;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
+      .magic {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 60px;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
+      .combo {
+        margin-bottom: 10px;
+        text-align: center;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
+      #tooltip {background:#333333; color:#cccccc; border: 1px solid #cccccc; padding:5px;}
+
+      /* Resetting default styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Styling the dropdown container */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      /* Styling the dropdown button */
+      .dropbtn {
+        background-color: #1b1c1f;
+        color: #999999;
+        font-family: Arial, sans-serif;
+        padding: 1px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        border-radius: 0px;
+      }
+
+      /* Styling the dropdown content (hidden by default) */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+
+        background-color: #dddddd;
+        min-width: 160px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.75);
+        z-index: 1;
+      }
+
+      /* Styling the links inside the dropdown */
+      .dropdown-content a {
+        color: black;
+        padding: 8px 8px;
+        text-decoration: none;
+        display: block;
+      }
+
+      /* Change color of dropdown links on hover */
+      .dropdown-content a:hover {
+        background-color: #bbb;
+      }
+
+      /* Show the dropdown content when hovering over dropdown container */
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      </style>
+  </head>
+  <body>
+    <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
+    <a href="index.html">back</a>
+    |
+    <a onclick="openImportPopup()">import</a>
+    |
+    <div class="dropdown">
+      <button class="dropbtn" id="langDropDown">English</button>
+      <div class="dropdown-content">
+        <a onclick="selectLanguage('dutch')">Dutch</a>
+        <a onclick="selectLanguage('english')">English</a>
+        <a onclick="selectLanguage('finnish')">Finnish</a>
+        <a onclick="selectLanguage('french')">French</a>
+        <a onclick="selectLanguage('german')">German</a>
+        <a onclick="selectLanguage('norweigan')">Norweigan</a>
+        <a onclick="selectLanguage('portuguese')">Portuguese</a>
+        <a onclick="selectLanguage('spanish')">Spanish</a>
+        <a onclick="selectLanguage('swedish')">Swedish</a>
+      </div>
+    </div>
+    <div class="layout-svg" id = "svglayout"></div>
+    <br>
+    <div class="stats-svg" id = "svgstats"></div>
+    <br>
+    <div id="popup" class="overlay">
+      <div class="popup">
+        <input type="text" id="textInput-0-0" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-1" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-2" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-3" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-4" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-5" class="effort" maxlength="1">
+        &nbsp;
+        &nbsp;
+        <input type="text" id="textInput-0-6" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-7" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-8" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-9" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-10" class="effort" maxlength="1">
+        <input type="text" id="textInput-0-11" class="effort" maxlength="1">
+        <br>
+        <input type="text" id="textInput-1-0" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-1" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-2" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-3" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-4" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-5" class="effort" maxlength="1">
+        &nbsp;
+        &nbsp;
+        <input type="text" id="textInput-1-6" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-7" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-8" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-9" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-10" class="effort" maxlength="1">
+        <input type="text" id="textInput-1-11" class="effort" maxlength="1">
+        <br>
+        <input type="text" id="textInput-2-0" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-1" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-2" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-3" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-4" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-5" class="effort" maxlength="1">
+        &nbsp;
+        &nbsp;
+        <input type="text" id="textInput-2-6" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-7" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-8" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-9" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-10" class="effort" maxlength="1">
+        <input type="text" id="textInput-2-11" class="effort" maxlength="1">
+        <br>
+        <button onclick="closePopup()">OK</button>
+        <button onclick="pasteEffortGridFromClipboard()" style="float: right;margin-left: 5px;">Paste</button>
+        <button onclick="copyEffortGridToClipboard()" style="float: right;">Copy</button>
+      </div>
+    </div>
+    <div id="importPopup" class="overlay">
+      <div class="popup2">
+        <p id="importMessage">Import</p>
+        <input type="text" id="importText" class="importText">
+        <br>
+        <button onclick="closeImportPopup()">OK</button>
+      </div>
+    </div>
+    <div id="corpusPopup" class="overlay">
+      <div class="popup2">
+        <p id="corpusMessage">Text</p>
+        <input type="text" id="corpusText" class="importText">
+        <br>
+        <button onclick="closeCorpusPopup()">OK</button>
+      </div>
+    </div>
+    <div id="changeKeyPopup" class="overlay">
+      <div class="popup3">
+        <p id="changeKeyMessage">Character</p>
+        <input type="text" id="changeKeyText" class="changeKey" maxlength="1">
+        <button onclick="addRepeatKeyToTextField()">Repeat</button>
+        <button onclick="addMagicKeyToTextField()">Magic</button>
+        <br>
+        <button onclick="closeChangeKeyPopup()">OK</button>
+      </div>
+    </div>
+    <div id="magicPopup" class="overlay">
+      <div class="popup4">
+        <div class="letter">a</div> <input type="text" id="magicReplace-a" class="magic" maxlength="10">        <br>
+        <div class="letter">b</div> <input type="text" id="magicReplace-b" class="magic" maxlength="10">        <br>
+        <div class="letter">c</div> <input type="text" id="magicReplace-c" class="magic" maxlength="10">        <br>
+        <div class="letter">d</div> <input type="text" id="magicReplace-d" class="magic" maxlength="10">        <br>
+        <div class="letter">e</div> <input type="text" id="magicReplace-e" class="magic" maxlength="10">        <br>
+        <div class="letter">f</div> <input type="text" id="magicReplace-f" class="magic" maxlength="10">        <br>
+        <div class="letter">g</div> <input type="text" id="magicReplace-g" class="magic" maxlength="10">        <br>
+        <div class="letter">h</div> <input type="text" id="magicReplace-h" class="magic" maxlength="10">        <br>
+        <div class="letter">i</div> <input type="text" id="magicReplace-i" class="magic" maxlength="10">        <br>
+        <div class="letter">j</div> <input type="text" id="magicReplace-j" class="magic" maxlength="10">        <br>
+        <div class="letter">k</div> <input type="text" id="magicReplace-k" class="magic" maxlength="10">        <br>
+        <div class="letter">l</div> <input type="text" id="magicReplace-l" class="magic" maxlength="10">        <br>
+        <div class="letter">m</div> <input type="text" id="magicReplace-m" class="magic" maxlength="10">        <br>
+        <div class="letter">n</div> <input type="text" id="magicReplace-n" class="magic" maxlength="10">        <br>
+        <div class="letter">o</div> <input type="text" id="magicReplace-o" class="magic" maxlength="10">        <br>
+        <div class="letter">p</div> <input type="text" id="magicReplace-p" class="magic" maxlength="10">        <br>
+        <div class="letter">q</div> <input type="text" id="magicReplace-q" class="magic" maxlength="10">        <br>
+        <div class="letter">r</div> <input type="text" id="magicReplace-r" class="magic" maxlength="10">        <br>
+        <div class="letter">s</div> <input type="text" id="magicReplace-s" class="magic" maxlength="10">        <br>
+        <div class="letter">t</div> <input type="text" id="magicReplace-t" class="magic" maxlength="10">        <br>
+        <div class="letter">u</div> <input type="text" id="magicReplace-u" class="magic" maxlength="10">        <br>
+        <div class="letter">v</div> <input type="text" id="magicReplace-v" class="magic" maxlength="10">        <br>
+        <div class="letter">w</div> <input type="text" id="magicReplace-w" class="magic" maxlength="10">        <br>
+        <div class="letter">x</div> <input type="text" id="magicReplace-x" class="magic" maxlength="10">        <br>
+        <div class="letter">y</div> <input type="text" id="magicReplace-y" class="magic" maxlength="10">        <br>
+        <div class="letter">z</div> <input type="text" id="magicReplace-z" class="magic" maxlength="10">        <br>
+        <button onclick="closeMagicPopup()">OK</button>
+      </div>
+    </div>
+    <div id="comboPopup" class="overlay">
+      <div class="popup4">
+        <table>
+          <tr><td><div class="combo"></div></td>  <td><div>Type</div></td><td><div>Get</div></td></tr>
+          <tr><td><div class="combo">0</div></td>  <td><input type="text" id="comboType-0" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-0" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">1</div></td>  <td><input type="text" id="comboType-1" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-1" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">2</div></td>  <td><input type="text" id="comboType-2" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-2" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">3</div></td>  <td><input type="text" id="comboType-3" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-3" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">4</div></td>  <td><input type="text" id="comboType-4" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-4" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">5</div></td>  <td><input type="text" id="comboType-5" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-5" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">6</div></td>  <td><input type="text" id="comboType-6" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-6" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">7</div></td>  <td><input type="text" id="comboType-7" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-7" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">8</div></td>  <td><input type="text" id="comboType-8" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-8" class="magic" maxlength="10"></td></tr>
+          <tr><td><div class="combo">9</div></td>  <td><input type="text" id="comboType-9" class="magic" maxlength="10"></td><td><input type="text" id="comboReplace-9" class="magic" maxlength="10"></td></tr>
+        </table>
+        <button onclick="closeComboPopup()">OK</button>
+      </div>
+    </div>
+
+    <script type = "text/javascript" src="keyboard_svg_magic.js"></script>
+  </body>
+</html>
