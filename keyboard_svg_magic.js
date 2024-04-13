@@ -379,6 +379,11 @@ function closeComboPopup() {
   console.log(comboTypeTable);
   console.log("comboReplaceTable:");
   console.log(comboReplaceTable);
+  needs_update = true;
+  measureDictionary();
+  measureWords();
+  generateLayout();
+  generatePlots();
 }
 
 function addRepeatKeyToTextField(){
@@ -1143,7 +1148,6 @@ function measureDictionary() {
     total = 0.0;
     word = dictionary[wordi];
     char1 = word.charAt(0);
-    samehand = `${char1}`;
     for (let i = 1; i < word.length; i++) {
       char1 = word.charAt(i-1);
       char2 = word.charAt(i);
@@ -1437,7 +1441,6 @@ function measureWords() {
   errors = {}
   for (var word in words){
     if (word_count > 40000){break;}
-    // console.log(word)
     word_count += 1
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
     var count = words[word];
@@ -1445,10 +1448,10 @@ function measureWords() {
 
     modded_word = modWord(word)
 
-    if (word_effort[word]){
+    if (word_effort[modded_word]){
       m_total_word_effort += word_effort[modded_word] * count;
     }
-    for (let i = 0; i < word.length; i++) {
+    for (let i = 0; i < modded_word.length; i++) {
       wchar = modded_word.charAt(i)
       // console.log("wchar = "+wchar+" at "+i);
       if (comboTypeTable.hasOwnProperty(wchar)){
@@ -1483,7 +1486,6 @@ function measureWords() {
             errors[key] = 0;
           }
           errors[key] += 1;
-          console.log(word + " " +modded_word + " " +char)
           break
         }
         // console.log(word + "  " + modded_word + "  "+char + " row = "+r+" col = "+c)
