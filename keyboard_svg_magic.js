@@ -1361,6 +1361,8 @@ function resetMetrics(){
   m_effort_per_letter = {};
   m_effort_per_word = {};
   m_input_length = 0;
+  m_effort = 0;
+  m_total_word_effort = 0;
 }
 
 function modWord(word){
