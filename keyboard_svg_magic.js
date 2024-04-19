@@ -504,14 +504,15 @@ function closeCorpusPopup() {
   generatePlots();
 }
 
-function closePopup() {
+function closePopup(bool) {
+  document.getElementById('popup').style.display = 'none';
+  if (bool == false){return;}
   for (var row = 0; row < 3; row++){
     for (var col = 0; col < 12; col++){
       var name = "textInput-" + row + "-" + col
       effort[row][col] = document.getElementById(name).value;
     }
   }
-  document.getElementById('popup').style.display = 'none';
   needs_update = true;
   measureWords();
   generateLayout();
@@ -1398,8 +1399,10 @@ function modWord(word){
     for (letter in magicTable) {
       var replaceString = magicTable[letter]
       if (replaceString.length > 0){
-        modded_word = modded_word.replaceAll(replaceString,letter+magic_key)
-        // console.log("replacing "+replaceString+" with "+letter+magic_key+ " in "+word)
+        if (modded_word.includes(letter+replaceString)){
+          modded_word = modded_word.replaceAll(letter+replaceString,letter+magic_key)
+          // console.log("replacing "+letter+replaceString+" with "+letter+magic_key+ " in "+word)
+        }
       }
     }
   }
@@ -1842,7 +1845,7 @@ function measureWords() {
     // console.log(samehandstring +" "+count)
 
   } // end of loop over words in words list
-  console.log(errors)
+  // console.log(errors)
 
   var sum = 0;
   for (var letter in m_letter_freq) {
@@ -2416,7 +2419,7 @@ function generatePlots() {
     for (var bigram in tmp) {
       sum += tmp[bigram] / m_input_length;
     }
-    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("2u Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams 2u " + parseFloat(100 * sum).toFixed(2) + "%")
   }
 
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
