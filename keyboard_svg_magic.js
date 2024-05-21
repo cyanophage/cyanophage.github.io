@@ -1100,7 +1100,7 @@ function generateLayout() {
   for (let key in errors) {
     errorTooltip += key
   }
-  console.log(errorTooltip)
+  // console.log(errorTooltip)
   if (errorTooltip.length > 0){
     svg.append("rect").attr("x", 420).attr("y", 125).attr("width", 100).attr("height", 25).attr("rx",0).attr("ry",0)
     .attr("fill","#ff3333").attr("stroke","black").attr("stroke-width","1").attr("onclick", "openComboPopup()") // combo config button
