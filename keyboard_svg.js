@@ -333,6 +333,9 @@ function closeImportPopup() {
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
     } else if (importString.length == 33 || importString.length == 34) {
+      if (importString.length == 33) {
+        importString = importString + "^"
+      }
       needs_update = true;
       importLayout(importString);
       var queryParams = new URLSearchParams(window.location.search);
@@ -489,9 +492,12 @@ function skipToggle() {
   skip_toggle = !skip_toggle
   generatePlots();
 }
-var scissors_toggle = true;
+var scissors_toggle = 0;
 function scissorsToggle() {
-  scissors_toggle = !scissors_toggle
+  scissors_toggle += 1
+  if (scissors_toggle > 2){
+    scissors_toggle = 0
+  }
   generatePlots();
 }
 var sfb_toggle = true;
@@ -681,19 +687,13 @@ function importLayout(layout) {
 
 function exportLayout() {
   var str = "";
-  for (let i = 0; i < 32; i++) {
+  for (let i = 0; i <= 33; i++) {
     if (rcdata[i][0] == "shift") {
       str += "^";
     } else {
       str += rcdata[i][0];
     }
   }
-  if (rcdata[33][0].length == 1) {
-    str += rcdata[33][0];
-  }
-  // } else if (rcdata[33][0] == "shift") {
-  //   str += "^";
-  // }
   return str;
 }
 
@@ -905,6 +905,7 @@ var m_skip_bigram = {};
 var m_skip_bigram2 = {};
 var m_redirects = {};
 var m_scissors = {};
+var m_all_scissors = {};
 var m_pinky_scissors = {};
 var m_lat_stretch = {};
 var m_letter_freq = {};
@@ -1122,6 +1123,7 @@ function measureWords() {
   m_skip_bigram2 = {};
   m_redirects = {};
   m_scissors = {};
+  m_all_scissors = {};
   m_pinky_scissors = {};
   m_same_finger = {};
   m_same_finger2 = {};
@@ -1245,6 +1247,13 @@ function measureWords() {
             m_scissors[bigram] = 0;
           }
           m_scissors[bigram] += count;
+        }
+        // all 2u scissors
+        if (Math.abs(row-prevrow) >= 2 && ((finger <= 4 && prevfinger <= 4)||(finger >=7 && prevfinger>=7))) {
+          if (!m_all_scissors[bigram]) {
+            m_all_scissors[bigram] = 0;
+          }
+          m_all_scissors[bigram] += count;
         }
         // pinky/ring scissors
         if (Math.abs(col-prevcol) == 1 && Math.abs(row-prevrow) >= 1 && (finger == 1 ||finger == 10||prevfinger==1||prevfinger==10)) {
@@ -1606,7 +1615,7 @@ function generatePlots() {
     for (var bigram in tmp) {
       sum += tmp[bigram] / m_input_length;
     }
-    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("2u Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams (2u) " + parseFloat(100 * sum).toFixed(2) + "%")
   }
 
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
@@ -1661,7 +1670,7 @@ function generatePlots() {
   var y = 180;
   sum = 0;
 
-  if (scissors_toggle) {
+  if (scissors_toggle == 0) {
     var keyValueArray = Object.entries(m_pinky_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -1669,7 +1678,7 @@ function generatePlots() {
       sum += tmp[bigram] / m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
-  } else {
+  } else if (scissors_toggle == 1){
     var keyValueArray = Object.entries(m_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -1677,6 +1686,14 @@ function generatePlots() {
       sum += tmp[bigram] / m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
+  } else {
+    var keyValueArray = Object.entries(m_all_scissors);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("All 2u row jumps " + parseFloat(100 * sum).toFixed(2) + "%")
   }
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle()")
