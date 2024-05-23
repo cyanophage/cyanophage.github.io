@@ -2750,7 +2750,7 @@ function makeDraggable(svg) {
         // console.log(altClickedElement);
         // console.log(altClickedElement.innerHTML);
         altClickedLetter = altClickedElement.innerHTML;
-        document.getElementById('popup').style.display = 'flex';
+        document.getElementById('changeKeyPopup').style.display = 'flex';
       } else {
         console.log("Clicked on something else");
         // Do something for other elements
