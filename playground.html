@@ -12,6 +12,12 @@
         color: #999;
         font-family: Arial, sans-serif;
       }
+      svg text{
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
       .static {
         cursor: not-allowed;
       }
@@ -125,6 +131,8 @@
     <a href="index.html">back</a>
     |
     <a onclick="openImportPopup()">import</a>
+    |
+    <a onclick="openCorpusPopup()">corpus</a>
     |
     <div class="dropdown">
       <button class="dropbtn" id="langDropDown">English</button>
