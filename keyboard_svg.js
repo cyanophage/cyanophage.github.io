@@ -19,7 +19,11 @@ var max = 11.870939;
 var red = 0;
 var scroll_amount = 0;
 var green = 128;
-var mode = "ergo";
+var mode = params.mode;
+var lang = "english";
+if (params.lan) {
+  lang = params.lan;
+}
 var needs_update = true;
 function scroll(event){
   event.preventDefault();
@@ -103,6 +107,10 @@ function fetchEffort(){
 
 function selectLanguage(lan) {
   document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+  lang = lan
+  var queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
   if (lan == "english"){
     console.log("============ ENGLISH ============")
     updateRcData(lan);
@@ -341,6 +349,7 @@ function closeImportPopup() {
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
       queryParams.set("mode",mode)
+      queryParams.set("lan",lang)
       generateCoords();
       measureDictionary();
       measureWords();
@@ -505,6 +514,11 @@ function sfbToggle() {
   sfb_toggle = !sfb_toggle
   generatePlots();
 }
+var trigram_toggle = true;
+function trigramToggle() {
+  trigram_toggle = !trigram_toggle
+  generatePlots();
+}
 
 function showTooltip(evt, text) {
   let tooltip = document.getElementById("tooltip");
@@ -522,8 +536,8 @@ function hideTooltip() {
 function setErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("setErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
-  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1]
+  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1, 32]
+  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1, 33]
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
   rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
@@ -540,6 +554,7 @@ function setErgo() {
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
+  queryParams.set("lan",lang)
   generateCoords()
 }
 
@@ -564,6 +579,7 @@ function activateErgo() {
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
+  queryParams.set("lan",lang)
   needs_update = true;
   generateCoords();
   measureDictionary();
@@ -606,6 +622,7 @@ function activateIso(anglemod) {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
+    queryParams.set("lan",lang)
     needs_update = true;
     generateCoords();
     measureDictionary();
@@ -637,6 +654,7 @@ function activateAnsi() {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
+    queryParams.set("lan",lang)
     needs_update = true;
     generateCoords();
     measureDictionary();
@@ -683,6 +701,7 @@ function importLayout(layout) {
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
+  queryParams.set("lan",lang)
 }
 
 function exportLayout() {
@@ -911,6 +930,7 @@ var m_lat_stretch = {};
 var m_letter_freq = {};
 var m_row_usage = {};
 var m_trigram_count = {};
+var m_trigram_count_2 = {};
 var m_input_length = 0;
 var m_effort = 0;
 var m_total_word_effort = 0;
@@ -1020,7 +1040,7 @@ function getDictionaryFromWords() {
 }
 
 function getIndexOfKey(name){
-  var x = 0;
+  var x = -1;
   for (var i = 0; i < 34; i++) {
     if (rcdata[i][7] == name) {
       x = i;
@@ -1048,67 +1068,67 @@ function updateRcData(lan) {
   // or have a consistent letter on them. Even the index I added to try to make them consistent didn't work because of the way the import process works
   if (lan == 'german'){
     // letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
-    rcdata[getIndexOfKey(10)][0] = 'ü'
-    rcdata[getIndexOfKey(20)][0] = 'ö'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = 'ä'
-    rcdata[getIndexOfKey(32)][0] = 'ß'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'ü' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ö' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ä' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'ß' }
   } else if (lan == 'english') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = ';'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = ';' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'dutch') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = ';'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = ';' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'french') {
     // letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
-    rcdata[getIndexOfKey(10)][0] = 'é'
-    rcdata[getIndexOfKey(20)][0] = 'è'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = 'ç'
-    rcdata[getIndexOfKey(32)][0] = 'à'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'é' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'è' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ç' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'à' }
   } else if (lan == 'swedish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
-    rcdata[getIndexOfKey(10)][0] = 'å'
-    rcdata[getIndexOfKey(20)][0] = 'ö'
-    rcdata[getIndexOfKey(21)][0] = 'ä'
-    rcdata[getIndexOfKey(31)][0] = '\''
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'å' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ö' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'ä' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '\'' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'spanish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '\'', 'z','x', 'c', 'v',  'b', 'n', 'm',',', '.',  '/', '\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = 'ñ'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ñ' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'portuguese') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = 'ç'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ç' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'norweigan') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', 'z', 'x','c','v', 'b', 'm', 'n', '.', ',',  '\'', '\\']
-    rcdata[getIndexOfKey(10)][0] = 'å'
-    rcdata[getIndexOfKey(20)][0] = 'ø'
-    rcdata[getIndexOfKey(21)][0] = 'æ'
-    rcdata[getIndexOfKey(31)][0] = '\''
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'å' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ø' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'æ' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '\'' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'finnish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', '\\']
-    rcdata[getIndexOfKey(10)][0] = 'å'
-    rcdata[getIndexOfKey(20)][0] = 'ö'
-    rcdata[getIndexOfKey(21)][0] = 'ä'
-    rcdata[getIndexOfKey(31)][0] = '\''
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'å' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ö' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'ä' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '\'' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   }
 }
 
@@ -1131,6 +1151,7 @@ function measureWords() {
   m_letter_freq = {};
   m_row_usage = {};
   m_trigram_count = {};
+  m_trigram_count_2 = {};
   m_finger_pairs = {};
   samehandstrings = {};
   samehandcount = {};
@@ -1142,9 +1163,10 @@ function measureWords() {
   var prevfinger = -1;
   var ppchar = "";
   var ppfinger = -1;
-  var bigram, trigram, cat, skip;
+  var bigram, trigram, cat, cat2, skip;
   var prevcol = -1;
   var prevrow = -1;
+  var pprow = -1;
   var col,row,hand,prevhand;
   var m_effort_per_letter = {};
   var m_effort_per_word = {};
@@ -1307,6 +1329,7 @@ function measureWords() {
           }
         }
         cat = "other";
+        cat2 = "other";
         if (ppfinger <= 4 && prevfinger <= 4 && finger <= 4) { // left hand
           if (ppfinger < prevfinger && prevfinger < finger) {
             cat = "roll in"
@@ -1374,7 +1397,33 @@ function measureWords() {
           m_trigram_count[cat] = 0;
         }
         m_trigram_count[cat] += count;
+
+        // trigram row
+        if (row == prevrow && prevrow == pprow) {
+          cat2 = "trigram same row"
+        } else if (row == 0 && prevrow == 2 && pprow == 0) {
+          cat2 = "double jump"
+        } else if (row == 2 && prevrow == 0 && pprow == 2) {
+          cat2 = "double jump"
+        } else if (row == 0 && prevrow == 1 && pprow == 2) {
+          // cat2 = "TMB"
+        } else if (row == 2 && prevrow == 1 && pprow == 0) {
+          // cat2 = "BMT"
+        } else if (row == prevrow || prevrow == pprow) {
+          cat2 = "bigram same row"
+        // } else if (Math.abs(row - prevrow) == 2) {
+          // cat2 = "2u"
+        } else {
+          // cat2 = (row+1) +" " + (prevrow+1) +" " + (pprow+1)
+        }
+
+
+        if (!m_trigram_count_2[cat2]) {
+          m_trigram_count_2[cat2] = 0;
+        }
+        m_trigram_count_2[cat2] += count;
       }
+      pprow = prevrow
       prevcol = col;
       prevrow = row;
       prevhand = hand;
@@ -1718,11 +1767,22 @@ function generatePlots() {
   var x = 760;
   var y = 390;
   sum = 0;
-  var keyValueArray = Object.entries(m_trigram_count);
-  keyValueArray.sort((a, b) => b[1] - a[1]);
-  m_trigram_count = Object.fromEntries(keyValueArray);
-  for (var cat in m_trigram_count) {
-    sum += m_trigram_count[cat]
+
+  if (trigram_toggle) {
+    var keyValueArray = Object.entries(m_trigram_count);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+  } else {
+    var keyValueArray = Object.entries(m_trigram_count_2);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+
   }
   const trigram_desc = {
     "alt":"the hands used to type the trigram are either LRL or RLR",
@@ -1734,6 +1794,9 @@ function generatePlots() {
     "roll out":"the three characters of the trigram are typed with the same hand and go from the inside to the outside",
     "roll in":"the three characters of the trigram are typed with the same hand and go from the outside to the inside",
     "other":"all other trigrams that don\\'t fit into any of the other categories",
+    "bigram same row":"two adjacent characters in the trigram are typed on the same row",
+    "trigram same row":"the three characters in the trigram are typed on the same row",
+    "double jump":"trigram is typed top, bottom, top or bottom, top, bottom",
   };
   // for(var tri in m_redirects){
   //   if (m_redirects[tri] > 40){
@@ -1741,16 +1804,18 @@ function generatePlots() {
   //     // trigram_desc["redirect"] = trigram_desc["redirect"].concat(" "+tri);
   //   }
   // }
+  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Trigram Stats")
   var i = 0
-  for (var cat in m_trigram_count) {
-    var height = 200 * m_trigram_count[cat] / sum;
+  for (var cat in tmp) {
+    var height = 200 * tmp[cat] / sum;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 105).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
-    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_trigram_count[cat] / sum)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[cat] / sum)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -2044,6 +2109,7 @@ function makeDraggable(svg) {
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
       queryParams.set("mode",mode)
+      queryParams.set("lan",lang)
       history.replaceState(null, null, "?"+queryParams.toString());
 
       d3.select(svg).selectAll("*").remove();
@@ -2055,9 +2121,11 @@ function makeDraggable(svg) {
     }
   }
 }
+
 if (url_layout) {
   importLayout(url_layout)
 }
 fetchEffort();
 fetchData();
 fetchDictionary();
+selectLanguage(lang)
