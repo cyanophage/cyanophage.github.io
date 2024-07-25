@@ -194,7 +194,7 @@ var rcdata = [
   [".", 2, 9, 0.48452812, 0, 0, 1, 30],
   ["/", 2, 10, 0.14315604, 0, 0, 1, 31],
   ["\\", 2, 0, 0, 0, 0, 1, 32],
-  ["shift", 3, 4, 0, 0, 0, 1, 33],
+  ["^", 3, 4, 0, 0, 0, 1, 33],
   ["tab", 0, 0, 0, 0, 0, 1],
   ["ctrl", 1, 0, 0, 0, 0, 1],
   ["enter", 2, 11, 0, 0, 0, 1],
@@ -350,6 +350,7 @@ function closeImportPopup() {
       queryParams.set("layout", exportLayout());
       queryParams.set("mode",mode)
       queryParams.set("lan",lang)
+      history.replaceState(null, null, "?"+queryParams.toString());
       generateCoords();
       measureDictionary();
       measureWords();
@@ -555,20 +556,21 @@ function setErgo() {
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
   queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
   generateCoords()
 }
 
 function activateErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("activateErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
-  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1]
-  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
-  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
-  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
-  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1]
-  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1]
-  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1]
+  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1, 32]
+  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1, 33]
+  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1, 34]
+  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1, 35]
+  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1, 36]
+  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1, 37]
+  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1, 38]
+  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1, 39]
   mode = "ergo"
   fingerAssignment = [
                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -580,6 +582,7 @@ function activateErgo() {
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
   queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
   needs_update = true;
   generateCoords();
   measureDictionary();
@@ -589,6 +592,7 @@ function activateErgo() {
 }
 
 function activateIso(anglemod) {
+  // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   hasshift = false
   for(let i = 0; i < 34; i++){
@@ -597,14 +601,20 @@ function activateIso(anglemod) {
     }
   }
   if (hasshift == true) {
-    rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
-    rcdata[33] = ["shift", 2, 0, 0, 0, 0, 1.25]
-    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5]
-    rcdata[35] = ["back", 0, 12, 0, 0, 0, 2.25]
-    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75]
-    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2]
-    rcdata[38] = ["rshift", 2, 12, 0, 0, 0, 2.5]
-    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5]
+    // rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1, rcdata[32][7]]
+    // rcdata[33] = [rcdata[33][0], 2, -1, 0, 0, 0, 1.25, rcdata[33][7]]
+    rcdata[32][1] = 2
+    rcdata[32][2] = 0
+    rcdata[32][6] = 1
+    rcdata[33][1] = 2
+    rcdata[33][2] = -1
+    rcdata[33][6] = 1.25
+    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5, 34]
+    rcdata[35] = ["back", 0, 12, 0, 0, 0, 2.25, 35]
+    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75, 36]
+    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2, 37]
+    rcdata[38] = ["rshift", 2, 12, 0, 0, 0, 2.5, 38]
+    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5, 39]
     if (anglemod){
       fingerAssignment = [ // angle mod
         [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -623,6 +633,7 @@ function activateIso(anglemod) {
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
     queryParams.set("lan",lang)
+    history.replaceState(null, null, "?"+queryParams.toString());
     needs_update = true;
     generateCoords();
     measureDictionary();
@@ -635,16 +646,29 @@ function activateIso(anglemod) {
 }
 
 function activateAnsi() {
+  // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-  if (rcdata[33][0] == "shift") {
-    rcdata[32] = [rcdata[32][0], 0, 12, 0.2753001, 0, 0, 1],
-    rcdata[33] = ["shift", 2, 0, 0, 0, 0, 2.25],
-    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5],
-    rcdata[35] = ["back", 0, 13, 0, 0, 0, 1.25],
-    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75],
-    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2],
-    rcdata[38] = ["rshift", 2, 11, 0, 0, 0, 2.5],
-    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5],
+  hasshift = false
+  for(let i = 0; i < 34; i++){
+    if (rcdata[i][0] == "shift" || rcdata[i][0] == "^") {
+      hasshift = true
+    }
+  }
+  if (hasshift == true) {
+    // rcdata[32] = [rcdata[32][0], 0, 12, 0.2753001, 0, 0, 1, rcdata[32][7]]
+    // rcdata[33] = [rcdata[33][0], 2, -1, 0, 0, 0, 2.25, rcdata[33][7]]
+    rcdata[32][1] = 0
+    rcdata[32][2] = 12
+    rcdata[32][6] = 1
+    rcdata[33][1] = 2
+    rcdata[33][2] = -1
+    rcdata[33][6] = 2.25
+    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5, 34]
+    rcdata[35] = ["back", 0, 13, 0, 0, 0, 1.25, 35]
+    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75, 36]
+    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2, 37]
+    rcdata[38] = ["rshift", 2, 11, 0, 0, 0, 2.5, 38]
+    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5, 39]
     fingerAssignment = [
       [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
       [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -655,6 +679,7 @@ function activateAnsi() {
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
     queryParams.set("lan",lang)
+    history.replaceState(null, null, "?"+queryParams.toString());
     needs_update = true;
     generateCoords();
     measureDictionary();
@@ -670,31 +695,28 @@ function importLayout(layout) {
   var decodedString = decodeURIComponent(layout);
   console.log("importing: "+decodedString)
   layout = decodedString
-  // 01234567890123456789012345678901
-  // wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
-  for (let i = 0; i < 34; i++) {
-    if (layout.charAt(i) == "^") {
-      rcdata[i][0] = "shift"
-    } else {
-      rcdata[i][0] = layout.charAt(i);
+  for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
+    for (let j = 0; j < 34; j++) {
+      if (layout.charAt(i) == rcdata[j][0]) {
+        // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
+        // swap
+        indices = [0, 3, 7]
+        for (let id = 0; id < indices.length; id++){
+          var k = indices[id];
+          tmp = rcdata[i][k];
+          rcdata[i][k] = rcdata[j][k];
+          rcdata[j][k] = tmp;
+        }
+      }
     }
-    rcdata[i][7] = 0
   }
   for (let i = 0; i < 34; i++) {
-    if (rcdata[i][0] == "-") {
-      rcdata[i][7] = 10
-    }
-    if (rcdata[i][0] == "/") {
-      rcdata[i][7] = 31
-    }
-    if (rcdata[i][0] == ";") {
-      rcdata[i][7] = 20
-    }
-    if (rcdata[i][0] == "\\") {
-      rcdata[i][7] = 32
-    }
-    if (rcdata[i][0] == "\'") {
-      rcdata[i][7] = 21
+    if (rcdata[i][0] == "^") {
+      if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
+        // cool
+      } else {
+        rcdata[i][0] = "="
+      }
     }
   }
 
@@ -702,16 +724,13 @@ function importLayout(layout) {
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
   queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
 }
 
 function exportLayout() {
   var str = "";
   for (let i = 0; i <= 33; i++) {
-    if (rcdata[i][0] == "shift") {
-      str += "^";
-    } else {
-      str += rcdata[i][0];
-    }
+    str += rcdata[i][0];
   }
   return str;
 }
@@ -722,7 +741,6 @@ function getX(name, row, col) {
     if (row == 0){
       if (name === "tab") {
         off = 0
-        // console.log(name);
       } else {
         off = w*0.5;
       }
@@ -733,12 +751,16 @@ function getX(name, row, col) {
         off = w*0.75;
       }
     } else if (row >= 2) {
-      if (name === "shift" || name === "space") {
-        off = 0;
-      } else if (name == "rshift") {
-        off = w*0.25;
+      if (col == -1) {
+        return dx
       } else {
-        off = w*1.25;
+        if (name === "space") {
+          off = 0;
+        } else if (name == "rshift") {
+          off = w*0.25;
+        } else {
+          off = w*1.25;
+        }
       }
     }
     return dx + off + col * w
@@ -746,7 +768,6 @@ function getX(name, row, col) {
     if (row == 0){
       if (name === "tab") {
         off = 0
-        // console.log(name);
       } else {
         off = w*0.5;
       }
@@ -757,10 +778,14 @@ function getX(name, row, col) {
         off = w*0.75;
       }
     } else if (row >= 2){
-      if (name === "shift" || name === "space") {
-        off = 0;
+      if (col == -1) {
+        return dx
       } else {
-        off = w*1.25;
+        if (name === "space") {
+          off = 0;
+        } else {
+          off = w*1.25;
+        }
       }
     }
     return dx + off + col * w
@@ -839,6 +864,9 @@ function generateLayout() {
   for (let i = 0; i < rcdata.length; i++) {
     dtx = 0;
     letter = rcdata[i][0];
+    if (letter == "^"){
+      letter = "shift"
+    }
     x = rcdata[i][5];
     y = rcdata[i][4];
     per = rcdata[i][3];
@@ -2105,6 +2133,7 @@ function makeDraggable(svg) {
         rcdata[starti][k] = rcdata[dropi][k];
         rcdata[dropi][k] = tmp;
       }
+      // console.log(rcdata)
 
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
