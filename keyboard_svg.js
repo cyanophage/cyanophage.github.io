@@ -2,7 +2,7 @@
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
-let url_layout = params.layout;
+var url_layout = params.layout;
 
 var swidth = 1000;
 var sheight = 180;
@@ -20,6 +20,7 @@ var red = 0;
 var scroll_amount = 0;
 var green = 128;
 var mode = params.mode;
+if (!mode){  mode = "ergo"}
 var lang = "english";
 if (params.lan) {
   lang = params.lan;
@@ -60,7 +61,7 @@ function fetchData(){
       console.log("fetchData");
       dataloaded = true;
       needs_update = true;
-      setErgo();
+      setMode();
       measureDictionary();
       measureWords();
       generateLayout();
@@ -80,7 +81,7 @@ function fetchDictionary(){
       console.log("fetchDictionary");
       dictionaryloaded = true;
       needs_update = true;
-      setErgo();
+      setMode();
       measureDictionary();
       measureWords();
       generateLayout();
@@ -96,7 +97,7 @@ function fetchEffort(){
       bigram_effort = data;
       console.log("fetchEffort");
       effortloaded = true;
-      setErgo();
+      setMode();
       measureDictionary();
       measureWords();
       generateLayout();
@@ -130,7 +131,7 @@ function selectLanguage(lan) {
       console.log("fetchData");
       dataloaded = true;
       updateRcData(lan);
-      setErgo();
+      setMode();
       getDictionaryFromWords();
       dictionaryloaded = true;
       measureDictionary();
@@ -534,11 +535,28 @@ function hideTooltip() {
   tooltip.style.display = "none";
 }
 
+function setMode() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("setMode to "+mode);
+  if (mode == "ergo") {
+    activateErgo()
+  } else if (mode == "ansi") {
+    activateAnsi()
+  } else if (mode == "iso") {
+    activateIso()
+  }
+  generateCoords()
+}
+
 function setErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("setErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1, 32]
-  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1, 33]
+  rcdata[32][1] = 2
+  rcdata[32][2] = 0
+  rcdata[32][6] = 1
+  rcdata[33][1] = 3
+  rcdata[33][2] = 4
+  rcdata[33][6] = 1
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
   rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
@@ -563,8 +581,12 @@ function setErgo() {
 function activateErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("activateErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1, 32]
-  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1, 33]
+  rcdata[32][1] = 2
+  rcdata[32][2] = 0
+  rcdata[32][6] = 1
+  rcdata[33][1] = 3
+  rcdata[33][2] = 4
+  rcdata[33][6] = 1
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1, 34]
   rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1, 35]
   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1, 36]
@@ -601,8 +623,6 @@ function activateIso(anglemod) {
     }
   }
   if (hasshift == true) {
-    // rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1, rcdata[32][7]]
-    // rcdata[33] = [rcdata[33][0], 2, -1, 0, 0, 0, 1.25, rcdata[33][7]]
     rcdata[32][1] = 2
     rcdata[32][2] = 0
     rcdata[32][6] = 1
