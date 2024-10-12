@@ -1177,6 +1177,19 @@ function updateRcData(lan) {
     if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'ä' }
     if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '\'' }
     if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
+  } else if (lan == 'estonian') {
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'ä' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'õ' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ü' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'ö' }
+  } else if (lan == 'hungarian') {
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = ';' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   }
 }
 
