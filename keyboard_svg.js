@@ -1133,6 +1133,13 @@ function updateRcData(lan) {
     if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
     if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ç' }
     if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'à' }
+  } else if (lan == 'italian') {
+    // letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'è' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'à' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'ù' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ò' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'ì' }
   } else if (lan == 'swedish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
     if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'å' }
