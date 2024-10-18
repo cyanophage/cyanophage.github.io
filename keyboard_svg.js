@@ -26,6 +26,7 @@ if (params.lan) {
   lang = params.lan;
 }
 var needs_update = true;
+
 function scroll(event){
   event.preventDefault();
   scroll_amount += event.deltaY/125;
@@ -37,7 +38,6 @@ var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/
 
 var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("height", 600)
 
-
 const el = document.querySelector("#svgstats");
 el.onwheel = scroll;
 
@@ -48,24 +48,14 @@ let words = {};
 let dictionary = [];
 let bigram_effort = {};
 
-// Fetch the JSON file
-let dataloaded = false
-let dictionaryloaded = false
-let effortloaded = false
 function fetchData(){
   fetch(word_list_url)
     .then(response => response.json())
     .then(data => {
       words = data; // Assign data to the global variable
-      needs_update = true;
       console.log("fetchData");
       dataloaded = true;
       needs_update = true;
-      setMode();
-      measureDictionary();
-      measureWords();
-      generateLayout();
-      generatePlots();
     })
     .catch(error => console.error('Error loading JSON file:', error));
 }
@@ -81,29 +71,37 @@ function fetchDictionary(){
       console.log("fetchDictionary");
       dictionaryloaded = true;
       needs_update = true;
-      setMode();
-      measureDictionary();
-      measureWords();
-      generateLayout();
-      generatePlots();
     })
     .catch(error => console.error('Error loading dictionary JSON file:', error));
 }
 
-function fetchEffort(){
-  fetch(effort_url)
-    .then(response => response.json())
-    .then(data => {
-      bigram_effort = data;
-      console.log("fetchEffort");
+async function loadAllData() {
+  try {
+      const [wordsData, dictionaryData, effortData] = await Promise.all([
+          fetch(word_list_url).then(response => response.json()),
+          fetch(dictionary_url).then(response => response.json()),
+          fetch(effort_url).then(response => response.json())
+      ]);
+
+      // Assign the data to your global variables
+      words = wordsData;
+      dictionary = dictionaryData.dictionary || [];
+      bigram_effort = effortData;
+
+      console.log("All data loaded successfully!");
+
+      dataloaded = true;
+      dictionaryloaded = true;
       effortloaded = true;
-      setMode();
+      generateCoords();
       measureDictionary();
       measureWords();
       generateLayout();
       generatePlots();
-    })
-    .catch(error => console.error('Error loading effort JSON file:', error));
+
+  } catch (error) {
+      console.error('Error loading data:', error);
+  }
 }
 
 function selectLanguage(lan) {
@@ -115,12 +113,13 @@ function selectLanguage(lan) {
   if (lan == "english"){
     console.log("============ ENGLISH ============")
     updateRcData(lan);
-    dataloaded = false
-    dictionaryloaded = false
-    fetchData()
-    fetchDictionary()
+    dictionaryloaded = true;
+    dataloaded = true;
+    needs_update = true;
+    loadAllData();
     return;
   }
+
   var word_list = 'words-'+lan+'.json'; // words-german.json
   console.log("============ "+lan.toUpperCase()+" ============")
   fetch(word_list)
@@ -151,14 +150,6 @@ var fingerAssignment = [
                [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
              ]
 // var hand = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
-
-// TODO:
-// ok this needs some thinking
-// one of the problems is that some layouts have shift and some don't. i think the solve for this is to treat shift just like any other key. use it as a ^ all the time. just draw it as a shift in the rendering step
-// another problem is that not all layouts defined in index have all the same chars. this causes havoc with the rcdata/rccopy thingy. the key thing is that positions 10 20 21 32 can be used for other letters eg áéå
-// another problem is that iso and ansi have shifts but some layouts don't. i need to make sure that if the layout doesn't have shift the you can't convert it to iso.
-// also make sure that shift is put in the right place when you go from ISO back to ERGO. and that the setErgo() function doesn't move shift if the layout doesn't have one.
-//
 
 // char, row, col, freq, y, x, width, keyname
 var rcdata = [
@@ -1424,8 +1415,8 @@ function measureWords() {
               cat = "weak redirect"
             }
           }
-        }
-        if ((ppfinger <= 4 && prevfinger >= 7 && finger <= 4) || (ppfinger >= 7 && prevfinger <= 4 && finger >= 7)) {
+        } //
+        if ((ppfinger <= 5 && prevfinger >= 6 && finger <= 5) || (ppfinger >= 6 && prevfinger <= 5 && finger >= 6)) {
           cat = "alt"
           if (ppfinger == finger && ppchar != char) {
             cat = "alt sfs"
@@ -1523,6 +1514,7 @@ function measureWords() {
 
 function generatePlots() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("generatePlots")
   stats.selectAll("*").remove();
   ///////////////////////////////////////  C O L U M N   U S A G E  ////////////////////////////////////////////
   var x = 500;
@@ -2187,7 +2179,4 @@ function makeDraggable(svg) {
 if (url_layout) {
   importLayout(url_layout)
 }
-fetchEffort();
-fetchData();
-fetchDictionary();
-selectLanguage(lang)
+loadAllData()
