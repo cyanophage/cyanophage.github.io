@@ -2,7 +2,7 @@
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
-let url_layout = params.layout;
+var url_layout = params.layout;
 
 var swidth = 1000;
 var sheight = 180;
@@ -19,7 +19,12 @@ var max = 11.870939;
 var red = 0;
 var scroll_amount = 0;
 var green = 128;
-var mode = "ergo";
+var mode = params.mode;
+if (!mode){  mode = "ergo"}
+var lang = "english";
+if (params.lan) {
+  lang = params.lan;
+}
 var needs_update = true;
 var altClickedLetter;
 var repeat_key = "§"
@@ -28,6 +33,7 @@ var repeat_enabled = false
 var double_is_sfb = false
 var magic_enabled = false
 var combo_enabled = false
+
 function scroll(event){
   event.preventDefault();
   scroll_amount += event.deltaY/125;
@@ -49,24 +55,14 @@ let words = {};
 let dictionary = [];
 let bigram_effort = {};
 
-// Fetch the JSON file
-let dataloaded = false
-let dictionaryloaded = false
-let effortloaded = false
 function fetchData(){
   fetch(word_list_url)
     .then(response => response.json())
     .then(data => {
       words = data; // Assign data to the global variable
-      needs_update = true;
       console.log("fetchData");
       dataloaded = true;
       needs_update = true;
-      setErgo();
-      measureDictionary();
-      measureWords();
-      generateLayout();
-      generatePlots();
     })
     .catch(error => console.error('Error loading JSON file:', error));
 }
@@ -82,42 +78,55 @@ function fetchDictionary(){
       console.log("fetchDictionary");
       dictionaryloaded = true;
       needs_update = true;
-      setErgo();
-      measureDictionary();
-      measureWords();
-      generateLayout();
-      generatePlots();
     })
     .catch(error => console.error('Error loading dictionary JSON file:', error));
 }
 
-function fetchEffort(){
-  fetch(effort_url)
-    .then(response => response.json())
-    .then(data => {
-      bigram_effort = data;
-      console.log("fetchEffort");
+async function loadAllData() {
+  try {
+      const [wordsData, dictionaryData, effortData] = await Promise.all([
+          fetch(word_list_url).then(response => response.json()),
+          fetch(dictionary_url).then(response => response.json()),
+          fetch(effort_url).then(response => response.json())
+      ]);
+
+      // Assign the data to your global variables
+      words = wordsData;
+      dictionary = dictionaryData.dictionary || [];
+      bigram_effort = effortData;
+
+      console.log("All data loaded successfully!");
+
+      dataloaded = true;
+      dictionaryloaded = true;
       effortloaded = true;
-      setErgo();
+      generateCoords();
       measureDictionary();
       measureWords();
       generateLayout();
       generatePlots();
-    })
-    .catch(error => console.error('Error loading effort JSON file:', error));
+
+  } catch (error) {
+      console.error('Error loading data:', error);
+  }
 }
 
 function selectLanguage(lan) {
   document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+  lang = lan
+  var queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
   if (lan == "english"){
     console.log("============ ENGLISH ============")
     updateRcData(lan);
-    dataloaded = false
-    dictionaryloaded = false
-    fetchData()
-    fetchDictionary()
+    dictionaryloaded = true;
+    dataloaded = true;
+    needs_update = true;
+    loadAllData();
     return;
   }
+
   var word_list = 'words-'+lan+'.json'; // words-german.json
   console.log("============ "+lan.toUpperCase()+" ============")
   fetch(word_list)
@@ -128,7 +137,7 @@ function selectLanguage(lan) {
       console.log("fetchData");
       dataloaded = true;
       updateRcData(lan);
-      setErgo();
+      setMode();
       getDictionaryFromWords();
       dictionaryloaded = true;
       measureDictionary();
@@ -148,14 +157,6 @@ var fingerAssignment = [
                [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
              ]
 // var hand = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
-
-// TODO:
-// ok this needs some thinking
-// one of the problems is that some layouts have shift and some don't. i think the solve for this is to treat shift just like any other key. use it as a ^ all the time. just draw it as a shift in the rendering step
-// another problem is that not all layouts defined in index have all the same chars. this causes havoc with the rcdata/rccopy thingy. the key thing is that positions 10 20 21 32 can be used for other letters eg áéå
-// another problem is that iso and ansi have shifts but some layouts don't. i need to make sure that if the layout doesn't have shift the you can't convert it to iso.
-// also make sure that shift is put in the right place when you go from ISO back to ERGO. and that the setErgo() function doesn't move shift if the layout doesn't have one.
-//
 
 // char, row, col, freq, y, x, width, keyname
 var rcdata = [
@@ -192,7 +193,7 @@ var rcdata = [
   [".", 2, 9, 0.48452812, 0, 0, 1, 30],
   ["/", 2, 10, 0.14315604, 0, 0, 1, 31],
   ["\\", 2, 0, 0, 0, 0, 1, 32],
-  ["shift", 3, 4, 0, 0, 0, 1, 33],
+  ["^", 3, 4, 0, 0, 0, 1, 33],
   ["tab", 0, 0, 0, 0, 0, 1],
   ["ctrl", 1, 0, 0, 0, 0, 1],
   ["enter", 2, 11, 0, 0, 0, 1],
@@ -271,7 +272,6 @@ function openPopup() {
   document.getElementById('popup').style.display = 'flex';
 }
 
-
 function openImportPopup() {
   document.getElementById('importPopup').style.display = 'flex';
 }
@@ -304,7 +304,7 @@ function containsOneCopyOfAllLetters(str) {
 
   // Check if the string has exactly one copy of each letter
   const uniqueLetters = new Set(str);
-  return uniqueLetters.size === 26;
+  return uniqueLetters.size === 26; //wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
 }
 
 function deepCopy(arr) {
@@ -426,11 +426,16 @@ function closeImportPopup() {
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
     } else if (importString.length == 33 || importString.length == 34) {
+      if (importString.length == 33) {
+        importString = importString + "^"
+      }
       needs_update = true;
       importLayout(importString);
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
       queryParams.set("mode",mode)
+      queryParams.set("lan",lang)
+      history.replaceState(null, null, "?"+queryParams.toString());
       generateCoords();
       measureDictionary();
       measureWords();
@@ -438,7 +443,7 @@ function closeImportPopup() {
       generatePlots();
       document.getElementById('importPopup').style.display = 'none';
     } else {
-      document.getElementById('importMessage').innerText = "Input string needs to be 30 or 34 characters"
+      document.getElementById('importMessage').innerText = "Input string needs to be 30,32 or 33 characters"
       // console.log(document.getElementById('importMessage'));
       console.log("input string is length "+ importString.length + "  " + importString);
     }
@@ -504,15 +509,14 @@ function closeCorpusPopup() {
   generatePlots();
 }
 
-function closePopup(bool) {
-  document.getElementById('popup').style.display = 'none';
-  if (bool == false){return;}
+function closePopup() {
   for (var row = 0; row < 3; row++){
     for (var col = 0; col < 12; col++){
       var name = "textInput-" + row + "-" + col
       effort[row][col] = document.getElementById(name).value;
     }
   }
+  document.getElementById('popup').style.display = 'none';
   needs_update = true;
   measureWords();
   generateLayout();
@@ -583,14 +587,30 @@ function skipToggle() {
   skip_toggle = !skip_toggle
   generatePlots();
 }
-var scissors_toggle = true;
+var scissors_toggle = 0;
 function scissorsToggle() {
-  scissors_toggle = !scissors_toggle
+  scissors_toggle += 1
+  if (scissors_toggle > 2){
+    scissors_toggle = 0
+  }
+  generatePlots();
+}
+var lsb_toggle = 0;
+function lsbToggle() {
+  lsb_toggle += 1
+  if (lsb_toggle > 1){
+    lsb_toggle = 0
+  }
   generatePlots();
 }
 var sfb_toggle = true;
 function sfbToggle() {
   sfb_toggle = !sfb_toggle
+  generatePlots();
+}
+var trigram_toggle = true;
+function trigramToggle() {
+  trigram_toggle = !trigram_toggle
   generatePlots();
 }
 
@@ -643,11 +663,28 @@ function hideTooltip() {
   tooltip.style.display = "none";
 }
 
+function setMode() {
+  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("setMode to "+mode);
+  if (mode == "ergo") {
+    activateErgo()
+  } else if (mode == "ansi") {
+    activateAnsi()
+  } else if (mode == "iso") {
+    activateIso()
+  }
+  generateCoords()
+}
+
 function setErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("setErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
-  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1]
+  rcdata[32][1] = 2
+  rcdata[32][2] = 0
+  rcdata[32][6] = 1
+  rcdata[33][1] = 3
+  rcdata[33][2] = 4
+  rcdata[33][6] = 1
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
   rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
@@ -664,20 +701,26 @@ function setErgo() {
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
+  queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
   generateCoords()
 }
 
 function activateErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("activateErgo");
-  rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
-  rcdata[33] = [rcdata[33][0], 3, 4, 0, 0, 0, 1]
-  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
-  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
-  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
-  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1]
-  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1]
-  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1]
+  rcdata[32][1] = 2
+  rcdata[32][2] = 0
+  rcdata[32][6] = 1
+  rcdata[33][1] = 3
+  rcdata[33][2] = 4
+  rcdata[33][6] = 1
+  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1, 34]
+  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1, 35]
+  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1, 36]
+  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1, 37]
+  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1, 38]
+  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1, 39]
   mode = "ergo"
   fingerAssignment = [
                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -688,6 +731,8 @@ function activateErgo() {
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
+  queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
   needs_update = true;
   generateCoords();
   measureDictionary();
@@ -697,6 +742,7 @@ function activateErgo() {
 }
 
 function activateIso(anglemod) {
+  // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   hasshift = false
   for(let i = 0; i < 34; i++){
@@ -705,14 +751,18 @@ function activateIso(anglemod) {
     }
   }
   if (hasshift == true) {
-    rcdata[32] = [rcdata[32][0], 2, 0, 0, 0, 0, 1]
-    rcdata[33] = ["shift", 2, 0, 0, 0, 0, 1.25]
-    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5]
-    rcdata[35] = ["back", 0, 12, 0, 0, 0, 2.25]
-    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75]
-    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2]
-    rcdata[38] = ["rshift", 2, 12, 0, 0, 0, 2.5]
-    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5]
+    rcdata[32][1] = 2
+    rcdata[32][2] = 0
+    rcdata[32][6] = 1
+    rcdata[33][1] = 2
+    rcdata[33][2] = -1
+    rcdata[33][6] = 1.25
+    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5, 34]
+    rcdata[35] = ["back", 0, 12, 0, 0, 0, 2.25, 35]
+    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75, 36]
+    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2, 37]
+    rcdata[38] = ["rshift", 2, 12, 0, 0, 0, 2.5, 38]
+    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5, 39]
     if (anglemod){
       fingerAssignment = [ // angle mod
         [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -730,6 +780,8 @@ function activateIso(anglemod) {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
+    queryParams.set("lan",lang)
+    history.replaceState(null, null, "?"+queryParams.toString());
     needs_update = true;
     generateCoords();
     measureDictionary();
@@ -742,16 +794,29 @@ function activateIso(anglemod) {
 }
 
 function activateAnsi() {
+  // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-  if (rcdata[33][0] == "shift") {
-    rcdata[32] = [rcdata[32][0], 0, 12, 0.2753001, 0, 0, 1],
-    rcdata[33] = ["shift", 2, 0, 0, 0, 0, 2.25],
-    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5],
-    rcdata[35] = ["back", 0, 13, 0, 0, 0, 1.25],
-    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75],
-    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2],
-    rcdata[38] = ["rshift", 2, 11, 0, 0, 0, 2.5],
-    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5],
+  hasshift = false
+  for(let i = 0; i < 34; i++){
+    if (rcdata[i][0] == "shift" || rcdata[i][0] == "^") {
+      hasshift = true
+    }
+  }
+  if (hasshift == true) {
+    // rcdata[32] = [rcdata[32][0], 0, 12, 0.2753001, 0, 0, 1, rcdata[32][7]]
+    // rcdata[33] = [rcdata[33][0], 2, -1, 0, 0, 0, 2.25, rcdata[33][7]]
+    rcdata[32][1] = 0
+    rcdata[32][2] = 12
+    rcdata[32][6] = 1
+    rcdata[33][1] = 2
+    rcdata[33][2] = -1
+    rcdata[33][6] = 2.25
+    rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5, 34]
+    rcdata[35] = ["back", 0, 13, 0, 0, 0, 1.25, 35]
+    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75, 36]
+    rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2, 37]
+    rcdata[38] = ["rshift", 2, 11, 0, 0, 0, 2.5, 38]
+    rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5, 39]
     fingerAssignment = [
       [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
       [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -761,6 +826,8 @@ function activateAnsi() {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("layout", exportLayout());
     queryParams.set("mode",mode)
+    queryParams.set("lan",lang)
+    history.replaceState(null, null, "?"+queryParams.toString());
     needs_update = true;
     generateCoords();
     measureDictionary();
@@ -776,54 +843,43 @@ function importLayout(layout) {
   var decodedString = decodeURIComponent(layout);
   console.log("importing: "+decodedString)
   layout = decodedString
-  // 01234567890123456789012345678901
-  // wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
-  for (let i = 0; i < 34; i++) {
-    if (layout.charAt(i) == "^") {
-      rcdata[i][0] = "shift"
-    } else {
-      rcdata[i][0] = layout.charAt(i);
+  for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
+    for (let j = 0; j < 34; j++) {
+      if (layout.charAt(i) == rcdata[j][0]) {
+        // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
+        // swap
+        indices = [0, 3, 7]
+        for (let id = 0; id < indices.length; id++){
+          var k = indices[id];
+          tmp = rcdata[i][k];
+          rcdata[i][k] = rcdata[j][k];
+          rcdata[j][k] = tmp;
+        }
+      }
     }
-    rcdata[i][7] = 0
   }
   for (let i = 0; i < 34; i++) {
-    if (rcdata[i][0] == "-") {
-      rcdata[i][7] = 10
-    }
-    if (rcdata[i][0] == "/") {
-      rcdata[i][7] = 31
-    }
-    if (rcdata[i][0] == ";") {
-      rcdata[i][7] = 20
-    }
-    if (rcdata[i][0] == "\\") {
-      rcdata[i][7] = 32
-    }
-    if (rcdata[i][0] == "\'") {
-      rcdata[i][7] = 21
+    if (rcdata[i][0] == "^") {
+      if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
+        // cool
+      } else {
+        rcdata[i][0] = "="
+      }
     }
   }
 
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
+  queryParams.set("lan",lang)
+  history.replaceState(null, null, "?"+queryParams.toString());
 }
 
 function exportLayout() {
   var str = "";
-  for (let i = 0; i < 34; i++) {
-    if (rcdata[i][0] == "shift") {
-      str += "^";
-    } else {
-      str += rcdata[i][0];
-    }
+  for (let i = 0; i <= 33; i++) {
+    str += rcdata[i][0];
   }
-  // if (rcdata[33][0].length == 1) {
-  //   str += rcdata[33][0];
-  // }
-  // } else if (rcdata[33][0] == "shift") {
-  //   str += "^";
-  // }
   return str;
 }
 
@@ -833,7 +889,6 @@ function getX(name, row, col) {
     if (row == 0){
       if (name === "tab") {
         off = 0
-        // console.log(name);
       } else {
         off = w*0.5;
       }
@@ -844,12 +899,16 @@ function getX(name, row, col) {
         off = w*0.75;
       }
     } else if (row >= 2) {
-      if (name === "shift" || name === "space") {
-        off = 0;
-      } else if (name == "rshift") {
-        off = w*0.25;
+      if (col == -1) {
+        return dx
       } else {
-        off = w*1.25;
+        if (name === "space") {
+          off = 0;
+        } else if (name == "rshift") {
+          off = w*0.25;
+        } else {
+          off = w*1.25;
+        }
       }
     }
     return dx + off + col * w
@@ -857,7 +916,6 @@ function getX(name, row, col) {
     if (row == 0){
       if (name === "tab") {
         off = 0
-        // console.log(name);
       } else {
         off = w*0.5;
       }
@@ -868,10 +926,14 @@ function getX(name, row, col) {
         off = w*0.75;
       }
     } else if (row >= 2){
-      if (name === "shift" || name === "space") {
-        off = 0;
+      if (col == -1) {
+        return dx
       } else {
-        off = w*1.25;
+        if (name === "space") {
+          off = 0;
+        } else {
+          off = w*1.25;
+        }
       }
     }
     return dx + off + col * w
@@ -947,11 +1009,12 @@ function generateLayout() {
   }
   svg.append("rect").attr("x", 45).attr("y", 0).attr("width", outlinewidth).attr("height", 170)
   .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
-
-  svg.node().addEventListener('contextmenu', event => event.preventDefault());
   for (let i = 0; i < rcdata.length; i++) {
     dtx = 0;
     letter = rcdata[i][0];
+    if (letter == "^"){
+      letter = "shift"
+    }
     x = rcdata[i][5];
     y = rcdata[i][4];
     per = rcdata[i][3];
@@ -969,7 +1032,7 @@ function generateLayout() {
     svg.append("rect").attr("x", x).attr("y", y)
       .attr("width", keywidth*w-gap).attr("height", w-gap).attr("rx", 4).attr("ry", 4)
       .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", "black")
-      .attr("stroke-width", "1").attr("class", "draggable"); // .attr("onclick", "openChangeKeyPopup('"+letter+"')")
+      .attr("stroke-width", "1").attr("class", "draggable");
     if (letter.length > 1 && mode != "ergo") {
       svg.append("text").attr("x", x + 5).attr("y", y + 19)
       .attr("font-size", fontsize).attr("font-family", "Roboto Mono")
@@ -999,28 +1062,15 @@ function generateLayout() {
 
 
   // ergo button
-  if (mode == "ergo"){
-    svg.append("rect").attr("x", 640).attr("y", 10).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
-    .attr("fill","#77aa77").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateErgo()")
-    .attr("onmouseover", "showTooltip(evt,'Switch layout to Ergo')").attr("onmouseout", "hideTooltip()")
-  } else {
-    svg.append("rect").attr("x", 640).attr("y", 10).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
-    .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateErgo()")
-    .attr("onmouseover", "showTooltip(evt,'Switch layout to Ergo')").attr("onmouseout", "hideTooltip()")
-
-  }
+  svg.append("rect").attr("x", 640).attr("y", 10).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateErgo()")
+  .attr("onmouseover", "showTooltip(evt,'Switch layout to Ergo')").attr("onmouseout", "hideTooltip()")
   svg.append("text").attr("x", 640+23).attr("y", 10+18).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("Ergo")
   // iso button
-  if (mode == "iso"){
-    svg.append("rect").attr("x", 640).attr("y", 10+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
-    .attr("fill","#77aa77").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(false)")
-    .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO')").attr("onmouseout", "hideTooltip()")
-  } else {
-    svg.append("rect").attr("x", 640).attr("y", 10+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
-    .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(false)")
-    .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO')").attr("onmouseout", "hideTooltip()")
-  }
+  svg.append("rect").attr("x", 640).attr("y", 10+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateIso(false)")
+  .attr("onmouseover", "showTooltip(evt,'Switch layout to ISO')").attr("onmouseout", "hideTooltip()")
   svg.append("text").attr("x", 640+23).attr("y", 10+18+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ISO")
 
@@ -1032,15 +1082,9 @@ function generateLayout() {
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("anglemod")
 
   // ansi button
-  if (mode == "ansi") {
-    svg.append("rect").attr("x", 640).attr("y", 10+35+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
-    .attr("fill","#77aa77").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateAnsi()")
-    .attr("onmouseover", "showTooltip(evt,'Switch layout to ANSI')").attr("onmouseout", "hideTooltip()")
-  } else {
-    svg.append("rect").attr("x", 640).attr("y", 10+35+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
-    .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateAnsi()")
-    .attr("onmouseover", "showTooltip(evt,'Switch layout to ANSI')").attr("onmouseout", "hideTooltip()")
-  }
+  svg.append("rect").attr("x", 640).attr("y", 10+35+35).attr("width", 46).attr("height", 25).attr("rx",0).attr("ry",0)
+  .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "activateAnsi()")
+  .attr("onmouseover", "showTooltip(evt,'Switch layout to ANSI')").attr("onmouseout", "hideTooltip()")
   svg.append("text").attr("x", 640+23).attr("y", 10+18+35+35).attr("font-size", 16).attr("font-family", "Sans,Arial")
   .attr("fill", "#111111").attr("text-anchor", "middle").attr("pointer-events","none").text("ANSI")
 
@@ -1081,7 +1125,7 @@ function generateLayout() {
   .attr("onmouseover", "showTooltip(evt,'Configure magic key')").attr("onmouseout", "hideTooltip()")
 
 
-  // magic toggle button
+  // combo toggle button
   if (combo_enabled){
     svg.append("rect").attr("x", 800).attr("y", 10+35+35).attr("width", 60).attr("height", 25).attr("rx",0).attr("ry",0)
     .attr("fill","#77aa77").attr("stroke","black").attr("stroke-width","1").attr("onclick", "toggleCombo()")
@@ -1103,7 +1147,7 @@ function generateLayout() {
   // console.log(errorTooltip)
   if (errorTooltip.length > 0){
     svg.append("rect").attr("x", 420).attr("y", 125).attr("width", 100).attr("height", 25).attr("rx",0).attr("ry",0)
-    .attr("fill","#ff3333").attr("stroke","black").attr("stroke-width","1").attr("onclick", "openComboPopup()") // combo config button
+    .attr("fill","#ff3333").attr("stroke","black").attr("stroke-width","1")
     .attr("onmouseover", "showTooltip(evt,'"+errorTooltip+"')").attr("onmouseout", "hideTooltip()")
 
     svg.append("text").attr("x", 470).attr("y", 124+18).attr("font-size", 16).attr("font-family", "Roboto Mono")
@@ -1121,16 +1165,17 @@ var m_skip_bigram = {};
 var m_skip_bigram2 = {};
 var m_redirects = {};
 var m_scissors = {};
+var m_all_scissors = {};
 var m_pinky_scissors = {};
 var m_lat_stretch = {};
+var m_lat_stretch2 = {};
 var m_letter_freq = {};
 var m_row_usage = {};
 var m_trigram_count = {};
+var m_trigram_count_2 = {};
 var m_input_length = 0;
 var m_effort = 0;
 var m_total_word_effort = 0;
-var m_effort_per_letter = {};
-var m_effort_per_word = {};
 // var m_simple_effort = {};
 var finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
 
@@ -1149,6 +1194,7 @@ function measureDictionary() {
     total = 0.0;
     word = dictionary[wordi];
     char1 = word.charAt(0);
+    samehand = `${char1}`;
     for (let i = 1; i < word.length; i++) {
       char1 = word.charAt(i-1);
       char2 = word.charAt(i);
@@ -1236,7 +1282,7 @@ function getDictionaryFromWords() {
 }
 
 function getIndexOfKey(name){
-  var x = 0;
+  var x = -1;
   for (var i = 0; i < 34; i++) {
     if (rcdata[i][7] == name) {
       x = i;
@@ -1281,93 +1327,88 @@ function updateRcData(lan) {
   // or have a consistent letter on them. Even the index I added to try to make them consistent didn't work because of the way the import process works
   if (lan == 'german'){
     // letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
-    rcdata[getIndexOfKey(10)][0] = 'ü'
-    rcdata[getIndexOfKey(20)][0] = 'ö'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = 'ä'
-    rcdata[getIndexOfKey(32)][0] = 'ß'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'ü' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ö' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ä' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'ß' }
   } else if (lan == 'english') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = ';'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = ';' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'dutch') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = ';'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = ';' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'french') {
     // letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
-    rcdata[getIndexOfKey(10)][0] = 'é'
-    rcdata[getIndexOfKey(20)][0] = 'è'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = 'ç'
-    rcdata[getIndexOfKey(32)][0] = 'à'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'é' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'è' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ç' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'à' }
+  } else if (lan == 'italian') {
+    // letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'è' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'à' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'ù' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ò' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'ì' }
   } else if (lan == 'swedish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
-    rcdata[getIndexOfKey(10)][0] = 'å'
-    rcdata[getIndexOfKey(20)][0] = 'ö'
-    rcdata[getIndexOfKey(21)][0] = 'ä'
-    rcdata[getIndexOfKey(31)][0] = '\''
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'å' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ö' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'ä' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '\'' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'spanish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '\'', 'z','x', 'c', 'v',  'b', 'n', 'm',',', '.',  '/', '\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = 'ñ'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ñ' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'portuguese') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
-    rcdata[getIndexOfKey(10)][0] = '-'
-    rcdata[getIndexOfKey(20)][0] = 'ç'
-    rcdata[getIndexOfKey(21)][0] = '\''
-    rcdata[getIndexOfKey(31)][0] = '/'
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ç' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'norweigan') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', 'z', 'x','c','v', 'b', 'm', 'n', '.', ',',  '\'', '\\']
-    rcdata[getIndexOfKey(10)][0] = 'å'
-    rcdata[getIndexOfKey(20)][0] = 'ø'
-    rcdata[getIndexOfKey(21)][0] = 'æ'
-    rcdata[getIndexOfKey(31)][0] = '\''
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'å' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ø' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'æ' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '\'' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   } else if (lan == 'finnish') {
     // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', '\\']
-    rcdata[getIndexOfKey(10)][0] = 'å'
-    rcdata[getIndexOfKey(20)][0] = 'ö'
-    rcdata[getIndexOfKey(21)][0] = 'ä'
-    rcdata[getIndexOfKey(31)][0] = '\''
-    rcdata[getIndexOfKey(32)][0] = '\\'
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'å' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'ö' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = 'ä' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '\'' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
+  } else if (lan == 'estonian') {
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = 'ä' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = 'õ' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = 'ü' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = 'ö' }
+  } else if (lan == 'hungarian') {
+    // letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
+    if (getIndexOfKey(10) >= 0) { rcdata[getIndexOfKey(10)][0] = '-' }
+    if (getIndexOfKey(20) >= 0) { rcdata[getIndexOfKey(20)][0] = ';' }
+    if (getIndexOfKey(21) >= 0) { rcdata[getIndexOfKey(21)][0] = '\'' }
+    if (getIndexOfKey(31) >= 0) { rcdata[getIndexOfKey(31)][0] = '/' }
+    if (getIndexOfKey(32) >= 0) { rcdata[getIndexOfKey(32)][0] = '\\' }
   }
-}
-
-function resetMetrics(){
-  m_column_usage = {};
-  m_finger_usage = {};
-  m_finger_distance = {};
-  m_skip_bigram = {};
-  m_skip_bigram2 = {};
-  m_redirects = {};
-  m_scissors = {};
-  m_pinky_scissors = {};
-  m_same_finger = {};
-  m_same_finger2 = {};
-  m_lat_stretch = {};
-  m_letter_freq = {};
-  m_row_usage = {};
-  m_trigram_count = {};
-  m_finger_pairs = {};
-  samehandstrings = {};
-  samehandcount = {};
-  m_effort_per_letter = {};
-  m_effort_per_word = {};
-  m_input_length = 0;
-  m_effort = 0;
-  m_total_word_effort = 0;
 }
 
 function modWord(word){
@@ -1400,7 +1441,7 @@ function modWord(word){
       var replaceString = magicTable[letter]
       if (replaceString.length > 0){
         if (modded_word.includes(letter+replaceString)){
-          modded_word = modded_word.replaceAll(letter+replaceString,letter+magic_key)
+          modded_word = modded_word.replaceAll(letter+replaceString, letter+magic_key)
           // console.log("replacing "+letter+replaceString+" with "+letter+magic_key+ " in "+word)
         }
       }
@@ -1414,6 +1455,33 @@ function modWord(word){
     }
   }
   return modded_word
+}
+
+function resetMetrics(){
+  m_column_usage = {};
+  m_finger_usage = {};
+  m_finger_distance = {};
+  m_skip_bigram = {};
+  m_skip_bigram2 = {};
+  m_redirects = {};
+  m_scissors = {};
+  m_all_scissors = {};
+  m_pinky_scissors = {};
+  m_same_finger = {};
+  m_same_finger2 = {};
+  m_lat_stretch = {};
+  m_lat_stretch2 = {};
+  m_letter_freq = {};
+  m_row_usage = {};
+  m_trigram_count = {};
+  m_finger_pairs = {};
+  samehandstrings = {};
+  samehandcount = {};
+  m_effort_per_letter = {};
+  m_effort_per_word = {};
+  m_input_length = 0;
+  m_effort = 0;
+  m_total_word_effort = 0;
 }
 
 function measureWords() {
@@ -1590,6 +1658,7 @@ function measureWords() {
         // same finger bigrams
         let samefinger = false;
         let bigrams = []
+        let bigrams2 = []
         for (let fi in fingers){
           for (let pi in prevfingers){
             let f = fingers[fi]
@@ -1630,7 +1699,9 @@ function measureWords() {
         /// same finger bigrams
         // lat stretch bigrams
         let lat_stretch = false;
+        let lat_stretch2 = false;
         bigrams = []
+        bigrams2 = []
         for (let ci in fingers) {
           for (let pi in prevfingers) {
             // let finger = fingers[ci]
@@ -1646,6 +1717,10 @@ function measureWords() {
               lat_stretch = true
               bigrams.push(c1+c2)
             }
+            if ((prevcol == 2 && col == 5) || (prevcol == 9 && col == 6) || (prevcol == 5 && col == 2) || (prevcol == 6 && col == 9)) {
+              lat_stretch2 = true
+              bigrams2.push(c1+c2)
+            }
           }
         }
         if (lat_stretch == true){
@@ -1656,12 +1731,22 @@ function measureWords() {
             m_lat_stretch[big] += count
           }
         }
+        if (lat_stretch2 == true){
+          for (big of bigrams2){
+            if (!m_lat_stretch2[big]) {
+              m_lat_stretch2[big] = 0;
+            }
+            m_lat_stretch2[big] += count
+          }
+        }
         /// lat stretch bigrams
         // scissors
         let scissor = false;
         let pinkyscissor = false;
+        let widescissor = false;
         bigrams = []
         let pinkyscissorbigrams = []
+        let widescissorbigrams = []
         // console.log(prevcols)
         // console.log(cols)
         for (let ci in fingers) {
@@ -1682,6 +1767,10 @@ function measureWords() {
               pinkyscissor = true
               pinkyscissorbigrams.push(c1+c2)
             }
+            if (Math.abs(row-prevrow) >= 2  && ((finger <= 4 && prevfinger <= 4)||(finger >=7 && prevfinger>=7))){
+              widescissor = true
+              widescissorbigrams.push(c1+c2)
+            }
           }
         }
         if (scissor == true){
@@ -1698,6 +1787,14 @@ function measureWords() {
               m_pinky_scissors[big] = 0;
             }
             m_pinky_scissors[big] += count
+          }
+        }
+        if (widescissor == true){
+          for (big of widescissorbigrams){
+            if (!m_all_scissors[big]) {
+              m_all_scissors[big] = 0;
+            }
+            m_all_scissors[big] += count
           }
         }
         /// scissors
@@ -1861,362 +1958,9 @@ function measureWords() {
   needs_update = false
 }
 
-function measureWords_old() {
-  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-  console.log("measureWords");
-  if (!needs_update){return;}
-  m_column_usage = {};
-  m_finger_usage = {};
-  m_finger_distance = {};
-  m_skip_bigram = {};
-  m_skip_bigram2 = {};
-  m_redirects = {};
-  m_scissors = {};
-  m_pinky_scissors = {};
-  m_same_finger = {};
-  m_same_finger2 = {};
-  m_lat_stretch = {};
-  m_letter_freq = {};
-  m_row_usage = {};
-  m_trigram_count = {};
-  m_finger_pairs = {};
-  samehandstrings = {};
-  samehandcount = {};
-  m_input_length = 0;
-  m_effort = 0;
-  m_total_word_effort = 0;
-  var char = "";
-  var prevchar = "";
-  var prevfinger = -1;
-  var ppchar = ""; // preprevious char
-  var ppfinger = -1;
-  var bigram, trigram, cat, skip;
-  var prevcol = -1;
-  var prevrow = -1;
-  var col, row, hand, prevhand;
-  var m_effort_per_letter = {};
-  var m_effort_per_word = {};
-  var word_count = 0;
-
-  // repeat just repeats the last key that was typed
-  // magic types something different depending on what was typed before. so if $ is magic, typing t$ might type the. so i would replace all occurences of 'the' in the corpus with 't$'
-  // adaptive is the same as magic
-  // combos are where you type H & M at the same time and you get K. in the corpus I would do something like replacing all K with |hm. It needs to be different from just hm.
-  //     So for the word 'work' you would have 'wor|hm' and you would need to calculate the SFBs etc for rh and rm.
-  // characters to use: §  ≡  ¤
-
-  // have "enable magic", "enable repeat" buttons
-  // have "config combos" button
-
-  for (var word in words) {
-    if (word_count > 40000){break;}
-    word_count += 1
-    finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
-    var count = words[word];
-    m_input_length += count * (word.length + 1);
-
-    modded_word = word
-    if (repeat_enabled && layoutContainsRepeatKey()) {
-      modded_word = modded_word.replaceAll("ll","l"+repeat_key)
-      modded_word = modded_word.replaceAll("aa","a"+repeat_key)
-      modded_word = modded_word.replaceAll("bb","b"+repeat_key)
-      modded_word = modded_word.replaceAll("cc","c"+repeat_key)
-      modded_word = modded_word.replaceAll("dd","d"+repeat_key)
-      modded_word = modded_word.replaceAll("ee","e"+repeat_key)
-      modded_word = modded_word.replaceAll("ff","f"+repeat_key)
-      modded_word = modded_word.replaceAll("gg","g"+repeat_key)
-      modded_word = modded_word.replaceAll("hh","h"+repeat_key)
-      modded_word = modded_word.replaceAll("ii","i"+repeat_key)
-      modded_word = modded_word.replaceAll("kk","k"+repeat_key)
-      modded_word = modded_word.replaceAll("mm","m"+repeat_key)
-      modded_word = modded_word.replaceAll("nn","n"+repeat_key)
-      modded_word = modded_word.replaceAll("oo","o"+repeat_key)
-      modded_word = modded_word.replaceAll("pp","p"+repeat_key)
-      modded_word = modded_word.replaceAll("rr","r"+repeat_key)
-      modded_word = modded_word.replaceAll("ss","s"+repeat_key)
-      modded_word = modded_word.replaceAll("tt","t"+repeat_key)
-      modded_word = modded_word.replaceAll("uu","u"+repeat_key)
-      modded_word = modded_word.replaceAll("xx","x"+repeat_key)
-      modded_word = modded_word.replaceAll("zz","z"+repeat_key)
-    }
-    if (magic_enabled && layoutContainsMagicKey()){
-      for (letter in magicTable) {
-        var replaceString = magicTable[letter]
-        if (replaceString.length > 0){
-          modded_word = modded_word.replaceAll(replaceString,letter+magic_key)
-          // console.log("replacing "+replaceString+" with "+letter+magic_key+ " in "+word)
-        }
-      }
-    }
-    if (combo_enabled){
-      for (letter in comboReplaceTable) {
-        replaceString = comboReplaceTable[letter]
-        modded_word = modded_word.replaceAll(letter, replaceString)
-        // console.log(modded_word)
-      }
-
-    }
-
-    // combos would look something like this
-    // modded_word = modded_word.replace("j","|hm")
-
-    if (word_effort[word]){
-      // console.log(word +" "+word_effort[word]);
-      m_total_word_effort += word_effort[modded_word] * count;
-    }
-    char = modded_word.charAt(0);
-    samehand = char
-    for (let i = 0; i < word.length; i++) {
-      // is this a combo?
-      if (comboTypeTable.hasOwnProperty(char)){
-        // console.log(char+" "+comboTypeTable[char]+" "+word+" "+modded_word)
-        // TODO so i think the best thing to do here is to convert the whole function to work on a list of chars and a list of previous_chars
-        char = comboTypeTable[char].split("")
-      } else {
-        char = [modded_word.charAt(i)]
-      }
-      // freq //
-      if (!m_letter_freq[char]) {
-        m_letter_freq[char] = 0;
-      }
-      m_letter_freq[char] += count;
-      // finger usage //
-      row = getRow(char);
-      col = getCol(char);
-      if (col <= 5){
-        hand = "L"
-      } else {
-        hand = "R"
-      }
-      if (col < 0) { continue; } // this is the part that just skips numbers and other characters
-      if (!m_column_usage[col]) {
-        m_column_usage[col] = 0;
-      }
-      if (row < 3){ m_column_usage[col] += count;}
-      // finger usage //
-      // effort
-      if (!m_effort_per_letter[char]){
-        m_effort_per_letter[char] = 0
-      }
-      m_effort_per_letter[char] += count * getEffort(row,col)
-      if (!m_effort_per_word[word]){
-        m_effort_per_word[word] = 0
-      }
-      m_effort_per_word[word] += count * getEffort(row,col)
-
-      m_effort += count * getEffort(row, col);
-
-      var finger = getFinger(row, col);
-      if (!m_finger_usage[finger]) {
-        m_finger_usage[finger] = 0;
-      }
-      m_finger_usage[finger] += count;
-      // finger travel distance
-      if (row < 0) { break; }
-      // d = dist(col, row, finger_pos[finger][1], finger_pos[finger][0]);
-      x1 = getX(char,row,col)
-      y1 = getY(char,row,col)
-      x2 = getX(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
-      y2 = getY(getChar(finger_pos[finger][0],finger_pos[finger][1]),finger_pos[finger][0],finger_pos[finger][1])
-      d = dist(x1, y1, x2, y2);
-      if (!m_finger_distance[finger]) {
-        m_finger_distance[finger] = 0;
-      }
-      m_finger_distance[finger] += d * count;
-
-      finger_pos[finger] = [row, col]; // move finger to new position
-
-      // finger row //
-      if (!m_row_usage[row]) {
-        m_row_usage[row] = 0;
-      }
-      m_row_usage[row] += count;
-
-      // bigram stuff
-      if (i > 0) {
-        bigram = prevchar + char;
-        if (finger == prevfinger && (double_is_sfb || prevchar != char)) {
-        // if (finger == prevfinger) {
-          if (!m_same_finger[bigram]) {
-            m_same_finger[bigram] = 0;
-          }
-          m_same_finger[bigram] += count;
-          if (!m_same_finger2[finger]) {
-            m_same_finger2[finger] = 0;
-          }
-          m_same_finger2[finger] += count;
-        }
-        if ((prevcol == 3 && col == 5) || (prevcol == 8 && col == 6) || (prevcol == 5 && col == 3) || (prevcol == 6 && col == 8)) {
-          if (!m_lat_stretch[bigram]) {
-            m_lat_stretch[bigram] = 0;
-          }
-          m_lat_stretch[bigram] += count;
-        }
-        // scissors
-        if (Math.abs(col-prevcol) == 1 && Math.abs(row-prevrow) >= 2 && ((finger <= 4 && prevfinger <= 4 &&finger!=prevfinger)||(finger >=7 && prevfinger>=7&&finger!=prevfinger))) {
-          if (!m_scissors[bigram]) {
-            m_scissors[bigram] = 0;
-          }
-          m_scissors[bigram] += count;
-        }
-        // pinky/ring scissors
-        if (Math.abs(col-prevcol) == 1 && Math.abs(row-prevrow) >= 1 && (finger == 1 ||finger == 10||prevfinger==1||prevfinger==10)) {
-          if (!m_pinky_scissors[bigram]) {
-            m_pinky_scissors[bigram] = 0;
-          }
-          m_pinky_scissors[bigram] += count;
-        }
-        // same hand strings
-        if (prevhand == hand) {
-          samehand = samehand + char;
-        } else {
-          if (samehand.length >= 4) {
-            if (!samehandstrings[samehand]) {
-              samehandstrings[samehand] = 0;
-            }
-            samehandstrings[samehand] += count;
-          }
-          if (!samehandcount[samehand.length]){
-            samehandcount[samehand.length] = 0;
-          }
-          samehandcount[samehand.length] += count
-          samehand = char;
-        }
-        // finger pairs
-        if (!m_finger_pairs[prevfinger]) {
-          m_finger_pairs[prevfinger] = {};
-        }
-        if (!m_finger_pairs[prevfinger][finger]) {
-          m_finger_pairs[prevfinger][finger] = 0;
-        }
-        if (char != prevchar){
-          m_finger_pairs[prevfinger][finger] += count;
-        }
-      }
-      // trigram stuff
-      if (i > 1) {
-        skip = ppchar + "_" + char;
-        trigram = ppchar + prevchar + char;
-        if (finger == ppfinger && ppchar != char) {
-          if (!m_skip_bigram[skip]) {
-            m_skip_bigram[skip] = 0;
-          }
-          m_skip_bigram[skip] += count;
-
-          if (Math.abs(getRow(ppchar)-row) >= 2) {
-            if (!m_skip_bigram2[skip]) {
-              m_skip_bigram2[skip] = 0
-            }
-            m_skip_bigram2[skip] += count;
-          }
-        }
-        cat = "other";
-        if (ppfinger <= 4 && prevfinger <= 4 && finger <= 4) { // left hand
-          if (ppfinger < prevfinger && prevfinger < finger) {
-            cat = "roll in"
-          } else if (ppfinger > prevfinger && prevfinger > finger) {
-            cat = "roll out"
-          } else if ((ppfinger < prevfinger && finger < prevfinger) || (ppfinger > prevfinger && finger > prevfinger)) {
-            cat = "redirect"
-            // if (!m_redirects[trigram]) {
-            //   m_redirects[trigram] = 0;
-            // }
-            // m_redirects[trigram] += count;
-            if (ppfinger == 4 || prevfinger == 4 || finger == 4) {
-            } else {
-              cat = "weak redirect"
-            }
-          }
-        }
-        if (ppfinger >= 7 && prevfinger >= 7 && finger >= 7) { // right hand
-          if (ppfinger > prevfinger && prevfinger > finger) {
-            cat = "roll in"
-          } else if (ppfinger < prevfinger && prevfinger < finger) {
-            cat = "roll out"
-          } else if ((ppfinger > prevfinger && finger > prevfinger) || (ppfinger < prevfinger && finger < prevfinger)) {
-            cat = "redirect"
-            // if (!m_redirects[trigram]) {
-            //   m_redirects[trigram] = 0;
-            // }
-            // m_redirects[trigram] += count;
-            if (ppfinger == 7 || prevfinger == 7 || finger == 7) {
-            } else {
-              cat = "weak redirect"
-            }
-          }
-        }
-        if ((ppfinger <= 4 && prevfinger >= 7 && finger <= 4) || (ppfinger >= 7 && prevfinger <= 4 && finger >= 7)) {
-          cat = "alt"
-          if (ppfinger == finger && ppchar != char) {
-            cat = "alt sfs"
-          }
-        } else if (ppfinger <= 5 && prevfinger <= 5 && finger >= 6 && ppfinger < prevfinger) { // LLR
-          cat = "bigram roll in"
-        }
-        else if (ppfinger >= 6 && prevfinger >= 6 && finger <= 5 && ppfinger > prevfinger) { // RRL
-          cat = "bigram roll in"
-        }
-        else if (ppfinger <= 5 && prevfinger <= 5 && finger >= 6 && ppfinger > prevfinger) { // LLR
-          cat = "bigram roll out"
-        }
-        else if (ppfinger >= 6 && prevfinger >= 6 && finger <= 5 && ppfinger < prevfinger) { // RRL
-          cat = "bigram roll out"
-        }
-        else if (ppfinger <= 5 && prevfinger >= 6 && finger >= 6 && prevfinger > finger) { // LRR
-          cat = "bigram roll in"
-        }
-        else if (ppfinger >= 6 && prevfinger <= 5 && finger <= 5 && prevfinger < finger) { // RLL
-          cat = "bigram roll in"
-        }
-        else if (ppfinger <= 5 && prevfinger >= 6 && finger >= 6 && prevfinger < finger) { // LRR
-          cat = "bigram roll out"
-        }
-        else if (ppfinger >= 6 && prevfinger <= 5 && finger <= 5 && prevfinger > finger) { // RLL
-          cat = "bigram roll out";
-        }
-        if (!m_trigram_count[cat]) {
-          m_trigram_count[cat] = 0;
-        }
-        m_trigram_count[cat] += count;
-      }
-      prevcol = col;
-      prevrow = row;
-      prevhand = hand;
-      ppchar = prevchar;
-      ppfinger = prevfinger;
-      prevchar = char;
-      prevfinger = finger;
-    }
-    if (samehand.length >= 4) {
-      if (!samehandstrings[samehand]) {
-        samehandstrings[samehand] = 0;
-      }
-      samehandstrings[samehand] += count;
-    }
-    if (!samehandcount[samehand.length]){
-      samehandcount[samehand.length] = 0;
-    }
-    samehandcount[samehand.length] += count
-  }
-  var scale = 1006393/m_input_length;
-  m_total_word_effort *= scale;
-  // console.log("word count "+word_count)
-  var sum = 0;
-  for (var letter in m_letter_freq) {
-    sum += m_letter_freq[letter]
-  }
-  for (var letter in m_letter_freq) {
-    for (let i = 0; i < rcdata.length; i++) {
-      if (rcdata[i][0] == letter) {
-        rcdata[i][3] = 100 * m_letter_freq[letter] / sum
-      }
-    }
-  }
-  needs_update = false;
-}
-
 function generatePlots() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+  console.log("generatePlots")
   stats.selectAll("*").remove();
   ///////////////////////////////////////  C O L U M N   U S A G E  ////////////////////////////////////////////
   var x = 500;
@@ -2419,7 +2163,7 @@ function generatePlots() {
     for (var bigram in tmp) {
       sum += tmp[bigram] / m_input_length;
     }
-    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams 2u " + parseFloat(100 * sum).toFixed(2) + "%")
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams (2u) " + parseFloat(100 * sum).toFixed(2) + "%")
   }
 
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
@@ -2445,26 +2189,39 @@ function generatePlots() {
   var x = 500;
   var y = 180;
   sum = 0;
-  var keyValueArray = Object.entries(m_lat_stretch);
-  keyValueArray.sort((a, b) => b[1] - a[1]);
-  m_lat_stretch = Object.fromEntries(keyValueArray);
-  for (var bigram in m_lat_stretch) {
-    sum += m_lat_stretch[bigram] / m_input_length;
+  if (lsb_toggle == 0){
+    var keyValueArray = Object.entries(m_lat_stretch);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+  } else {
+    var keyValueArray = Object.entries(m_lat_stretch2);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Ring LSBs " + parseFloat(100 * sum).toFixed(2) + "%")
   }
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+
+  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing lateral stretches from the middle finger to ring finger')").attr("onmouseout","hideTooltip()").attr("onclick","lsbToggle()")
   var i = 0;
   var t = scroll_amount;
-  for (var bigram in m_lat_stretch) {
+  for (var bigram in tmp) {
     if (t > 0){
       t -= 1;
       continue;
     }
-    var height = 10000 * m_lat_stretch[bigram] / m_input_length;
+    var height = 10000 * tmp[bigram] / m_input_length;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_lat_stretch[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -2474,7 +2231,7 @@ function generatePlots() {
   var y = 180;
   sum = 0;
 
-  if (scissors_toggle) {
+  if (scissors_toggle == 0) {
     var keyValueArray = Object.entries(m_pinky_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -2482,7 +2239,7 @@ function generatePlots() {
       sum += tmp[bigram] / m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
-  } else {
+  } else if (scissors_toggle == 1){
     var keyValueArray = Object.entries(m_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -2490,9 +2247,19 @@ function generatePlots() {
       sum += tmp[bigram] / m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
+  } else {
+    var keyValueArray = Object.entries(m_all_scissors);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("All 2u row jumps " + parseFloat(100 * sum).toFixed(2) + "%")
   }
   stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle()")
+
+  // stats.append("rect").attr("x", x + 17).attr("y", y - 30).attr("width", 16).attr("height", 16).attr("stroke", "#ff0000").attr("fill", "none")
   var i = 0;
   var t = scroll_amount;
   for (var bigram in tmp) {
@@ -2514,11 +2281,22 @@ function generatePlots() {
   var x = 760;
   var y = 390;
   sum = 0;
-  var keyValueArray = Object.entries(m_trigram_count);
-  keyValueArray.sort((a, b) => b[1] - a[1]);
-  m_trigram_count = Object.fromEntries(keyValueArray);
-  for (var cat in m_trigram_count) {
-    sum += m_trigram_count[cat]
+
+  if (trigram_toggle) {
+    var keyValueArray = Object.entries(m_trigram_count);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+  } else {
+    var keyValueArray = Object.entries(m_trigram_count_2);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+
   }
   const trigram_desc = {
     "alt":"the hands used to type the trigram are either LRL or RLR",
@@ -2530,6 +2308,9 @@ function generatePlots() {
     "roll out":"the three characters of the trigram are typed with the same hand and go from the inside to the outside",
     "roll in":"the three characters of the trigram are typed with the same hand and go from the outside to the inside",
     "other":"all other trigrams that don\\'t fit into any of the other categories",
+    "bigram same row":"two adjacent characters in the trigram are typed on the same row",
+    "trigram same row":"the three characters in the trigram are typed on the same row",
+    "double jump":"trigram is typed top, bottom, top or bottom, top, bottom",
   };
   // for(var tri in m_redirects){
   //   if (m_redirects[tri] > 40){
@@ -2537,16 +2318,18 @@ function generatePlots() {
   //     // trigram_desc["redirect"] = trigram_desc["redirect"].concat(" "+tri);
   //   }
   // }
+  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Trigram Stats")
   var i = 0
-  for (var cat in m_trigram_count) {
-    var height = 200 * m_trigram_count[cat] / sum;
+  for (var cat in tmp) {
+    var height = 200 * tmp[cat] / sum;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 105).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
-    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_trigram_count[cat] / sum)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[cat] / sum)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -2718,8 +2501,6 @@ function makeDraggable(svg) {
   svg.addEventListener('touchleave', endDrag);
   svg.addEventListener('touchcancel', endDrag);
 
-  svg.addEventListener('contextmenu', event => event.preventDefault());
-
   function getMousePosition(evt) {
     var CTM = svg.getScreenCTM();
     if (evt.touches) { evt = evt.touches[0]; }
@@ -2813,8 +2594,6 @@ function makeDraggable(svg) {
   }
 
   function endDrag(evt) {
-    // console.log(evt)
-    // console.log(selectedElement)
     if (selectedElement) {
       x = selectedElement.getAttributeNS(null, "x");
       y = selectedElement.getAttributeNS(null, "y");
@@ -2862,13 +2641,15 @@ function makeDraggable(svg) {
         rcdata[starti][k] = rcdata[dropi][k];
         rcdata[dropi][k] = tmp;
       }
+      // console.log(rcdata)
 
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
       queryParams.set("mode",mode)
+      queryParams.set("lan",lang)
       history.replaceState(null, null, "?"+queryParams.toString());
 
-      // d3.select(svg).selectAll("*").remove();
+      d3.select(svg).selectAll("*").remove();
       needs_update = true;
       measureDictionary();
       measureWords();
@@ -2877,9 +2658,8 @@ function makeDraggable(svg) {
     }
   }
 }
+
 if (url_layout) {
   importLayout(url_layout)
 }
-fetchEffort();
-fetchData();
-fetchDictionary();
+loadAllData()

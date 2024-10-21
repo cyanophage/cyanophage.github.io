@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Keyboard Layout</title>
+    <title>Keyboard Layout Stats - now with Magic!</title>
     <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
+    <link rel="icon" type="image/x-icon" href="favicon.gif">
     <style>
       body {
         background-color:#1b1c1f;
@@ -174,14 +175,19 @@
     |
     <a onclick="openImportPopup()">import</a>
     |
+    <a onclick="openCorpusPopup()">corpus</a>
+    |
     <div class="dropdown">
       <button class="dropbtn" id="langDropDown">English</button>
       <div class="dropdown-content">
         <a onclick="selectLanguage('dutch')">Dutch</a>
         <a onclick="selectLanguage('english')">English</a>
+        <a onclick="selectLanguage('estonian')">Estonian</a>
         <a onclick="selectLanguage('finnish')">Finnish</a>
         <a onclick="selectLanguage('french')">French</a>
         <a onclick="selectLanguage('german')">German</a>
+        <a onclick="selectLanguage('hungarian')">Hungarian</a>
+        <a onclick="selectLanguage('italian')">Italian</a>
         <a onclick="selectLanguage('norweigan')">Norweigan</a>
         <a onclick="selectLanguage('portuguese')">Portuguese</a>
         <a onclick="selectLanguage('spanish')">Spanish</a>
@@ -239,8 +245,7 @@
         <input type="text" id="textInput-2-10" class="effort" maxlength="1">
         <input type="text" id="textInput-2-11" class="effort" maxlength="1">
         <br>
-        <button onclick="closePopup(true)">OK</button>
-        <button onclick="closePopup(false)">Cancel</button>
+        <button onclick="closePopup()">OK</button>
         <button onclick="pasteEffortGridFromClipboard()" style="float: right;margin-left: 5px;">Paste</button>
         <button onclick="copyEffortGridToClipboard()" style="float: right;">Copy</button>
       </div>
