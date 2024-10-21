@@ -502,6 +502,14 @@ function scissorsToggle() {
   }
   generatePlots();
 }
+var lsb_toggle = 0;
+function lsbToggle() {
+  lsb_toggle += 1
+  if (lsb_toggle > 1){
+    lsb_toggle = 0
+  }
+  generatePlots();
+}
 var sfb_toggle = true;
 function sfbToggle() {
   sfb_toggle = !sfb_toggle
@@ -966,6 +974,7 @@ var m_scissors = {};
 var m_all_scissors = {};
 var m_pinky_scissors = {};
 var m_lat_stretch = {};
+var m_lat_stretch2 = {};
 var m_letter_freq = {};
 var m_row_usage = {};
 var m_trigram_count = {};
@@ -1207,6 +1216,7 @@ function measureWords() {
   m_same_finger = {};
   m_same_finger2 = {};
   m_lat_stretch = {};
+  m_lat_stretch2 = {};
   m_letter_freq = {};
   m_row_usage = {};
   m_trigram_count = {};
@@ -1316,11 +1326,18 @@ function measureWords() {
           }
           m_same_finger2[finger] += count;
         }
+        // lsbs
         if ((prevcol == 3 && col == 5) || (prevcol == 8 && col == 6) || (prevcol == 5 && col == 3) || (prevcol == 6 && col == 8)) {
           if (!m_lat_stretch[bigram]) {
             m_lat_stretch[bigram] = 0;
           }
           m_lat_stretch[bigram] += count;
+        }
+        if ((prevcol == 2 && col == 5) || (prevcol == 9 && col == 6) || (prevcol == 5 && col == 2) || (prevcol == 6 && col == 9)) {
+          if (!m_lat_stretch2[bigram]) {
+            m_lat_stretch2[bigram] = 0;
+          }
+          m_lat_stretch2[bigram] += count;
         }
         // scissors
         if (Math.abs(col-prevcol) == 1 && Math.abs(row-prevrow) >= 2 && ((finger <= 4 && prevfinger <= 4 &&finger!=prevfinger)||(finger >=7 && prevfinger>=7&&finger!=prevfinger))) {
@@ -1750,26 +1767,39 @@ function generatePlots() {
   var x = 500;
   var y = 180;
   sum = 0;
-  var keyValueArray = Object.entries(m_lat_stretch);
-  keyValueArray.sort((a, b) => b[1] - a[1]);
-  m_lat_stretch = Object.fromEntries(keyValueArray);
-  for (var bigram in m_lat_stretch) {
-    sum += m_lat_stretch[bigram] / m_input_length;
+  if (lsb_toggle == 0){
+    var keyValueArray = Object.entries(m_lat_stretch);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+  } else {
+    var keyValueArray = Object.entries(m_lat_stretch2);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var bigram in tmp) {
+      sum += tmp[bigram] / m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Ring LSBs " + parseFloat(100 * sum).toFixed(2) + "%")
   }
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+
+  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing lateral stretches from the middle finger to ring finger')").attr("onmouseout","hideTooltip()").attr("onclick","lsbToggle()")
   var i = 0;
   var t = scroll_amount;
-  for (var bigram in m_lat_stretch) {
+  for (var bigram in tmp) {
     if (t > 0){
       t -= 1;
       continue;
     }
-    var height = 10000 * m_lat_stretch[bigram] / m_input_length;
+    var height = 10000 * tmp[bigram] / m_input_length;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_lat_stretch[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
