@@ -495,10 +495,13 @@ function skipToggle() {
   generatePlots();
 }
 var scissors_toggle = 0;
-function scissorsToggle() {
-  scissors_toggle += 1
+function scissorsToggle(v) {
+  scissors_toggle += v
   if (scissors_toggle > 2){
     scissors_toggle = 0
+  }
+  if (scissors_toggle < 0){
+    scissors_toggle = 2
   }
   generatePlots();
 }
@@ -1666,9 +1669,15 @@ function generatePlots() {
   var y = 180;
   sum = 0;
   // toggle button
-  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing same finger bigrams for each bigram, and for each finger')")
   .attr("onmouseout","hideTooltip()").attr("onclick","sfbToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
+
+  stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing same finger bigrams for each bigram, and for each finger')")
+  .attr("onmouseout","hideTooltip()").attr("onclick","sfbToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   if(sfb_toggle) {
     var keyValueArray = Object.entries(m_same_finger);
     keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -1744,8 +1753,13 @@ function generatePlots() {
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams (2u) " + parseFloat(100 * sum).toFixed(2) + "%")
   }
 
-  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
+
+  stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   var i = 0;
   var t = scroll_amount;
   for (var bigram in tmp) {
@@ -1785,8 +1799,13 @@ function generatePlots() {
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Ring LSBs " + parseFloat(100 * sum).toFixed(2) + "%")
   }
 
-  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing lateral stretches from the middle finger to ring finger')").attr("onmouseout","hideTooltip()").attr("onclick","lsbToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
+
+  stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing lateral stretches from the middle finger to ring finger')").attr("onmouseout","hideTooltip()").attr("onclick","lsbToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   var i = 0;
   var t = scroll_amount;
   for (var bigram in tmp) {
@@ -1834,8 +1853,13 @@ function generatePlots() {
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("All 2u row jumps " + parseFloat(100 * sum).toFixed(2) + "%")
   }
-  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle()")
+  stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle(-1)")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
+
+  stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle(1)")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   var i = 0;
   var t = scroll_amount;
   for (var bigram in tmp) {
@@ -1894,9 +1918,16 @@ function generatePlots() {
   //     // trigram_desc["redirect"] = trigram_desc["redirect"].concat(" "+tri);
   //   }
   // }
-  stats.append("rect").attr("x", x + 15).attr("y", y - 32).attr("width", 20).attr("height", 20)
+  stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
+
+  stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
+  .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
+
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Trigram Stats")
+
   var i = 0
   for (var cat in tmp) {
     var height = 200 * tmp[cat] / sum;
