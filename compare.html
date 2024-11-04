@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Keyboard Layout</title>
+    <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
+    <link rel="icon" type="image/x-icon" href="favicon.gif">
+    <style>
+      body {
+        background-color:#1b1c1f;
+        color: #999;
+        font-family: Arial, sans-serif;
+      }
+      svg text{
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      svg {
+          max-width: 100%;
+      }
+      .static {
+        cursor: not-allowed;
+      }
+      .draggable {
+        cursor: move;
+      }
+      .layout-svg{
+        display: flex;
+        justify-content: center;
+        margin: 0;
+      }
+      .stats-svg{
+        display: flex;
+        justify-content: center;
+        margin: 0;
+      }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0.0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .popup {
+        background-color: #aaa;
+        color: #333;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+      .popup2 {
+        background-color: #aaa;
+        color: #333;
+        width: 300px;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0.0, 0, 0.3);
+      }
+
+      .effort {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
+      .importText {
+        margin-bottom: 10px;
+        text-align: center;
+        width: 100%;
+        height: 20px;
+        font-family:Arial, Helvetica, sans-serif
+      }
+      #tooltip {background:#333333; color:#cccccc; border: 1px solid #cccccc; padding:5px;}
+
+      /* Resetting default styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Styling the dropdown container */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      /* Styling the dropdown button */
+      .dropbtn {
+        background-color: #1b1c1f;
+        color: #999999;
+        font-family: Arial, sans-serif;
+        padding: 1px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        border-radius: 0px;
+      }
+
+      /* Styling the dropdown content (hidden by default) */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+
+        background-color: #dddddd;
+        min-width: 160px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.75);
+        z-index: 1;
+      }
+
+      /* Styling the links inside the dropdown */
+      .dropdown-content a {
+        color: black;
+        padding: 8px 8px;
+        text-decoration: none;
+        display: block;
+      }
+
+      /* Change color of dropdown links on hover */
+      .dropdown-content a:hover {
+        background-color: #bbb;
+      }
+
+      /* Show the dropdown content when hovering over dropdown container */
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      </style>
+  </head>
+  <body>
+    <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
+    <a href="index.html">back</a>
+    <div class="layout-svg" id = "svglayout"></div>
+    <br>
+    <div class="stats-svg" id = "svgstats"></div>
+    <br>
+    <script type = "text/javascript" src="keyboard_compare.js"></script>
+  </body>
+</html>
