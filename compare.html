@@ -143,9 +143,20 @@
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
     <a href="index.html">back</a>
     <div class="layout-svg" id = "svglayout"></div>
+
     <br>
     <div class="stats-svg" id = "svgstats"></div>
     <br>
+
+
+    <div id="importPopup" class="overlay">
+      <div class="popup2">
+        <p id="importMessage">Import</p>
+        <input type="text" id="importText" class="importText">
+        <br>
+        <button onclick="closeImportPopup()">OK</button>
+      </div>
+    </div>
     <script type = "text/javascript" src="keyboard_compare.js"></script>
   </body>
 </html>
