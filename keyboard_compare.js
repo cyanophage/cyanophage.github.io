@@ -16,6 +16,7 @@ var letter = "";
 var x = 0;
 var y = 0;
 var dx;
+var importside = 1;
 var fontsize;
 var per;
 var max = 11.870939;
@@ -395,7 +396,7 @@ function closeImportPopup() {
       }
       needs_update[1] = true;
       needs_update[2] = true;
-      importLayout(importString);
+      importLayout(importString, importside);
       // var queryParams = new URLSearchParams(window.location.search);
       // queryParams.set("layout", exportLayout());
       // queryParams.set("mode",mode)
@@ -785,31 +786,58 @@ function activateAnsi() {
   }
 }
 
-function importLayout(layout) {
+function importLayout(layout,side) {
   var decodedString = decodeURIComponent(layout);
   console.log("importing: "+decodedString)
   layout = decodedString
-  for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
-    for (let j = 0; j < 34; j++) {
-      if (layout.charAt(i) == rcdata[j][0]) {
-        // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
-        // swap
-        indices = [0, 3, 7]
-        for (let id = 0; id < indices.length; id++){
-          var k = indices[id];
-          tmp = rcdata[i][k];
-          rcdata[i][k] = rcdata[j][k];
-          rcdata[j][k] = tmp;
+  if (side == 1){
+    for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
+      for (let j = 0; j < 34; j++) {
+        if (layout.charAt(i) == rcdata[j][0]) {
+          // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
+          // swap
+          indices = [0, 3, 7]
+          for (let id = 0; id < indices.length; id++){
+            var k = indices[id];
+            tmp = rcdata[i][k];
+            rcdata[i][k] = rcdata[j][k];
+            rcdata[j][k] = tmp;
+          }
         }
       }
     }
-  }
-  for (let i = 0; i < 34; i++) {
-    if (rcdata[i][0] == "^") {
-      if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
-        // cool
-      } else {
-        rcdata[i][0] = "="
+    for (let i = 0; i < 34; i++) {
+      if (rcdata[i][0] == "^") {
+        if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
+          // cool
+        } else {
+          rcdata[i][0] = "="
+        }
+      }
+    }
+  } else {
+    for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
+      for (let j = 0; j < 34; j++) {
+        if (layout.charAt(i) == rcdata2[j][0]) {
+          // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
+          // swap
+          indices = [0, 3, 7]
+          for (let id = 0; id < indices.length; id++){
+            var k = indices[id];
+            tmp = rcdata2[i][k];
+            rcdata2[i][k] = rcdata2[j][k];
+            rcdata2[j][k] = tmp;
+          }
+        }
+      }
+    }
+    for (let i = 0; i < 34; i++) {
+      if (rcdata2[i][0] == "^") {
+        if (rcdata2[i][1] == 3 && rcdata2[i][2] == 4) {
+          // cool
+        } else {
+          rcdata2[i][0] = "="
+        }
       }
     }
   }
@@ -998,6 +1026,9 @@ function generateLayout() {
 
   svg.append("rect").attr("x", x_right).attr("y", 0).attr("width", outlinewidth).attr("height", 170)
   .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
+
+  svg.append("text").attr("x", 30).attr("y", 155).attr("fill", "#999999").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text("import").attr("onclick","importside=1;openImportPopup()")
+  svg.append("text").attr("x", 620).attr("y", 155).attr("fill", "#999999").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text("import").attr("onclick","importside=2;openImportPopup()")
 
   for (let i = 0; i < rcdata.length; i++) {
     letter = rcdata[i][0];
@@ -2556,7 +2587,4 @@ function makeDraggable(svg) {
   }
 }
 
-if (url_layout) {
-  importLayout(url_layout)
-}
 loadAllData()
