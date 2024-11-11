@@ -93,6 +93,7 @@ async function loadAllData() {
       dataloaded = true;
       dictionaryloaded = true;
       effortloaded = true;
+      setMode();
       generateCoords();
       measureDictionary();
       measureWords();
@@ -541,11 +542,11 @@ function setMode() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("setMode to "+mode);
   if (mode == "ergo") {
-    activateErgo()
+    setErgo()
   } else if (mode == "ansi") {
-    activateAnsi()
+    setAnsi()
   } else if (mode == "iso") {
-    activateIso()
+    setIso()
   }
   generateCoords()
 }
@@ -580,7 +581,18 @@ function setErgo() {
   generateCoords()
 }
 
+
 function activateErgo() {
+  needs_update = true;
+  setErgo();
+  generateCoords();
+  measureDictionary();
+  measureWords();
+  generateLayout();
+  generatePlots();
+}
+
+function setErgo() {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   console.log("activateErgo");
   rcdata[32][1] = 2
@@ -607,7 +619,11 @@ function activateErgo() {
   queryParams.set("mode",mode)
   queryParams.set("lan",lang)
   history.replaceState(null, null, "?"+queryParams.toString());
+}
+
+function activateIso(anglemod) {
   needs_update = true;
+  setIso(anglemod);
   generateCoords();
   measureDictionary();
   measureWords();
@@ -615,7 +631,7 @@ function activateErgo() {
   generatePlots();
 }
 
-function activateIso(anglemod) {
+function setIso(anglemod) {
   // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   hasshift = false
@@ -656,18 +672,22 @@ function activateIso(anglemod) {
     queryParams.set("mode",mode)
     queryParams.set("lan",lang)
     history.replaceState(null, null, "?"+queryParams.toString());
-    needs_update = true;
-    generateCoords();
-    measureDictionary();
-    measureWords();
-    generateLayout();
-    generatePlots();
   } else {
     console.log("You can't have layouts with thumb letters on ISO/ANSI")
   }
 }
 
 function activateAnsi() {
+  needs_update = true;
+  setAnsi();
+  generateCoords();
+  measureDictionary();
+  measureWords();
+  generateLayout();
+  generatePlots();
+}
+
+function setAnsi() {
   // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   hasshift = false
@@ -679,12 +699,17 @@ function activateAnsi() {
   if (hasshift == true) {
     // rcdata[32] = [rcdata[32][0], 0, 12, 0.2753001, 0, 0, 1, rcdata[32][7]]
     // rcdata[33] = [rcdata[33][0], 2, -1, 0, 0, 0, 2.25, rcdata[33][7]]
+
+    // backslash key
     rcdata[32][1] = 0
     rcdata[32][2] = 12
     rcdata[32][6] = 1
+
+    // left shift key
     rcdata[33][1] = 2
     rcdata[33][2] = -1
     rcdata[33][6] = 2.25
+
     rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5, 34]
     rcdata[35] = ["back", 0, 13, 0, 0, 0, 1.25, 35]
     rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75, 36]
@@ -702,12 +727,6 @@ function activateAnsi() {
     queryParams.set("mode",mode)
     queryParams.set("lan",lang)
     history.replaceState(null, null, "?"+queryParams.toString());
-    needs_update = true;
-    generateCoords();
-    measureDictionary();
-    measureWords();
-    generateLayout();
-    generatePlots();
   } else {
     console.log("You can't have layouts with thumb letters on ISO/ANSI")
   }
