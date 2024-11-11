@@ -1043,6 +1043,7 @@ function generateLayout() {
     if (red < 16) {  red = 16; }
     if (red > 255) { red = 255;}
     hex_red = red.toString(16);
+    green = 128;
     hex_bg = green.toString(16);
 
     fontsize = 16;
@@ -1068,15 +1069,43 @@ function generateLayout() {
     if (letter == "^"){
       letter = "shift"
     }
-    x = rcdata2[i][5];
+    // 0     1    2    3     4  5  6      7
+    // char, row, col, freq, y, x, width, keyname
+    row = rcdata2[i][1];
+    col = rcdata2[i][2];
+    freq = rcdata2[i][3];
     y = rcdata2[i][4];
-    per = rcdata2[i][3];
+    x = rcdata2[i][5];
     keywidth = rcdata2[i][6];
-    red = Math.floor(127 * per / max) + 128
+
+    // other side
+    var otherrow = 0;
+    var othercol = 0;
+    for (let j = 0; j < rcdata.length; j++) {
+      if (rcdata[j][0] == letter){
+        otherrow = rcdata[j][1];
+        othercol = rcdata[j][2];
+      }
+    }
+    var stroke = "black"
+    red = Math.floor(127 * freq / max) + 128
     if (red < 16) {  red = 16; }
     if (red > 255) { red = 255;}
     hex_red = red.toString(16);
+    green = 128;
     hex_bg = green.toString(16);
+    if (letter == "shift" || (row == otherrow && col == othercol)){
+      stroke = "black";
+    } else {
+      if ((othercol <= 5 && col >= 6) || othercol >= 6 && col <= 5) {
+        stroke = "#bb3333";
+      } else if (col == othercol){
+        stroke = "#33bb33";
+      }else {
+        stroke = "#bbbb33";
+      }
+
+    }
 
     fontsize = 16;
     if (letter.length > 1) { fontsize = 10; }
@@ -1084,7 +1113,7 @@ function generateLayout() {
 
     svg.append("rect").attr("x", x).attr("y", y)
       .attr("width", keywidth*w-gap).attr("height", w-gap).attr("rx", 4).attr("ry", 4)
-      .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", "black")
+      .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", stroke)
       .attr("stroke-width", "1").attr("class", "draggable");
     if (letter.length > 1 && mode != "ergo") {
       svg.append("text").attr("x", x + 5).attr("y", y + 19)
