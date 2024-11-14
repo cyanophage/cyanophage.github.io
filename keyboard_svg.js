@@ -18,6 +18,8 @@ var per;
 var max = 11.870939;
 var red = 0;
 var scroll_amount = 0;
+var hw_scroll_amount = 0;
+var sh_scroll_amount = 0;
 var green = 128;
 var mode = params.mode;
 if (!mode){  mode = "ergo"}
@@ -29,9 +31,21 @@ var needs_update = true;
 
 function scroll(event){
   event.preventDefault();
-  scroll_amount += event.deltaY/125;
-  if (scroll_amount < 0){scroll_amount = 0;}
-  if (scroll_amount > 50){scroll_amount = 50;}
+  //
+  const svgRect = el.getBoundingClientRect();
+  const mouseX = event.clientX - svgRect.left;
+  const mouseY = event.clientY - svgRect.top;
+  if (mouseX > 570 && mouseX < 770 && mouseY > 345){
+    hw_scroll_amount += Math.sign(event.deltaY);
+    if (hw_scroll_amount < 0){hw_scroll_amount = 0;}
+  } else if (mouseX > 200 && mouseX < 430 && mouseY > 345){
+    sh_scroll_amount += Math.sign(event.deltaY);
+    if (sh_scroll_amount < 0){sh_scroll_amount = 0;}
+  } else {
+    scroll_amount += Math.sign(event.deltaY);
+    if (scroll_amount < 0){scroll_amount = 0;}
+    if (scroll_amount > 50){scroll_amount = 50;}
+  }
   generatePlots();
 }
 
@@ -2021,7 +2035,12 @@ function generatePlots() {
   // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings")
   var i = 0
+  t = sh_scroll_amount;
   for (var word in samehandstrings) {
+    if (t > 0){
+      t -= 1;
+      continue;
+    }
     var count = samehandstrings[word];
     // console.log(word + " " + count)
     var width = scale * word.length * count;
@@ -2032,7 +2051,6 @@ function generatePlots() {
     i += 1;
     if (i > 10) { break; }
   }
-
 
   ///////////////////////////////////  S A M E   H A N D   C O U N T S  ///////////////////////////////
   var x = 415;
@@ -2068,9 +2086,14 @@ function generatePlots() {
   word_effort = Object.fromEntries(keyValueArray);
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Hard Words ")
   var i = 0
+  t = hw_scroll_amount;
   for (var word in word_effort) {
-    var height = 100*word_effort[word]/word.length;
     if (word.length > 3 && words[word] > 4){
+      if (t > 0){
+        t -= 1;
+        continue;
+      }
+      var height = 100*word_effort[word]/word.length;
       stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
         .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(word);
