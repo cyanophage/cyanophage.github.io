@@ -18,6 +18,7 @@
     .sort-button{height:20px;width:190px;background-color:#333333;color:#cccccc;border:none;text-align:center;text-decoration:none;display:inline-block;border-radius:4px;margin-bottom:3px;}
     .layout-svg{margin-left:200px;width:700px;}
     .stats-svg{margin-left:200px;width:1040px;}
+    #myCheckbox {accent-color: #aaaaaa;}
     @media (max-width:1170px){ .sidebar{display:none} .content{margin-left: 0px;} .stats-svg{margin-left: 0px;} .layout-svg{margin-left: 0px;} }
     @media (min-width:1500px){ .sidebar{display:block} .content{margin: auto;} .stats-svg{margin: auto;} .layout-svg{margin: auto;} }
     #tooltip {background:#333333;color:#cccccc;border: 1px solid #cccccc; padding:5px;}
@@ -33,7 +34,8 @@
      }
     </style>
     <script>
-      function sortDivs(v) {
+
+  function sortDivs(v) {
     const container = document.getElementById("content");
     const divs = Array.from(container.getElementsByClassName("sortable"));
     divs.sort((a,b) => {
@@ -64,7 +66,50 @@
   function hideTooltip() {
     var tooltip = document.getElementById("tooltip");
     tooltip.style.display = "none";
-  }    </script>
+  }
+
+  let selectedLayouts = [];
+  function resetCheckboxes() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    selectedLayouts = [];
+    updateCompareSection();
+  }
+
+  function toggleCompare(layoutName) {
+    if (selectedLayouts.includes(layoutName)) {
+        selectedLayouts = selectedLayouts.filter(layout => layout !== layoutName);
+    } else {
+        if (selectedLayouts.length < 2) {
+            selectedLayouts.push(layoutName);
+        } else {
+            alert('You can only compare two layouts at a time');
+            event.target.checked = false;
+            return;
+        }
+    }
+
+    updateCompareSection();
+  }
+
+  function updateCompareSection() {
+    // const selectedDiv = document.getElementById('selected-layouts');
+    // selectedDiv.innerHTML = `Selected: ${selectedLayouts.join(' vs ')}`;
+
+    const compareButton = document.getElementById('compare-button');
+    compareButton.disabled = selectedLayouts.length !== 2;
+  }
+
+  function compareLayouts() {
+    if (selectedLayouts.length === 2) {
+        const queryString = `?layout1=${selectedLayouts[0]}&layout2=${selectedLayouts[1]}`;
+        window.location.href = 'compare.html' + queryString;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', resetCheckboxes);    </script>
 </head>
 <body style="background-color:#1b1c1f">
 <div id="tooltip" display="none" style="position: absolute;display: none;"></div><div class="sidebar bar-block" style="width:200px;" id="mySidebar">
@@ -99,8 +144,7 @@
 <a href="#beakl19bis" class="bar-item">beakl19bis</a>
 <a href="#maltron" class="bar-item">maltron</a>
 <a href="#rsthd" class="bar-item">rsthd</a>
-<a href="#dsthk_v1" class="bar-item">dsthk v1</a>
-<a href="#dsthk_v2" class="bar-item">dsthk v2</a>
+<a href="#dsthk" class="bar-item">dsthk</a>
 <a href="#aptmak" class="bar-item">aptmak</a>
 <a href="#handsdown-dash" class="bar-item">handsdown-dash</a>
 <a href="#handsdown-gold" class="bar-item">handsdown-gold</a>
@@ -116,10 +160,14 @@
   <button class="sort-button" onclick="sortDivs(3)">Sort by Skip Bigrams</button>
   <button class="sort-button" onclick="sortDivs(4)">Sort by Lat Stretch</button>
   <button class="sort-button" onclick="location.href='table.html'" type="button">table</button>
+  <button class="sort-button" id="compare-button" onclick="compareLayouts()" disabled>Compare Selected</button>
 </div>
 <div class="sortable" data-sfb="131.55277244241032" data-effort="109.04120383113057" data-skip="14.318547437516582" data-lat="0.045472566716382466">
   <h1 id="qwerty">qwerty</h1>
-  <h3><a class="link" href="playground.html?layout=qwertyuiop-asdfghjkl;'zxcvbnm,./\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qwertyuiop-asdfghjkl;'zxcvbnm,./\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qwertyuiop-asdfghjkl;\'zxcvbnm,./\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -695,7 +743,10 @@
 </div>
 <div class="sortable" data-sfb="55.9943639971502" data-effort="66.70505481489725" data-skip="4.477402828136691" data-lat="0.007996923648656035">
   <h1 id="dvorak">dvorak<a class="source" href="https://en.wikipedia.org/wiki/Dvorak_keyboard_layout">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=',.pyfgcrl/aoeuidhtns-;qjkxbmwvz\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=',.pyfgcrl/aoeuidhtns-;qjkxbmwvz\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('\',.pyfgcrl/aoeuidhtns-;qjkxbmwvz\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -1259,7 +1310,10 @@
 </div>
 <div class="sortable" data-sfb="27.29367529588518" data-effort="54.95361128472447" data-skip="4.588692024042441" data-lat="0.02260462426482059">
   <h1 id="colemak">colemak<a class="source" href="https://colemak.org/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=qwfpgjluy;-arstdhneio'zxcvbkm,./\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qwfpgjluy;-arstdhneio'zxcvbkm,./\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qwfpgjluy;-arstdhneio\'zxcvbkm,./\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -1835,7 +1889,10 @@
 </div>
 <div class="sortable" data-sfb="27.29367529588518" data-effort="46.365116004081926" data-skip="4.084909681861947" data-lat="0.01270982236455757">
   <h1 id="colemak-dh">colemak-dh<a class="source" href="https://colemakmods.github.io/mod-dh/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=qwfpbjluy;-arstgmneio'zxcdvkh,./\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qwfpbjluy;-arstgmneio'zxcdvkh,./\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qwfpbjluy;-arstgmneio\'zxcdvkh,./\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -2411,7 +2468,10 @@
 </div>
 <div class="sortable" data-sfb="20.45237070828618" data-effort="45.194989601415756" data-skip="2.3569461847182045" data-lat="0.008747132067484974">
   <h1 id="graphite">graphite<a class="source" href="https://github.com/rdavison/graphite-layout">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=bldwz'fouj;nrtsgyhaei,qxmcvkp.-/\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=bldwz'fouj;nrtsgyhaei,qxmcvkp.-/\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('bldwz\'fouj;nrtsgyhaei,qxmcvkp.-/\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -2988,7 +3048,10 @@
 <div class="sortable" data-sfb="19.188443411928017" data-effort="44.7061617449351" data-skip="2.4006669402526066" data-lat="0.009649369477149446">
   <h1 id="gallium_v1">gallium<a class="source" href="https://github.com/GalileoBlues/Gallium">source</a></h1>
   <h2>Version 1</h2>
-  <h3><a class="link" href="playground.html?layout=bldcvzyou,-nrtsgphaei/qxmwjkf';.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=bldcvzyou,-nrtsgphaei/qxmwjkf';.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('bldcvzyou,-nrtsgphaei/qxmwjkf\';.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -3565,7 +3628,10 @@
 <div class="sortable" data-sfb="19.063243066534046" data-effort="44.45417120849137" data-skip="2.008173793977863" data-lat="0.008460959849441617">
   <h1 id="gallium_v2">gallium<a class="source" href="https://github.com/GalileoBlues/Gallium">source</a></h1>
   <h2>Version 2</h2>
-  <h3><a class="link" href="playground.html?layout=bldcvjfou,-nrtsgyhaei/xqmwzkp';.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=bldcvjfou,-nrtsgyhaei/xqmwzkp';.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('bldcvjfou,-nrtsgyhaei/xqmwzkp\';.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -4141,7 +4207,10 @@
 </div>
 <div class="sortable" data-sfb="19.701168635922365" data-effort="45.049916185324335" data-skip="1.4805437669604238" data-lat="0.01747339741073762">
   <h1 id="canary">canary<a class="source" href="https://github.com/Apsu/Canary">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=wlypbzfou;-crstgmneia'qjvdkxh/,.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=wlypbzfou;-crstgmneia'qjvdkxh/,.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('wlypbzfou;-crstgmneia\'qjvdkxh/,.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -4717,7 +4786,10 @@
 </div>
 <div class="sortable" data-sfb="24.163666661035965" data-effort="44.22791629860084" data-skip="3.129014981314345" data-lat="0.0032651455155919143">
   <h1 id="aptV3">aptV3<a class="source" href="https://github.com/Apsu/APT">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=wgdfbqluoy-rsthkjneai;xcmpvz,.'/\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=wgdfbqluoy-rsthkjneai;xcmpvz,.'/\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('wgdfbqluoy-rsthkjneai;xcmpvz,.\'/\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -5290,7 +5362,10 @@
 </div>
 <div class="sortable" data-sfb="22.944453773747078" data-effort="46.58819122266087" data-skip="4.891756352178635" data-lat="0.012621387199953895">
   <h1 id="handsdown-neu">handsdown-neu<a class="source" href="https://sites.google.com/alanreiser.com/handsdown">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=wfmpv/.q;'zrsntb,aeihjxcldg-uoyk\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=wfmpv/.q;'zrsntb,aeihjxcldg-uoyk\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('wfmpv/.q;\'zrsntb,aeihjxcldg-uoyk\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -5863,7 +5938,10 @@
 </div>
 <div class="sortable" data-sfb="18.711489715189085" data-effort="49.84712640365982" data-skip="2.0171166757917183" data-lat="0.01581498966103497">
   <h1 id="sturdy">sturdy<a class="source" href="https://oxey.dev/sturdy/index.html">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=vmlcpxfouj-strdy.naei/zkqgwbh';,\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=vmlcpxfouj-strdy.naei/zkqgwbh';,\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('vmlcpxfouj-strdy.naei/zkqgwbh\';,\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -6439,7 +6517,10 @@
 </div>
 <div class="sortable" data-sfb="30.361083758037413" data-effort="39.61363769603542" data-skip="3.97461413949107" data-lat="0.0040968335242804205">
   <h1 id="engram">engram<a class="source" href="https://engram.dev/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=byou'-ldwvzciea,.htsnqgxjk/;rmfp\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=byou'-ldwvzciea,.htsnqgxjk/;rmfp\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('byou\'-ldwvzciea,.htsnqgxjk/;rmfp\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -7006,7 +7087,10 @@
 </div>
 <div class="sortable" data-sfb="19.766749769223967" data-effort="38.774149507098166" data-skip="3.8295407233996466" data-lat="0.0026659724340636357">
   <h1 id="carbyne">carbyne<a class="source" href="https://cyanophage.github.io/#carbyne">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=fwhmzqouybjsnrtk-aeicxvpld/;,'.g\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=fwhmzqouybjsnrtk-aeicxvpld/;,'.g\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('fwhmzqouybjsnrtk-aeicxvpld/;,\'.g\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -7573,7 +7657,10 @@
 </div>
 <div class="sortable" data-sfb="20.467275511309268" data-effort="38.7207903122755" data-skip="3.7560103618190617" data-lat="0.0012659146034279059">
   <h1 id="really?">really?<a class="source" href="https://cyanophage.github.io/#really?">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=yuolzqchgwkiearxvsntd'-/,.;jfpmb\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=yuolzqchgwkiearxvsntd'-/,.;jfpmb\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('yuolzqchgwkiearxvsntd\'-/,.;jfpmb\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -8149,7 +8236,10 @@
 </div>
 <div class="sortable" data-sfb="13.539523066176333" data-effort="53.221971269501694" data-skip="1.8322971183053836" data-lat="0.016574140961677763">
   <h1 id="whorf">whorf</h1>
-  <h3><a class="link" href="playground.html?layout=flhdmvwou,/srntkgyaei-xjbzqpc';.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=flhdmvwou,/srntkgyaei-xjbzqpc';.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('flhdmvwou,/srntkgyaei-xjbzqpc\';.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -8716,7 +8806,10 @@
 </div>
 <div class="sortable" data-sfb="25.865795166273013" data-effort="44.1340657222321" data-skip="5.56147883468288" data-lat="0.009861017680077347">
   <h1 id="northstar">northstar</h1>
-  <h3><a class="link" href="playground.html?layout=qwmbzjfou;-nrstgyheia'xlcdvkp,./\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qwmbzjfou;-nrstgyheia'xlcdvkp,./\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qwmbzjfou;-nrstgyheia\'xlcdvkp,./\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -9289,7 +9382,10 @@
 </div>
 <div class="sortable" data-sfb="17.70690599143272" data-effort="47.9566011882109" data-skip="1.974389573792189" data-lat="0.016513528096050525">
   <h1 id="semimak">semimak</h1>
-  <h3><a class="link" href="playground.html?layout=flhvzqwuoy-srntkcdeai;x'bmjpg,./\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=flhvzqwuoy-srntkcdeai;x'bmjpg,./\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('flhvzqwuoy-srntkcdeai;x\'bmjpg,./\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -9862,7 +9958,10 @@
 </div>
 <div class="sortable" data-sfb="27.550037907882352" data-effort="45.1543988545162" data-skip="2.642124749226689" data-lat="0.004586704716972695">
   <h1 id="mtgap">mtgap</h1>
-  <h3><a class="link" href="playground.html?layout=ypoujkdlcw-inea,mhtsr'qz/.;bfgvx\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=ypoujkdlcw-inea,mhtsr'qz/.;bfgvx\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('ypoujkdlcw-inea,mhtsr\'qz/.;bfgvx\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -10429,7 +10528,10 @@
 </div>
 <div class="sortable" data-sfb="22.059108474175442" data-effort="43.32006474646433" data-skip="3.8682932112596844" data-lat="0.010133278748632485">
   <h1 id="ctgap">ctgap</h1>
-  <h3><a class="link" href="playground.html?layout=qplcjxfou/-rntsgyheia;zbmwvkd',.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qplcjxfou/-rntsgyheia;zbmwvkd',.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qplcjxfou/-rntsgyheia;zbmwvkd\',.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -11005,7 +11107,10 @@
 </div>
 <div class="sortable" data-sfb="16.81261781004723" data-effort="54.57383690369609" data-skip="2.098596265651285" data-lat="0.011888070891217791">
   <h1 id="recurva">recurva<a class="source" href="https://github.com/GalileoBlues/Recurva">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=frdpvqjuoy-sntcb.heai/zxkgwml;',\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=frdpvqjuoy-sntcb.heai/zxkgwml;',\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('frdpvqjuoy-sntcb.heai/zxkgwml;\',\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -11581,7 +11686,10 @@
 </div>
 <div class="sortable" data-sfb="59.04388669567473" data-effort="38.32248429282175" data-skip="6.142766152583449" data-lat="0.004018334895025472">
   <h1 id="halmak">halmak<a class="source" href="https://web.archive.org/web/20220818151548/https://nikolay.rocks/2016-12-20-the-halmak-reborn">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=wlrbzqgudj-shnt,.aeoi'fmvc/;pxky\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=wlrbzqgudj-shnt,.aeoi'fmvc/;pxky\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('wlrbzqgudj-shnt,.aeoi\'fmvc/;pxky\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -12151,7 +12259,10 @@
 </div>
 <div class="sortable" data-sfb="59.020039010837785" data-effort="45.528559093072545" data-skip="5.988749854678171" data-lat="0.011116995748156524">
   <h1 id="workman">workman<a class="source" href="https://workmanlayout.org/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=qdrwbjfup;-ashtgyneoi'zxmcvkl,./\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qdrwbjfup;-ashtgyneoi'zxmcvkl,./\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qdrwbjfup;-ashtgyneoi\'zxmcvkl,./\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -12727,7 +12838,10 @@
 </div>
 <div class="sortable" data-sfb="25.388841469534086" data-effort="48.96828953474161" data-skip="4.012372973816236" data-lat="0.01242265649297934">
   <h1 id="nerps">nerps</h1>
-  <h3><a class="link" href="playground.html?layout=xldpvzkou;qnrtsgyheia-/jmcwbf',.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=xldpvzkou;qnrtsgyheia-/jmcwbf',.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('xldpvzkou;qnrtsgyheia-/jmcwbf\',.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -13303,7 +13417,10 @@
 </div>
 <div class="sortable" data-sfb="15.873615219592462" data-effort="46.60771651462112" data-skip="3.0217003995480867" data-lat="0.009942497269936913">
   <h1 id="focal">focal<a class="source" href="https://github.com/Keyhabit/Focal-keyboard-layout/blob/main/README.md">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=vlhgkqfouj-srntbycaei/zxmdp'w.;,\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=vlhgkqfouj-srntbycaei/zxmdp'w.;,\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('vlhgkqfouj-srntbycaei/zxmdp\'w.;,\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -13873,7 +13990,10 @@
 </div>
 <div class="sortable" data-sfb="19.5282729208545" data-effort="43.146175377861596" data-skip="4.018334895025473" data-lat="0.015144273524995852">
   <h1 id="isrt">isrt</h1>
-  <h3><a class="link" href="playground.html?layout=yclmkzfu,'-isrtgpneao;qvwdjbh/.x\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=yclmkzfu,'-isrtgpneao;qvwdjbh/.x\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('yclmkzfu,\'-isrtgpneao;qvwdjbh/.x\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -14449,7 +14569,10 @@
 </div>
 <div class="sortable" data-sfb="19.30171991490351" data-effort="46.67781877150639" data-skip="2.0330151323496826" data-lat="0.014549075057607063">
   <h1 id="irst">irst</h1>
-  <h3><a class="link" href="playground.html?layout=ylcmkzfu,'-irstgbneao;jxwdvph/.q\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=ylcmkzfu,'-irstgbneao;jxwdvph/.q\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('ylcmkzfu,\'-irstgbneao;jxwdvph/.q\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -15026,7 +15149,10 @@
 <div class="sortable" data-sfb="26.906150417284803" data-effort="49.84285369345987" data-skip="2.652061284575417" data-lat="0.024380283131638227">
   <h1 id="pine_v1">pine<a class="source" href="https://github.com/ClemenPine/pine-layout">source</a></h1>
   <h2>Version 1</h2>
-  <h3><a class="link" href="playground.html?layout=ylrdwjmou,-csntgphaei;xzqvkbf'/.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=ylrdwjmou,-csntgphaei;xzqvkbf'/.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('ylrdwjmou,-csntgphaei;xzqvkbf\'/.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -15603,7 +15729,10 @@
 <div class="sortable" data-sfb="20.735561965724916" data-effort="49.75983394062125" data-skip="2.6480866704359256" data-lat="0.014730913654488781">
   <h1 id="pine_v4">pine</h1>
   <h2>Version 4</h2>
-  <h3><a class="link" href="playground.html?layout=qlcmk'fuoy-nrstwpheai/jxzgvbd;,.\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qlcmk'fuoy-nrstwpheai/jxzgvbd;,.\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qlcmk\'fuoy-nrstwpheai/jxzgvbd;,.\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -16179,7 +16308,10 @@
 </div>
 <div class="sortable" data-sfb="28.360859192338534" data-effort="44.8334487627523" data-skip="7.003270113783266" data-lat="0.015227740421925163">
   <h1 id="beakl19bis">beakl19bis</h1>
-  <h3><a class="link" href="playground.html?layout=qyouzwdnck-hiea,gtrsp;j'/.xvmlfb\^">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qyouzwdnck-hiea,gtrsp;j'/.xvmlfb\^">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qyouzwdnck-hiea,gtrsp;j\'/.xvmlfb\^')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -16752,7 +16884,10 @@
 </div>
 <div class="sortable" data-sfb="19.69222575410851" data-effort="44.961431338043916" data-skip="1.2539907610094327" data-lat="0.006964517625923228">
   <h1 id="maltron">maltron</h1>
-  <h3><a class="link" href="playground.html?layout=qpycbvmuzl=anisfdthor',.jg;/wk-x\e">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qpycbvmuzl=anisfdthor',.jg;/wk-x\e">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qpycbvmuzl=anisfdthor\',.jg;/wk-x\e')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -17330,7 +17465,10 @@
 </div>
 <div class="sortable" data-sfb="20.85480038990965" data-effort="44.20223035472438" data-skip="2.9054429359679728" data-lat="0.008135041490003348">
   <h1 id="rsthd">rsthd<a class="source" href="https://xsznix.wordpress.com/2016/05/16/introducing-the-rsthd-layout/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=jcyfkzl,uq=rsthdmnaio'/vgpbxw.;-\e">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=jcyfkzl,uq=rsthdmnaio'/vgpbxw.;-\e">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('jcyfkzl,uq=rsthdmnaio\'/vgpbxw.;-\e')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -17904,9 +18042,11 @@
   <hr>
 </div>
 <div class="sortable" data-sfb="26.056576644968587" data-effort="32.8450685471891" data-skip="6.870120540110316" data-lat="0.004248862515115954">
-  <h1 id="dsthk_v1">dsthk</h1>
-  <h2>Version 1</h2>
-  <h3><a class="link" href="playground.html?layout=zcwbj-mu'q=dsthkvniao/fgpr;xly,.\e">Edit</a></h3>
+  <h1 id="dsthk">dsthk</h1>
+  <h3>
+    <a class="link" href="playground.html?layout=zcwbj-mu'q=dsthkvniao/fgpr;xly,.\e">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('zcwbj-mu\'q=dsthkvniao/fgpr;xly,.\e')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -18479,585 +18619,12 @@
   </div>
   <hr>
 </div>
-<div class="sortable" data-sfb="27.952467589505826" data-effort="34.4843981490222" data-skip="3.1926088075462022" data-lat="0.004511187048322365">
-  <h1 id="dsthk_v2">dsthk</h1>
-  <h2>Version 2</h2>
-  <h3><a class="link" href="playground.html?layout=bcyf=-mzxq/rsthkvniao'wgpd;jlu,.\e">Edit</a></h3>
-  <div class="layout-svg">
-    <svg width="1040" height="180">
-        <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
-        <rect x="55" y="10" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="70" y="29" font-size="10" font-family="Roboto Mono" text-anchor="middle">tab</text>
-        <rect x="95" y="10" width="30" height="30" rx="4" ry="4" fill="#8f8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'1.44%')" onmouseout="hideTooltip()"/>
-        <text x="110" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">b</text>
-        <rect x="135" y="10" width="30" height="30" rx="4" ry="4" fill="#a18080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'3.11%')" onmouseout="hideTooltip()"/>
-        <text x="150" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">c</text>
-        <rect x="175" y="10" width="30" height="30" rx="4" ry="4" fill="#948080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'1.91%')" onmouseout="hideTooltip()"/>
-        <text x="190" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">y</text>
-        <rect x="215" y="10" width="30" height="30" rx="4" ry="4" fill="#978080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'2.14%')" onmouseout="hideTooltip()"/>
-        <text x="230" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">f</text>
-        <rect x="255" y="10" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="270" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">=</text>
-        <rect x="335" y="10" width="30" height="30" rx="4" ry="4" fill="#818080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.15%')" onmouseout="hideTooltip()"/>
-        <text x="350" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">-</text>
-        <rect x="375" y="10" width="30" height="30" rx="4" ry="4" fill="#9a8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'2.43%')" onmouseout="hideTooltip()"/>
-        <text x="390" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">m</text>
-        <rect x="415" y="10" width="30" height="30" rx="4" ry="4" fill="#818080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.09%')" onmouseout="hideTooltip()"/>
-        <text x="430" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">z</text>
-        <rect x="455" y="10" width="30" height="30" rx="4" ry="4" fill="#828080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.2%')" onmouseout="hideTooltip()"/>
-        <text x="470" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">x</text>
-        <rect x="495" y="10" width="30" height="30" rx="4" ry="4" fill="#818080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.1%')" onmouseout="hideTooltip()"/>
-        <text x="510" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">q</text>
-        <rect x="535" y="10" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.06%')" onmouseout="hideTooltip()"/>
-        <text x="550" y="29" font-size="16" font-family="Roboto Mono" text-anchor="middle">/</text>
-        <rect x="55" y="50" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="70" y="69" font-size="10" font-family="Roboto Mono" text-anchor="middle">ctrl</text>
-        <rect x="95" y="50" width="30" height="30" rx="4" ry="4" fill="#c18080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'6.04%')" onmouseout="hideTooltip()"/>
-        <text x="110" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">r</text>
-        <rect x="135" y="50" width="30" height="30" rx="4" ry="4" fill="#c48080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'6.38%')" onmouseout="hideTooltip()"/>
-        <text x="150" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">s</text>
-        <rect x="175" y="50" width="30" height="30" rx="4" ry="4" fill="#e08080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'8.95%')" onmouseout="hideTooltip()"/>
-        <text x="190" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">t</text>
-        <rect x="215" y="50" width="30" height="30" rx="4" ry="4" fill="#b08080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'4.51%')" onmouseout="hideTooltip()"/>
-        <text x="230" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">h</text>
-        <rect x="255" y="50" width="30" height="30" rx="4" ry="4" fill="#888080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.78%')" onmouseout="hideTooltip()"/>
-        <text x="270" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">k</text>
-        <rect x="335" y="50" width="30" height="30" rx="4" ry="4" fill="#8b8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'1.09%')" onmouseout="hideTooltip()"/>
-        <text x="350" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">v</text>
-        <rect x="375" y="50" width="30" height="30" rx="4" ry="4" fill="#ca8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'6.86%')" onmouseout="hideTooltip()"/>
-        <text x="390" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">n</text>
-        <rect x="415" y="50" width="30" height="30" rx="4" ry="4" fill="#cd8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'7.15%')" onmouseout="hideTooltip()"/>
-        <text x="430" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">i</text>
-        <rect x="455" y="50" width="30" height="30" rx="4" ry="4" fill="#d68080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'7.97%')" onmouseout="hideTooltip()"/>
-        <text x="470" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">a</text>
-        <rect x="495" y="50" width="30" height="30" rx="4" ry="4" fill="#d28080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'7.66%')" onmouseout="hideTooltip()"/>
-        <text x="510" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">o</text>
-        <rect x="535" y="50" width="30" height="30" rx="4" ry="4" fill="#858080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.47%')" onmouseout="hideTooltip()"/>
-        <text x="550" y="69" font-size="16" font-family="Roboto Mono" text-anchor="middle">'</text>
-        <rect x="55" y="90" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="70" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">\</text>
-        <rect x="95" y="90" width="30" height="30" rx="4" ry="4" fill="#938080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'1.77%')" onmouseout="hideTooltip()"/>
-        <text x="110" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">w</text>
-        <rect x="135" y="90" width="30" height="30" rx="4" ry="4" fill="#968080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'2.04%')" onmouseout="hideTooltip()"/>
-        <text x="150" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">g</text>
-        <rect x="175" y="90" width="30" height="30" rx="4" ry="4" fill="#968080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'2.12%')" onmouseout="hideTooltip()"/>
-        <text x="190" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">p</text>
-        <rect x="215" y="90" width="30" height="30" rx="4" ry="4" fill="#a78080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'3.62%')" onmouseout="hideTooltip()"/>
-        <text x="230" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">d</text>
-        <rect x="255" y="90" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.08%')" onmouseout="hideTooltip()"/>
-        <text x="270" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">;</text>
-        <rect x="335" y="90" width="30" height="30" rx="4" ry="4" fill="#818080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.18%')" onmouseout="hideTooltip()"/>
-        <text x="350" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">j</text>
-        <rect x="375" y="90" width="30" height="30" rx="4" ry="4" fill="#ac8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'4.13%')" onmouseout="hideTooltip()"/>
-        <text x="390" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">l</text>
-        <rect x="415" y="90" width="30" height="30" rx="4" ry="4" fill="#9e8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'2.85%')" onmouseout="hideTooltip()"/>
-        <text x="430" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">u</text>
-        <rect x="455" y="90" width="30" height="30" rx="4" ry="4" fill="#8a8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0.96%')" onmouseout="hideTooltip()"/>
-        <text x="470" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">,</text>
-        <rect x="495" y="90" width="30" height="30" rx="4" ry="4" fill="#8a8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'1.0%')" onmouseout="hideTooltip()"/>
-        <text x="510" y="109" font-size="16" font-family="Roboto Mono" text-anchor="middle">.</text>
-        <rect x="535" y="90" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="550" y="109" font-size="9" font-family="Roboto Mono" text-anchor="middle">enter</text>
-        <rect x="215" y="130" width="30" height="30" rx="4" ry="4" fill="#ff8080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'11.75%')" onmouseout="hideTooltip()"/>
-        <text x="230" y="149" font-size="16" font-family="Roboto Mono" text-anchor="middle">e</text>
-        <rect x="255" y="130" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="270" y="149" font-size="10" font-family="Roboto Mono" text-anchor="middle">back</text>
-        <rect x="335" y="130" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="350" y="149" font-size="9" font-family="Roboto Mono" text-anchor="middle">shift</text>
-        <rect x="375" y="130" width="30" height="30" rx="4" ry="4" fill="#808080" stroke="black" stroke-width="1" onmousemove="showTooltip(evt,'0%')" onmouseout="hideTooltip()"/>
-        <text x="390" y="149" font-size="9" font-family="Roboto Mono" text-anchor="middle">space</text>
-    <text x=600 y=135 font-size=16 font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Total Word Effort 812.8</text>
-    <text x=600 y=165 font-size=16 font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Effort 397.95</text>
-    </svg>
-  </div>
-  <br>
-  <div class="stats-svg">
-    <svg width="1040" height="550">
-        <text x="50" y="16" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Finger Usage</text>
-        <rect x="30" y="68.555" width="15" height="31.445" fill="#9a7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'10.48%')" onmouseout="hideTooltip()" />
-        <text x="37" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">1</text>
-        <rect x="50" y="60.823" width="15" height="39.177" fill="#a17787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'13.06%')" onmouseout="hideTooltip()" />
-        <text x="57" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">2</text>
-        <rect x="70" y="55.856" width="15" height="44.144" fill="#a57787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'14.71%')" onmouseout="hideTooltip()" />
-        <text x="77" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">3</text>
-        <rect x="90" y="62.122" width="15" height="37.878" fill="#a07787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'12.63%')" onmouseout="hideTooltip()" />
-        <text x="97" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">4</text>
-        <rect x="150" y="49.56" width="15" height="50.44" fill="#aa7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'16.81%')" onmouseout="hideTooltip()" />
-        <text x="157" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">7</text>
-        <rect x="170" y="65.708" width="15" height="34.292" fill="#9d7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'11.43%')" onmouseout="hideTooltip()" />
-        <text x="177" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">8</text>
-        <rect x="190" y="68.96000000000001" width="15" height="31.04" fill="#9a7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'10.35%')" onmouseout="hideTooltip()" />
-        <text x="197" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">9</text>
-        <rect x="210" y="68.416" width="15" height="31.584" fill="#9a7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'10.53%')" onmouseout="hideTooltip()" />
-        <text x="217" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">10</text>
-      <text x="67" y="124" font-size="11" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">50.88%</text>
-      <text x="187" y="124" font-size="11" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">49.12%</text>
-        <text x="290" y="16" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Finger Distance</text>
-        <rect x="270" y="87.84" width="15" height="12.16" fill="#947787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'16.21')" onmouseout="hideTooltip()" />
-        <text x="277" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">1</text>
-        <rect x="290" y="81.08" width="15" height="18.92" fill="#a07787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'25.23')" onmouseout="hideTooltip()" />
-        <text x="297" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">2</text>
-        <rect x="310" y="85.053" width="15" height="14.947" fill="#997787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'19.93')" onmouseout="hideTooltip()" />
-        <text x="317" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">3</text>
-        <rect x="330" y="78.945" width="15" height="21.055" fill="#a37787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'28.07')" onmouseout="hideTooltip()" />
-        <text x="337" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">4</text>
-        <rect x="390" y="70.30799999999999" width="15" height="29.692" fill="#b27787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'39.59')" onmouseout="hideTooltip()" />
-        <text x="397" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">7</text>
-        <rect x="410" y="89.008" width="15" height="10.992" fill="#927787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'14.66')" onmouseout="hideTooltip()" />
-        <text x="417" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">8</text>
-        <rect x="430" y="96.113" width="15" height="3.887" fill="#867787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'5.18')" onmouseout="hideTooltip()" />
-        <text x="437" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">9</text>
-        <rect x="450" y="94.617" width="15" height="5.383" fill="#897787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'7.18')" onmouseout="hideTooltip()" />
-        <text x="457" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">10</text>
-      <text x="307" y="124" font-size="11" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">57.32%</text>
-      <text x="427" y="124" font-size="11" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">42.68%</text>
-      <text x="367" y="124" font-size="11" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">156.0</text>
-        <text x="540" y="16" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Column Usage</text>
-        <rect x="520" y="68.555" width="15" height="31.445" fill="#9a7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'10.48%')" onmouseout="hideTooltip()" />
-        <text x="527" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">1</text>
-        <rect x="540" y="60.823" width="15" height="39.177" fill="#a17787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'13.06%')" onmouseout="hideTooltip()" />
-        <text x="547" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">2</text>
-        <rect x="560" y="55.856" width="15" height="44.144" fill="#a57787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'14.71%')" onmouseout="hideTooltip()" />
-        <text x="567" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">3</text>
-        <rect x="580" y="65.062" width="15" height="34.938" fill="#9d7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'11.65%')" onmouseout="hideTooltip()" />
-        <text x="587" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">4</text>
-        <rect x="600" y="97.06" width="15" height="2.94" fill="#827787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'0.98%')" onmouseout="hideTooltip()" />
-        <text x="607" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">5</text>
-        <rect x="620" y="95.187" width="15" height="4.813" fill="#847787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'1.6%')" onmouseout="hideTooltip()" />
-        <text x="627" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">6</text>
-        <rect x="640" y="54.373" width="15" height="45.627" fill="#a67787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'15.21%')" onmouseout="hideTooltip()" />
-        <text x="647" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">7</text>
-        <rect x="660" y="65.708" width="15" height="34.292" fill="#9d7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'11.43%')" onmouseout="hideTooltip()" />
-        <text x="667" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">8</text>
-        <rect x="680" y="68.96000000000001" width="15" height="31.04" fill="#9a7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'10.35%')" onmouseout="hideTooltip()" />
-        <text x="687" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">9</text>
-        <rect x="700" y="70.195" width="15" height="29.805" fill="#997787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'9.94%')" onmouseout="hideTooltip()" />
-        <text x="707" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">10</text>
-        <rect x="720" y="98.221" width="15" height="1.779" fill="#817787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'0.59%')" onmouseout="hideTooltip()" />
-        <text x="727" y="111" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">11</text>
-        <text x="810" y="16" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Row Usage</text>
-        <rect x="785" y="50" width="23.248" height="14" fill="#967787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'11.62%')" onmouseout="hideTooltip()" />
-        <text x="775" y="61" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">1</text>
-        <rect x="785" y="70" width="115.74" height="14" fill="#ed7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'57.87%')" onmouseout="hideTooltip()" />
-        <text x="775" y="81" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">2</text>
-        <rect x="785" y="90" width="37.519" height="14" fill="#a37787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'18.76%')" onmouseout="hideTooltip()" />
-        <text x="775" y="101" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">3</text>
-        <rect x="785" y="110" width="23.493" height="14" fill="#967787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'11.75%')" onmouseout="hideTooltip()" />
-        <text x="775" y="121" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">4</text>
-        <text x="30" y="150" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Same Finger Bigrams - 0.93%</text>
-        <rect x="50" y="162" width="24.44983887907932" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="170" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ty</text>
-        <text x="200" y="170" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.136%</text>
-        <rect x="50" y="177" width="15.453299774341282" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="185" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">sc</text>
-        <text x="200" y="185" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.086%</text>
-        <rect x="50" y="192" width="13.146036266366716" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="200" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">br</text>
-        <text x="200" y="200" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.073%</text>
-        <rect x="50" y="207" width="12.394834194002904" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="215" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ui</text>
-        <text x="200" y="215" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.069%</text>
-        <rect x="50" y="222" width="9.497340486313913" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="230" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">pt</text>
-        <text x="200" y="230" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.053%</text>
-        <rect x="50" y="237" width="7.619335305404382" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="245" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">nl</text>
-        <text x="200" y="245" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.042%</text>
-        <rect x="50" y="252" width="7.011219342062248" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="260" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">gs</text>
-        <text x="200" y="260" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.039%</text>
-        <rect x="50" y="267" width="6.778704414902021" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="275" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">iz</text>
-        <text x="200" y="275" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.038%</text>
-        <rect x="50" y="282" width="6.438874905975535" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="290" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">nv</text>
-        <text x="200" y="290" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.036%</text>
-        <rect x="50" y="297" width="4.221040216139516" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="305" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">.'</text>
-        <text x="200" y="305" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.023%</text>
-        <rect x="50" y="312" width="3.8812107072130306" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="30" y="320" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">wr</text>
-        <text x="200" y="320" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.022%</text>
-        <text x="290" y="150" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Skip Bigrams 2u 0.32%</text>
-        <rect x="302" y="162" width="47.32573055892017" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="170" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">m_l</text>
-        <text x="450" y="170" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.131%</text>
-        <rect x="302" y="177" width="17.277647664367684" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="185" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">l_m</text>
-        <text x="450" y="185" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.048%</text>
-        <rect x="302" y="192" width="12.80620675744023" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="200" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">p_y</text>
-        <text x="450" y="200" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.036%</text>
-        <rect x="302" y="207" width="11.482660248989703" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="215" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">d_f</text>
-        <text x="450" y="215" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.032%</text>
-        <rect x="302" y="222" width="4.292583270650356" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="230" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">l_-</text>
-        <text x="450" y="230" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.012%</text>
-        <rect x="302" y="237" width="3.6844673073082226" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="245" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">w_b</text>
-        <text x="450" y="245" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.01%</text>
-        <rect x="302" y="252" width="3.3625235620094456" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="260" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">f_d</text>
-        <text x="450" y="260" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.009%</text>
-        <rect x="302" y="267" width="2.825950653178151" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="275" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">m_j</text>
-        <text x="450" y="275" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.008%</text>
-        <rect x="302" y="282" width="2.6828645441564727" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="290" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">g_c</text>
-        <text x="450" y="290" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.007%</text>
-        <rect x="302" y="297" width="1.9674339990480798" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="305" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">c_g</text>
-        <text x="450" y="305" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.005%</text>
-        <rect x="302" y="312" width="1.7885763627709816" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="278" y="320" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">j_m</text>
-        <text x="450" y="320" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.005%</text>
-        <text x="280" y="360" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Same Hand Strings</text>
-        <rect x="330" y="372" width="37" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="380" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ional</text>
-        <text x="405" y="380" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1225</text>
-        <rect x="330" y="387" width="29" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="395" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ion.</text>
-        <text x="405" y="395" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">972</text>
-        <rect x="330" y="402" width="27" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="410" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ion,</text>
-        <text x="405" y="410" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">884</text>
-        <rect x="330" y="417" width="19" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="425" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ommuni</text>
-        <text x="405" y="425" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">636</text>
-        <rect x="330" y="432" width="18" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="440" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">availa</text>
-        <text x="405" y="440" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">606</text>
-        <rect x="330" y="447" width="16" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="455" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">syst</text>
-        <text x="405" y="455" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">548</text>
-        <rect x="330" y="462" width="16" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="470" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ollo</text>
-        <text x="405" y="470" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">536</text>
-        <rect x="330" y="477" width="16" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="485" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">uall</text>
-        <text x="405" y="485" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">528</text>
-        <rect x="330" y="492" width="15" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="500" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">avin</text>
-        <text x="405" y="500" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">492</text>
-        <rect x="330" y="507" width="13" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="515" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">main</text>
-        <text x="405" y="515" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">444</text>
-        <rect x="330" y="522" width="12" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="270" y="530" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">mall</text>
-        <text x="405" y="530" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">400</text>
-        <text x="435" y="360" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Same Hand Count</text>
-        <rect x="455" y="372" width="60.410700000000006" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="380" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">1</text>
-        <text x="550" y="380" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">431.5</text>
-        <rect x="455" y="387" width="19.422480000000004" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="395" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">2</text>
-        <text x="550" y="395" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">138.7</text>
-        <rect x="455" y="402" width="3.8409000000000004" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="410" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">3</text>
-        <text x="550" y="410" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">27.4</text>
-        <rect x="455" y="417" width="0.9108400000000001" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="425" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">4</text>
-        <text x="550" y="425" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">6.5</text>
-        <rect x="455" y="432" width="0.28980000000000006" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="440" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">5</text>
-        <text x="550" y="440" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">2.1</text>
-        <rect x="455" y="447" width="0.11970000000000001" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="455" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">6</text>
-        <text x="550" y="455" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.9</text>
-        <rect x="455" y="462" width="0.021700000000000004" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="470" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">7</text>
-        <text x="550" y="470" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.2</text>
-        <rect x="455" y="477" width="0.005320000000000001" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="485" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">8</text>
-        <text x="550" y="485" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0</text>
-        <rect x="455" y="492" width="0.00126" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="500" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">9</text>
-        <text x="550" y="500" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0</text>
-        <rect x="455" y="507" width="0.00014000000000000001" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="435" y="515" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">12</text>
-        <text x="550" y="515" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0</text>
-        <text x="520" y="150" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Lat Stretch Bigrams - 0.45%</text>
-        <rect x="540" y="162" width="18.362717324448745" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="170" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">vi</text>
-        <text x="700" y="170" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.18%</text>
-        <rect x="540" y="177" width="16.45490253749303" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="185" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">iv</text>
-        <text x="700" y="185" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.16%</text>
-        <rect x="540" y="192" width="5.852619320400602" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="200" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ju</text>
-        <text x="700" y="200" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.06%</text>
-        <rect x="540" y="207" width="0.765113221852031" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="215" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ky</text>
-        <text x="700" y="215" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.01%</text>
-        <rect x="540" y="222" width="0.5067633027851115" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="230" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">t;</text>
-        <text x="700" y="230" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.01%</text>
-        <rect x="540" y="237" width="0.43720755534401773" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="245" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">-u</text>
-        <text x="700" y="245" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0%</text>
-        <rect x="540" y="252" width="0.3875248786003794" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="260" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">y;</text>
-        <text x="700" y="260" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0%</text>
-        <rect x="540" y="267" width="0.3577152725541964" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="275" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">-i</text>
-        <text x="700" y="275" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0%</text>
-        <rect x="540" y="282" width="0.3279056665080133" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="290" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">uv</text>
-        <text x="700" y="290" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0%</text>
-        <rect x="540" y="297" width="0.2980960604618303" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="305" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">i-</text>
-        <text x="700" y="305" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0%</text>
-        <rect x="540" y="312" width="0.2086672423232812" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="520" y="320" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ji</text>
-        <text x="700" y="320" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.0%</text>
-        <text x="780" y="150" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Pinky/Ring Scissors - 0.49%</text>
-        <rect x="800" y="162" width="42.8185181247373" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="170" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">gr</text>
-        <text x="950" y="170" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.119%</text>
-        <rect x="800" y="177" width="35.27072587384376" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="185" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">cr</text>
-        <text x="950" y="185" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.098%</text>
-        <rect x="800" y="192" width="21.105201080697583" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="200" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">rc</text>
-        <text x="950" y="200" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.059%</text>
-        <rect x="800" y="207" width="20.38977053558919" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="215" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">rg</text>
-        <text x="950" y="215" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.057%</text>
-        <rect x="800" y="222" width="10.123342213283756" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="230" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ws</text>
-        <text x="950" y="230" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.028%</text>
-        <rect x="800" y="237" width="8.549395014045293" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="245" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">bs</text>
-        <text x="950" y="245" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.024%</text>
-        <rect x="800" y="252" width="8.442080432279033" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="260" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">.'</text>
-        <text x="950" y="260" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.023%</text>
-        <rect x="800" y="267" width="6.581961014997213" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="275" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">o,</text>
-        <text x="950" y="275" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.018%</text>
-        <rect x="800" y="282" width="6.331560324209275" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="290" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">sw</text>
-        <text x="950" y="290" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.018%</text>
-        <rect x="800" y="297" width="6.152702687932177" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="305" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">a.</text>
-        <text x="950" y="305" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.017%</text>
-        <rect x="800" y="312" width="4.507212434182874" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="780" y="320" font-size="10" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">ox</text>
-        <text x="950" y="320" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.013%</text>
-<text x="0" y="0" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle" transform="translate(12,450) rotate(-90)">First Finger</text><text x="130" y="350" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">Second Finger</text><text x="50" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">1</text>
-<text x="76" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">2</text>
-<text x="102" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">3</text>
-<text x="128" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">4</text>
-<text x="154" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">7</text>
-<text x="180" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">8</text>
-<text x="206" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">9</text>
-<text x="232" y="364" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">10</text>
-<text x="24" y="384" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">1</text>
-<rect x="36" y="370" width="26" height="20" fill="#898080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">3%</text>
-<rect x="62" y="370" width="26" height="20" fill="#9e8080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">10%</text>
-<rect x="88" y="370" width="26" height="20" fill="#9e8080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">10%</text>
-<rect x="114" y="370" width="26" height="20" fill="#9e8080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">10%</text>
-<rect x="140" y="370" width="26" height="20" fill="#a18080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">11%</text>
-<rect x="166" y="370" width="26" height="20" fill="#bf8080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">21%</text>
-<rect x="192" y="370" width="26" height="20" fill="#b38080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">17%</text>
-<rect x="218" y="370" width="26" height="20" fill="#b68080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="384" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">18%</text>
-<text x="24" y="404" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">2</text>
-<rect x="36" y="390" width="26" height="20" fill="#8c8080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">4%</text>
-<rect x="62" y="390" width="26" height="20" fill="#898080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">3%</text>
-<rect x="88" y="390" width="26" height="20" fill="#bf8080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">21%</text>
-<rect x="114" y="390" width="26" height="20" fill="#b08080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">16%</text>
-<rect x="140" y="390" width="26" height="20" fill="#8f8080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">5%</text>
-<rect x="166" y="390" width="26" height="20" fill="#b08080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">16%</text>
-<rect x="192" y="390" width="26" height="20" fill="#ad8080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">15%</text>
-<rect x="218" y="390" width="26" height="20" fill="#bc8080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="404" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">20%</text>
-<text x="24" y="424" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">3</text>
-<rect x="36" y="410" width="26" height="20" fill="#988080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">8%</text>
-<rect x="62" y="410" width="26" height="20" fill="#928080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">6%</text>
-<rect x="88" y="410" width="26" height="20" fill="#898080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">3%</text>
-<rect x="114" y="410" width="26" height="20" fill="#dd8080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">31%</text>
-<rect x="140" y="410" width="26" height="20" fill="#8f8080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">5%</text>
-<rect x="166" y="410" width="26" height="20" fill="#ad8080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">15%</text>
-<rect x="192" y="410" width="26" height="20" fill="#9e8080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">10%</text>
-<rect x="218" y="410" width="26" height="20" fill="#bf8080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="424" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">21%</text>
-<text x="24" y="444" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">4</text>
-<rect x="36" y="430" width="26" height="20" fill="#958080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">7%</text>
-<rect x="62" y="430" width="26" height="20" fill="#8c8080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">4%</text>
-<rect x="88" y="430" width="26" height="20" fill="#928080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">6%</text>
-<rect x="114" y="430" width="26" height="20" fill="#838080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">1%</text>
-<rect x="140" y="430" width="26" height="20" fill="#8f8080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">5%</text>
-<rect x="166" y="430" width="26" height="20" fill="#d78080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">29%</text>
-<rect x="192" y="430" width="26" height="20" fill="#c88080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">24%</text>
-<rect x="218" y="430" width="26" height="20" fill="#c88080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="444" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">24%</text>
-<text x="24" y="464" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">7</text>
-<rect x="36" y="450" width="26" height="20" fill="#838080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">1%</text>
-<rect x="62" y="450" width="26" height="20" fill="#b98080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">19%</text>
-<rect x="88" y="450" width="26" height="20" fill="#b38080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">17%</text>
-<rect x="114" y="450" width="26" height="20" fill="#ad8080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">15%</text>
-<rect x="140" y="450" width="26" height="20" fill="#868080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">2%</text>
-<rect x="166" y="450" width="26" height="20" fill="#b08080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">16%</text>
-<rect x="192" y="450" width="26" height="20" fill="#aa8080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">14%</text>
-<rect x="218" y="450" width="26" height="20" fill="#aa8080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="464" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">14%</text>
-<text x="24" y="484" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">8</text>
-<rect x="36" y="470" width="26" height="20" fill="#9b8080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">9%</text>
-<rect x="62" y="470" width="26" height="20" fill="#c28080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">22%</text>
-<rect x="88" y="470" width="26" height="20" fill="#b08080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">16%</text>
-<rect x="114" y="470" width="26" height="20" fill="#928080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">6%</text>
-<rect x="140" y="470" width="26" height="20" fill="#ec8080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">36%</text>
-<rect x="166" y="470" width="26" height="20" fill="#868080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">2%</text>
-<rect x="192" y="470" width="26" height="20" fill="#898080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">3%</text>
-<rect x="218" y="470" width="26" height="20" fill="#928080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="484" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">6%</text>
-<text x="24" y="504" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">9</text>
-<rect x="36" y="490" width="26" height="20" fill="#aa8080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">14%</text>
-<rect x="62" y="490" width="26" height="20" fill="#ad8080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">15%</text>
-<rect x="88" y="490" width="26" height="20" fill="#bf8080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">21%</text>
-<rect x="114" y="490" width="26" height="20" fill="#928080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">6%</text>
-<rect x="140" y="490" width="26" height="20" fill="#ef8080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">37%</text>
-<rect x="166" y="490" width="26" height="20" fill="#8f8080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">5%</text>
-<rect x="192" y="490" width="26" height="20" fill="#838080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">1%</text>
-<rect x="218" y="490" width="26" height="20" fill="#838080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="504" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">1%</text>
-<text x="24" y="524" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="middle">10</text>
-<rect x="36" y="510" width="26" height="20" fill="#bf8080" stroke="black" stroke-width="0.5"  />
-<text x="50" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">21%</text>
-<rect x="62" y="510" width="26" height="20" fill="#988080" stroke="black" stroke-width="0.5"  />
-<text x="76" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">8%</text>
-<rect x="88" y="510" width="26" height="20" fill="#9b8080" stroke="black" stroke-width="0.5"  />
-<text x="102" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">9%</text>
-<rect x="114" y="510" width="26" height="20" fill="#a78080" stroke="black" stroke-width="0.5"  />
-<text x="128" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">13%</text>
-<rect x="140" y="510" width="26" height="20" fill="#dd8080" stroke="black" stroke-width="0.5"  />
-<text x="154" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">31%</text>
-<rect x="166" y="510" width="26" height="20" fill="#b08080" stroke="black" stroke-width="0.5"  />
-<text x="180" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">16%</text>
-<rect x="192" y="510" width="26" height="20" fill="#868080" stroke="black" stroke-width="0.5"  />
-<text x="206" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">2%</text>
-<rect x="218" y="510" width="26" height="20" fill="#838080" stroke="black" stroke-width="0.5"  />
-<text x="232" y="524" font-size="10" font-family="Sans,Arial" fill="black" text-anchor="middle">1%</text>
-        <text x="600" y="360" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Hard Words</text>
-        <rect x="660" y="372" width="55.88500022888183" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="380" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">quiz</text>
-        <text x="745" y="380" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">2.24</text>
-        <rect x="660" y="387" width="48.82885524204799" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="395" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">maximum</text>
-        <text x="745" y="395" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">3.42</text>
-        <rect x="660" y="402" width="45.93599796295166" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="410" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">jump</text>
-        <text x="745" y="410" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1.84</text>
-        <rect x="660" y="417" width="43.90399932861328" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="425" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">aluminum</text>
-        <text x="745" y="425" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">3.51</text>
-        <rect x="660" y="432" width="43.05699825286865" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="440" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">wrap</text>
-        <text x="745" y="440" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1.72</text>
-        <rect x="660" y="447" width="42.74049758911133" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="455" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">type</text>
-        <text x="745" y="455" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1.71</text>
-        <rect x="660" y="462" width="42.617502212524414" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="470" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">jobs</text>
-        <text x="745" y="470" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1.7</text>
-        <rect x="660" y="477" width="42.61240005493164" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="485" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">grows</text>
-        <text x="745" y="485" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">2.13</text>
-        <rect x="660" y="492" width="40.05039978027344" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="500" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">brown</text>
-        <text x="745" y="500" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">2.0</text>
-        <rect x="660" y="507" width="39.764400482177734" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="515" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">valve</text>
-        <text x="745" y="515" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1.99</text>
-        <rect x="660" y="522" width="39.7515983581543" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" />
-        <text x="600" y="530" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">quick</text>
-        <text x="745" y="530" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1.99</text>
-        <text x="780" y="360" font-size="16" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">Trigram Stats</text>
-        <rect x="865" y="372" width="66.9884894234222" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'two of the characters in the trigram are typed with the same hand and the first is outside the second')" onmouseout="hideTooltip()" />
-        <text x="780" y="380" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">bigram roll in</text>
-        <text x="950" y="380" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">33.49%</text>
-        <rect x="865" y="387" width="42.044468831069274" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'all other trigrams that don\'t fit into any of the other categories')" onmouseout="hideTooltip()" />
-        <text x="780" y="395" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">other</text>
-        <text x="950" y="395" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">21.02%</text>
-        <rect x="865" y="402" width="40.770357340262" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'the hands used to type the trigram are either LRL or RLR')" onmouseout="hideTooltip()" />
-        <text x="780" y="410" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">alt</text>
-        <text x="950" y="410" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">20.39%</text>
-        <rect x="865" y="417" width="29.277129335630335" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'two of the characters in the trigram are typed with the same hand and the first is inside the second')" onmouseout="hideTooltip()" />
-        <text x="780" y="425" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">bigram roll out</text>
-        <text x="950" y="425" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">14.64%</text>
-        <rect x="865" y="432" width="11.455706671938481" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'the three characters of the trigram are typed with the same hand and the direction changes')" onmouseout="hideTooltip()" />
-        <text x="780" y="440" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">redirect</text>
-        <text x="950" y="440" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">5.73%</text>
-        <rect x="865" y="447" width="5.658055588056113" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'trigram is typed LRL or RLR but finger1 and finger3 are the same and type a different character')" onmouseout="hideTooltip()" />
-        <text x="780" y="455" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">alt sfs</text>
-        <text x="950" y="455" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">2.83%</text>
-        <rect x="865" y="462" width="2.0386590763296875" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'the three characters of the trigram are typed with the same hand and go from the outside to the inside')" onmouseout="hideTooltip()" />
-        <text x="780" y="470" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">roll in</text>
-        <text x="950" y="470" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">1.02%</text>
-        <rect x="865" y="477" width="1.2805667738512623" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'a redirect but none of the fingers used are the index finger')" onmouseout="hideTooltip()" />
-        <text x="780" y="485" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">weak redirect</text>
-        <text x="950" y="485" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.64%</text>
-        <rect x="865" y="492" width="0.48656695944064976" height="10" fill="#7777bb" stroke="#9898d6" stroke-width="1" onmousemove="showTooltip(evt,'the three characters of the trigram are typed with the same hand and go from the inside to the outside')" onmouseout="hideTooltip()" />
-        <text x="780" y="500" font-size="9" font-family="Roboto Mono" fill="#dfe2eb" text-anchor="right">roll out</text>
-        <text x="950" y="500" font-size="10" font-family="Sans,Arial" fill="#dfe2eb" text-anchor="left">0.24%</text>
-</svg>
-  </div>
-  <hr>
-</div>
 <div class="sortable" data-sfb="22.398937983101927" data-effort="34.24010842747373" data-skip="3.31383453880068" data-lat="0.001676293513330359">
   <h1 id="aptmak">aptmak</h1>
-  <h3><a class="link" href="playground.html?layout=vwfpbjluy'-rsthkxnaio;/cgdqzm,.=\e">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=vwfpbjluy'-rsthkxnaio;/cgdqzm,.=\e">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('vwfpbjluy\'-rsthkxnaio;/cgdqzm,.=\e')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -19632,7 +19199,10 @@
 </div>
 <div class="sortable" data-sfb="24.563115382054814" data-effort="40.390873491012904" data-skip="3.7252071022380058" data-lat="0.003940829919305396">
   <h1 id="handsdown-dash">handsdown-dash<a class="source" href="https://sites.google.com/alanreiser.com/handsdown">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=jgmpv;.'*/zrsntb,haoiqxcldw-fuky\e">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=jgmpv;.'*/zrsntb,haoiqxcldw-fuky\e">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('jgmpv;.\'*/zrsntb,haoiqxcldw-fuky\e')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -20207,7 +19777,10 @@
 </div>
 <div class="sortable" data-sfb="17.77844904594356" data-effort="39.45370915959765" data-skip="4.241906940371845" data-lat="0.005368710048917563">
   <h1 id="handsdown-gold">handsdown-gold</h1>
-  <h3><a class="link" href="playground.html?layout=jfmpvzuoyk-rsndw,aeih*xglcb;./q'\t">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=jfmpvzuoyk-rsndw,aeih*xglcb;./q'\t">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('jfmpvzuoyk-rsndw,aeih*xglcb;./q\'\t')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -20779,7 +20352,10 @@
 </div>
 <div class="sortable" data-sfb="17.07494234325364" data-effort="36.7206651119301" data-skip="3.50759697810087" data-lat="0.003566222536658363">
   <h1 id="handsdown-vibranium">handsdown-vibranium<a class="source" href="https://sites.google.com/alanreiser.com/handsdown/home/hands-down-neu">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=xwmgqz.'jb;scntk,aeih*vpld/-uoyf\r">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=xwmgqz.'jb;scntk,aeih*vpld/-uoyf\r">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('xwmgqz.\'jb;scntk,aeih*vpld/-uoyf\r')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -21354,7 +20930,10 @@
 </div>
 <div class="sortable" data-sfb="18.905252154489276" data-effort="30.600603942618495" data-skip="4.007404706141871" data-lat="0.0005415411765056584">
   <h1 id="caster">caster<a class="source" href="https://www.reddit.com/r/KeyboardLayouts/comments/1g895nx/comment/lsyw81b/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=bwdl;/fouj-cstrxqnaih'vygmz=p.,k\e">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=bwdl;/fouj-cstrxqnaih'vygmz=p.,k\e">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('bwdl;/fouj-cstrxqnaih\'vygmz=p.,k\e')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -21929,7 +21508,10 @@
 </div>
 <div class="sortable" data-sfb="17.539972197574095" data-effort="34.494384367047665" data-skip="3.634784630564584" data-lat="0.002449355963461372">
   <h1 id="handsdown-promethium">handsdown-promethium<a class="source" href="https://www.reddit.com/r/KeyboardLayouts/comments/1g66ivi/hands_down_promethium_snth_meets_hd_silverengram/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=fpdlx;uoybzsnthk,aeicqvwgmj-.'=/\r">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=fpdlx;uoybzsnthk,aeicqvwgmj-.'=/\r">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('fpdlx;uoybzsnthk,aeicqvwgmj-.\'=/\r')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -22495,7 +22077,10 @@
 </div>
 <div class="sortable" data-sfb="10.76722970388131" data-effort="36.222795008282105" data-skip="3.6536640477271662" data-lat="0.004508206087717747">
   <h1 id="snth">snth<a class="source" href="https://www.reddit.com/r/KeyboardLayouts/comments/18jefux/snth/">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=xpdmq=you,-snthvgcaei;fbkljzw'/.\r">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=xpdmq=you,-snthvgcaei;fbkljzw'/.\r">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('xpdmq=you,-snthvgcaei;fbkljzw\'/.\r')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>
@@ -23061,7 +22646,10 @@
 </div>
 <div class="sortable" data-sfb="23.54958877648459" data-effort="37.98384716813711" data-skip="4.841080021900124" data-lat="0.008213540119258298">
   <h1 id="nordrassil">nordrassil<a class="source" href="https://github.com/empressabyss/nordrassil">source</a></h1>
-  <h3><a class="link" href="playground.html?layout=qyou-jgnfk=hiea.pdrslzx'/,;bcmwv\t">Edit</a></h3>
+  <h3>
+    <a class="link" href="playground.html?layout=qyou-jgnfk=hiea.pdrslzx'/,;bcmwv\t">Edit</a>
+    <input id="myCheckbox" type="checkbox" checked=false onchange="toggleCompare('qyou-jgnfk=hiea.pdrslzx\'/,;bcmwv\t')">
+  </h3>
   <div class="layout-svg">
     <svg width="1040" height="180">
         <rect x="45" y="0" rx="8" ry="8" width="530" height="170" stroke="#777777" fill="black" fill-opacity="0.0"/>

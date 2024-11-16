@@ -2,7 +2,8 @@
 const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
-var url_layout = params.layout;
+var url_layout1 = params.layout1;
+var url_layout2 = params.layout2;
 
 var swidth = 1100;
 var sheight = 180;
@@ -794,7 +795,17 @@ function activateAnsi() {
   }
 }
 
-function importLayout(layout,side) {
+function importLayouts(layout1, layout2) {
+  importLayout(layout1,1);
+  importLayout(layout2,2);
+
+  var queryParams = new URLSearchParams(window.location.search);
+  queryParams.set("layout1", exportLayout(1));
+  queryParams.set("layout2", exportLayout(2));
+  history.replaceState(null, null, "?"+queryParams.toString());
+}
+
+function importLayout(layout, side) {
   var decodedString = decodeURIComponent(layout);
   console.log("importing: "+decodedString)
   layout = decodedString
@@ -850,17 +861,18 @@ function importLayout(layout,side) {
     }
   }
 
-  // var queryParams = new URLSearchParams(window.location.search);
-  // queryParams.set("layout", exportLayout());
-  // queryParams.set("mode",mode)
-  // queryParams.set("lan",lang)
-  // history.replaceState(null, null, "?"+queryParams.toString());
 }
 
-function exportLayout() {
+function exportLayout(side) {
   var str = "";
-  for (let i = 0; i <= 33; i++) {
-    str += rcdata[i][0];
+  if (side == 1){
+    for (let i = 0; i <= 33; i++) {
+      str += rcdata[i][0];
+    }
+  } else {
+    for (let i = 0; i <= 33; i++) {
+      str += rcdata2[i][0];
+    }
   }
   return str;
 }
@@ -2661,4 +2673,7 @@ function makeDraggable(svg) {
   }
 }
 
+if (url_layout1 && url_layout2) {
+  importLayouts(url_layout1, url_layout2)
+}
 loadAllData()
