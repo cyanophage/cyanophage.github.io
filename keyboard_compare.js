@@ -5,8 +5,8 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 var url_layout1 = params.layout1;
 var url_layout2 = params.layout2;
 
-var swidth = 1100;
-var sheight = 180;
+var swidth = 1050;
+var sheight = 172;
 var outlinewidth = 510;
 var x_left = 0;
 var x_right = swidth-outlinewidth;
@@ -34,16 +34,16 @@ var needs_update = {}
 needs_update[1] = true;
 needs_update[2] = true;
 
-function scroll(event){
-  event.preventDefault();
-  scroll_amount += event.deltaY/125;
-  if (scroll_amount < 0){scroll_amount = 0;}
-  generatePlots();
-}
+// function scroll(event){
+//   event.preventDefault();
+//   scroll_amount += event.deltaY/125;
+//   if (scroll_amount < 0){scroll_amount = 0;}
+//   generatePlots();
+// }
 
-var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);//.attr("viewBox", "0 0 1200 200");
+var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
 
-var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("height", 710)
+var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("height", 900)
 
 // const el = document.querySelector("#svgstats");
 // el.onwheel = scroll;
@@ -1032,7 +1032,7 @@ function generateLayout() {
   if (mode == "iso" || mode == "ansi") {
     outlinewidth = 572;
   } else  {
-    outlinewidth = 510;
+    outlinewidth = 508;
   }
 
   // svg.append("rect").attr("x", 0).attr("y", 0).attr("width", swidth/2).attr("height", 179)
@@ -1040,14 +1040,14 @@ function generateLayout() {
   // svg.append("rect").attr("x", swidth/2).attr("y", 0).attr("width", swidth/2).attr("height", 179)
   // .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
 
-  svg.append("rect").attr("x", x_left).attr("y", 0).attr("width", outlinewidth).attr("height", 170)
+  svg.append("rect").attr("x", x_left).attr("y", 1).attr("width", outlinewidth).attr("height", 162)
   .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
 
-  svg.append("rect").attr("x", x_right).attr("y", 0).attr("width", outlinewidth).attr("height", 170)
+  svg.append("rect").attr("x", x_right).attr("y", 1).attr("width", outlinewidth).attr("height", 162)
   .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
 
-  svg.append("text").attr("x", 30).attr("y", 155).attr("fill", "#999999").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text("import").attr("onclick","importside=1;openImportPopup()")
-  svg.append("text").attr("x", 620).attr("y", 155).attr("fill", "#999999").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text("import").attr("onclick","importside=2;openImportPopup()")
+  svg.append("text").attr("x", 30).attr("y", 145).attr("fill", "#999999").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text("import").attr("onclick","importside=1;openImportPopup()")
+  svg.append("text").attr("x", 570).attr("y", 145).attr("fill", "#999999").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text("import").attr("onclick","importside=2;openImportPopup()")
 
   for (let i = 0; i < rcdata.length; i++) {
     letter = rcdata[i][0];
@@ -1203,6 +1203,8 @@ var m_row_usage = {};
 m_row_usage[1] = {};
 m_row_usage[2] = {};
 var m_trigram_count = {};
+m_trigram_count[1] = {};
+m_trigram_count[2] = {};
 var m_trigram_count_2 = {};
 var m_input_length = 0;
 var m_effort = 0;
@@ -1445,7 +1447,7 @@ function measureWords(side) {
   m_lat_stretch2[side] = {};
   m_letter_freq = {};
   m_row_usage[side] = {};
-  m_trigram_count = {};
+  m_trigram_count[side] = {};
   m_trigram_count_2 = {};
   m_finger_pairs = {};
   samehandstrings = {};
@@ -1702,10 +1704,10 @@ function measureWords(side) {
         else if (ppfinger >= 6 && prevfinger <= 5 && finger <= 5 && prevfinger > finger) { // RLL
           cat = "bigram roll out";
         }
-        if (!m_trigram_count[cat]) {
-          m_trigram_count[cat] = 0;
+        if (!m_trigram_count[side][cat]) {
+          m_trigram_count[side][cat] = 0;
         }
-        m_trigram_count[cat] += count;
+        m_trigram_count[side][cat] += count;
 
         // trigram row
         if (row == prevrow && prevrow == pprow) {
@@ -1808,9 +1810,9 @@ function generatePlots() {
   console.log("generatePlots")
   stats.selectAll("*").remove();
 
-  stats.append("rect").attr("x", x_left).attr("y", 0).attr("width", outlinewidth).attr("height", 710)
+  stats.append("rect").attr("x", x_left).attr("y", 0).attr("width", outlinewidth).attr("height", 825)
   .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
-  stats.append("rect").attr("x", x_right).attr("y", 0).attr("width", outlinewidth).attr("height", 710)
+  stats.append("rect").attr("x", x_right).attr("y", 0).attr("width", outlinewidth).attr("height", 825)
   .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opactiy", "0.0").attr("rx", 8).attr("ry", 8)
   var otherside = 2;
   for (let side = 1; side <= 2; side++) {
@@ -1821,8 +1823,8 @@ function generatePlots() {
     if (side == 2) {
       x = x_right;
     }
-    var y = 145;
-    stats.append("text").attr("x", x + 40).attr("y", y+16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Column Usage")
+    var y = 135;
+    stats.append("text").attr("x", x + 40).attr("y", y+26).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Column Usage")
     var sum = 0;
     for (var col in m_column_usage[side]) {
       sum += m_column_usage[side][col];
@@ -1858,8 +1860,8 @@ function generatePlots() {
     if (side == 2) {
       x = x_right+250;
     }
-    y = 145;
-    stats.append("text").attr("x", x + 40).attr("y", y+16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Row Usage")
+    y = 135;
+    stats.append("text").attr("x", x + 40).attr("y", y+26).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Row Usage")
     var sum = 0;
     for (var row in m_row_usage[side]) {
       sum += m_row_usage[side][row];
@@ -1887,8 +1889,8 @@ function generatePlots() {
     if (side == 2) {
       x = x_right;
     }
-    var y = 10;
-    stats.append("text").attr("x", x + 40).attr("y", y+16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Finger Usage")
+    var y = 0;
+    stats.append("text").attr("x", x + 40).attr("y", y+26).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Finger Usage")
     var sum = 0;
     var left = 0;
     var right = 0;
@@ -1936,7 +1938,7 @@ function generatePlots() {
     if (side == 2) {
       x = x_right+250;
     }
-    var y = 10;
+    var y = 0;
     var max = m_input_length / 5.110882176;
     sum = 0
     left = 0;
@@ -1951,7 +1953,7 @@ function generatePlots() {
       }
     }
 
-    stats.append("text").attr("x", x + 40).attr("y", y+16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Finger Distance")
+    stats.append("text").attr("x", x + 40).attr("y", y+26).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Finger Distance")
     for (var finger in m_finger_distance[side]) {
       if (m_finger_distance[side][finger] > 0) {
       var height = 75 * m_finger_distance[side][finger] / max;
@@ -1993,8 +1995,9 @@ function generatePlots() {
     if (side == 2) {
       x = x_right;
     }
-    var y = 310;
+    var y = 300;
     sum = 0;
+
     // toggle button
     stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
     .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing same finger bigrams for each bigram, and for each finger')")
@@ -2025,9 +2028,9 @@ function generatePlots() {
         }
         var width = 18000 * m_same_finger[side][bigram] / m_input_length;
         if (width > 200) { width = 200; }
-        stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-        stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-        stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[side][bigram] / m_input_length)).toFixed(2) + "%");
+        stats.append("rect").attr("x", x + 40).attr("y", y + i * 14).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+        stats.append("text").attr("x", x + 20).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
+        stats.append("text").attr("x", x + 200).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[side][bigram] / m_input_length)).toFixed(2) + "%");
         //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
         i += 1;
         if (i > 10) { break; }
@@ -2076,9 +2079,9 @@ function generatePlots() {
         }
         var width = 18000 * m_same_finger3[side][bigram] / m_input_length;
         if (width > 200) { width = 200; }
-        stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-        stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-        stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger3[side][bigram] / m_input_length)).toFixed(2) + "%");
+        stats.append("rect").attr("x", x + 40).attr("y", y + i * 14).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+        stats.append("text").attr("x", x + 20).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
+        stats.append("text").attr("x", x + 200).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger3[side][bigram] / m_input_length)).toFixed(2) + "%");
         //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
         i += 1;
         if (i > 10) { break; }
@@ -2091,7 +2094,7 @@ function generatePlots() {
     if (side == 2) {
       x = x_right+250;
     }
-    y = 310;
+    y = 300;
     sum = 0;
     var tmp;
     if (skip_toggle) {
@@ -2128,10 +2131,10 @@ function generatePlots() {
       }
       var height = 36000 * tmp[bigram] / m_input_length;
       if (height > 200) { height = 200; }
-      stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+      stats.append("rect").attr("x", x + 40).attr("y", y + i * 14).attr("width", height).attr("height", 10)
         .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-      stats.append("text").attr("x", x + 17).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
+      stats.append("text").attr("x", x + 17).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
+      stats.append("text").attr("x", x + 200).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
       //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
       i += 1;
       if (i > 10) { break; }
@@ -2142,7 +2145,7 @@ function generatePlots() {
   if (side == 2) {
     x = x_right;
   }
-  y = 530;
+  y = 500
   sum = 0;
   if (lsb_toggle == 0){
     var keyValueArray = Object.entries(m_lat_stretch[side]);
@@ -2178,10 +2181,10 @@ function generatePlots() {
     }
     var height = 10000 * tmp[bigram] / m_input_length;
     if (height > 200) { height = 200; }
-    stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+    stats.append("rect").attr("x", x + 40).attr("y", y + i * 14).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
+    stats.append("text").attr("x", x + 200).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -2191,7 +2194,7 @@ function generatePlots() {
   if (side == 2) {
     x = x_right+250;
   }
-  y = 530;
+  y = 500;
   sum = 0;
 
   if (scissors_toggle == 0) {
@@ -2235,57 +2238,58 @@ function generatePlots() {
     }
     var height = 36000 * tmp[bigram] / m_input_length;
     if (height > 180) { height = 180; }
-    stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+    stats.append("rect").attr("x", x + 40).attr("y", y + i * 14).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
+    stats.append("text").attr("x", x + 190).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
   }
-  }
   ///////////////////////////////////  T R I G R A M   S T A T S   ///////////////////////////////
-  // var x = 760;
-  // var y = 390;
-  // sum = 0;
-
+  var x = x_left+250;
+  if (side == 2) {
+    x = x_right+250;
+  }
+  var y = 690;
+  sum = 0;
   // if (trigram_toggle) {
-  //   var keyValueArray = Object.entries(m_trigram_count);
-  //   keyValueArray.sort((a, b) => b[1] - a[1]);
-  //   tmp = Object.fromEntries(keyValueArray);
-  //   for (var cat in tmp) {
-  //     sum += tmp[cat]
-  //   }
-  // } else {
-  //   var keyValueArray = Object.entries(m_trigram_count_2);
-  //   keyValueArray.sort((a, b) => b[1] - a[1]);
-  //   tmp = Object.fromEntries(keyValueArray);
-  //   for (var cat in tmp) {
-  //     sum += tmp[cat]
+    var keyValueArray = Object.entries(m_trigram_count[side]);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+    // } else {
+      //   var keyValueArray = Object.entries(m_trigram_count_2[side]);
+      //   keyValueArray.sort((a, b) => b[1] - a[1]);
+      //   tmp = Object.fromEntries(keyValueArray);
+      //   for (var cat in tmp) {
+        //     sum += tmp[cat]
   //   }
 
   // }
-  // const trigram_desc = {
-  //   "alt":"the hands used to type the trigram are either LRL or RLR",
-  //   "alt sfs":"trigram is typed LRL or RLR but finger1 and finger3 are the same and type a different character",
-  //   "bigram roll in":"two adjacent characters in the trigram are typed with the same hand and the first is outside the second",
-  //   "bigram roll out":"two adjacent characters in the trigram are typed with the same hand and the first is inside the second",
-  //   "weak redirect":"a redirect but none of the fingers used are the index finger",
-  //   "redirect":"the three characters of the trigram are typed with the same hand and the direction changes",
-  //   "roll out":"the three characters of the trigram are typed with the same hand and go from the inside to the outside",
-  //   "roll in":"the three characters of the trigram are typed with the same hand and go from the outside to the inside",
-  //   "other":"all other trigrams that don\\'t fit into any of the other categories",
-  //   "bigram same row":"two adjacent characters in the trigram are typed on the same row",
-  //   "trigram same row":"the three characters in the trigram are typed on the same row",
-  //   "double jump":"trigram is typed top, bottom, top or bottom, top, bottom",
-  // };
+  const trigram_desc = {
+    "alt":"the hands used to type the trigram are either LRL or RLR",
+    "alt sfs":"trigram is typed LRL or RLR but finger1 and finger3 are the same and type a different character",
+    "bigram roll in":"two adjacent characters in the trigram are typed with the same hand and the first is outside the second",
+    "bigram roll out":"two adjacent characters in the trigram are typed with the same hand and the first is inside the second",
+    "weak redirect":"a redirect but none of the fingers used are the index finger",
+    "redirect":"the three characters of the trigram are typed with the same hand and the direction changes",
+    "roll out":"the three characters of the trigram are typed with the same hand and go from the inside to the outside",
+    "roll in":"the three characters of the trigram are typed with the same hand and go from the outside to the inside",
+    "other":"all other trigrams that don\\'t fit into any of the other categories",
+    "bigram same row":"two adjacent characters in the trigram are typed on the same row",
+    "trigram same row":"the three characters in the trigram are typed on the same row",
+    "double jump":"trigram is typed [top, bottom, top] or [bottom, top, bottom]",
+  };
   // // for(var tri in m_redirects){
-  // //   if (m_redirects[tri] > 40){
-  // //     console.log(tri + "  " + m_redirects[tri]);
-  // //     // trigram_desc["redirect"] = trigram_desc["redirect"].concat(" "+tri);
-  // //   }
-  // // }
-  // stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
+    // //   if (m_redirects[tri] > 40){
+      // //     console.log(tri + "  " + m_redirects[tri]);
+      // //     // trigram_desc["redirect"] = trigram_desc["redirect"].concat(" "+tri);
+      // //   }
+      // // }
+      // stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
   // .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
   // .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
 
@@ -2293,21 +2297,22 @@ function generatePlots() {
   // .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
   // .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
 
-  // stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Trigram Stats")
+  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Trigram Stats")
 
-  // var i = 0
-  // for (var cat in tmp) {
-  //   var height = 200 * tmp[cat] / sum;
-  //   if (height > 200) { height = 200; }
-  //   stats.append("rect").attr("x", x + 105).attr("y", y + i * 15).attr("width", height).attr("height", 10)
-  //     .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-  //     .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
-  //   stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
-  //   stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[cat] / sum)).toFixed(2) + "%");
-  //   //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
-  //   i += 1;
-  //   if (i > 10) { break; }
-  // }
+  var i = 0
+  for (var cat in tmp) {
+    var height = 200 * tmp[cat] / sum;
+    if (height > 200) { height = 200; }
+    stats.append("rect").attr("x", x + 105).attr("y", y + i * 14).attr("width", height).attr("height", 10)
+    .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+    .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
+    stats.append("text").attr("x", x + 20).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
+    stats.append("text").attr("x", x + 190).attr("y", y + i * 14 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[cat] / sum)).toFixed(2) + "%");
+    //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
+    i += 1;
+    if (i > 10) { break; }
+  }
+  }
 
   ///////////////////////////////////  S A M E   H A N D   S T R I N G S  ///////////////////////////////
   // var x = 250;

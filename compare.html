@@ -39,6 +39,11 @@
         justify-content: center;
         margin: 0;
       }
+      .backlink{
+        position: absolute;
+        top: 1px;
+        left: 1px;
+      }
       .overlay {
         display: none;
         position: fixed;
@@ -141,10 +146,9 @@
   </head>
   <body>
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
-    <a href="index.html">back</a>
+    <!-- <div><a href="index.html">back</a></div> -->
+    <div class="backlink"><a href="index.html">back</a></div>
     <div class="layout-svg" id = "svglayout"></div>
-
-    <br>
     <div class="stats-svg" id = "svgstats"></div>
     <br>
 
