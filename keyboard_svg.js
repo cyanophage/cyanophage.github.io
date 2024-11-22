@@ -1907,7 +1907,7 @@ function generatePlots() {
   var y = 180;
   sum = 0;
 
-  if (scissors_toggle == 0) {
+  if (scissors_toggle == 1) {
     var keyValueArray = Object.entries(m_pinky_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -1915,7 +1915,7 @@ function generatePlots() {
       sum += tmp[bigram] / m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
-  } else if (scissors_toggle == 1){
+  } else if (scissors_toggle == 0){
     var keyValueArray = Object.entries(m_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
