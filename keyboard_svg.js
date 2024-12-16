@@ -289,6 +289,52 @@ function openCorpusPopup() {
   document.getElementById('corpusPopup').style.display = 'flex';
 }
 
+var is_editing_name = false;
+var name_container = document.querySelector("#layout-name");
+var name_div = name_container.querySelector(".name");
+var name_edit_btn = name_container.querySelector("button.edit");
+var name_save_btn = name_container.querySelector("button.save");
+var name_input = name_container.querySelector(".name-entry");
+renderLayoutName();
+
+function renderLayoutName(layout_name = params.name) {
+  if (layout_name) {
+    name_div.innerHTML = layout_name;
+    name_input.value = layout_name;
+    name_div.classList.remove("placeholder");
+  } else {
+    name_div.innerHTML = "Unnamed layout";
+    name_div.classList.add("placeholder");
+  }
+}
+
+function toggleEditLayoutName() {
+  if (is_editing_name) {
+    name_div.removeAttribute("hidden")
+    name_input.setAttribute("hidden", true);
+    name_edit_btn.innerText = "Edit";
+    name_save_btn.setAttribute("hidden", true);
+  } else {
+    name_div.setAttribute("hidden", true)
+    name_edit_btn.innerText = "Cancel"
+    name_save_btn.removeAttribute("hidden");
+    name_input.removeAttribute("hidden");
+    name_input.focus();
+  }
+
+  is_editing_name = !is_editing_name;
+}
+
+function updateLayoutName() {
+  var new_layout_name = name_input.value;
+  var queryParams = new URLSearchParams(window.location.search);
+  queryParams.set('name',  new_layout_name);
+  history.replaceState(null, null, "?"+queryParams.toString());
+
+  renderLayoutName(new_layout_name);
+  toggleEditLayoutName();
+}
+
 function containsOneCopyOfAllLetters(str) {
   str = str.toUpperCase();
   if (strCount(str,",")!=1) {return false;}

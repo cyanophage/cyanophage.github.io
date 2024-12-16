@@ -25,6 +25,41 @@
       .draggable {
         cursor: move;
       }
+      #layout-name {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          margin:auto;
+          padding: 10px;
+          padding-bottom: 16px;
+          width: 1000px;
+          min-height: 63px;
+      }
+      #layout-name .name {
+          color: #dfe2eb;
+      }
+      #layout-name .name-entry {
+          font-size: 16px;
+          padding: 2px 4px;
+      }
+      #layout-name .placeholder {
+          color: #999;
+          font-size: 16px;
+          font-style: italic;
+          font-weight: normal;
+      }
+      #layout-name button {
+          font-family: Sans, Arial;
+          background-color: #777777;
+          border: none;
+          color: #111111;
+          height: 25px;
+          padding-left: 4px;
+          padding-right: 4px;
+          font-size: 16px;
+      }
       .layout-svg{margin:auto;width:1000px;}
       .stats-svg{margin:auto;width:1000px;}
       .overlay {
@@ -151,6 +186,12 @@
         <a onclick="selectLanguage('spanish')">Spanish</a>
         <a onclick="selectLanguage('swedish')">Swedish</a>
       </div>
+    </div>
+    <div id="layout-name">
+       <input class="name-entry" hidden />
+        <h1 class="name"></h1>
+        <button class="save" onclick="updateLayoutName()" hidden>Save</button>
+        <button class="edit" onclick="toggleEditLayoutName()">Edit</button>
     </div>
     <div class="layout-svg" id = "svglayout"></div>
     <br>
