@@ -1460,7 +1460,7 @@ function measureWords() {
         }
         cat = "other";
         cat2 = "other";
-        if (ppfinger <= 4 && prevfinger <= 4 && finger <= 4) { // left hand
+        if (ppfinger <= 5 && prevfinger <= 5 && finger <= 5) { // left hand
           if (ppfinger < prevfinger && prevfinger < finger) {
             cat = "roll in"
           } else if (ppfinger > prevfinger && prevfinger > finger) {
@@ -1477,7 +1477,7 @@ function measureWords() {
             }
           }
         }
-        if (ppfinger >= 7 && prevfinger >= 7 && finger >= 7) { // right hand
+        if (ppfinger >= 6 && prevfinger >= 6 && finger >= 6) { // right hand
           if (ppfinger > prevfinger && prevfinger > finger) {
             cat = "roll in"
           } else if (ppfinger < prevfinger && prevfinger < finger) {

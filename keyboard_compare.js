@@ -1641,7 +1641,7 @@ function measureWords(side) {
         }
         cat = "other";
         cat2 = "other";
-        if (ppfinger <= 4 && prevfinger <= 4 && finger <= 4) { // left hand
+        if (ppfinger <= 5 && prevfinger <= 5 && finger <= 5) { // left hand
           if (ppfinger < prevfinger && prevfinger < finger) {
             cat = "roll in"
           } else if (ppfinger > prevfinger && prevfinger > finger) {
@@ -1658,7 +1658,7 @@ function measureWords(side) {
             }
           }
         }
-        if (ppfinger >= 7 && prevfinger >= 7 && finger >= 7) { // right hand
+        if (ppfinger >= 6 && prevfinger >= 6 && finger >= 6) { // right hand
           if (ppfinger > prevfinger && prevfinger > finger) {
             cat = "roll in"
           } else if (ppfinger < prevfinger && prevfinger < finger) {
@@ -2656,11 +2656,10 @@ function makeDraggable(svg) {
       }
       // console.log(rcdata)
 
-      // var queryParams = new URLSearchParams(window.location.search);
-      // queryParams.set("layout", exportLayout());
-      // queryParams.set("mode",mode)
-      // queryParams.set("lan",lang)
-      // history.replaceState(null, null, "?"+queryParams.toString());
+      var queryParams = new URLSearchParams(window.location.search);
+      queryParams.set("layout1", exportLayout(1));
+      queryParams.set("layout2", exportLayout(2));
+      history.replaceState(null, null, "?"+queryParams.toString());
 
       d3.select(svg).selectAll("*").remove();
       if (side == "left"){
