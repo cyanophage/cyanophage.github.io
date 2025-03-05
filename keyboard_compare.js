@@ -2574,7 +2574,7 @@ function makeDraggable(svg) {
           d = dist(x, y, rcdata[i][5], rcdata[i][4]);
           keyname = rcdata[i][0];
           if (d < closestdist) {
-            if (keyname == "mod" || keyname == "back" || keyname == "space" || keyname == "tab" || keyname == "ctrl" || keyname == "enter") {
+            if (keyname == "mod" || keyname == "back" || keyname == "tab" || keyname == "ctrl" || keyname == "enter") {
             } else {
               closestdist = d;
               dropi = i;
@@ -2599,6 +2599,28 @@ function makeDraggable(svg) {
           sibling = false;
           return;
         }
+        if (rcdata[starti][0] == "space") {
+          if (rcdata[dropi][1] < 3) {
+            selectedElement.setAttributeNS(null, "x", startx);
+            selectedElement.setAttributeNS(null, "y", starty);
+            sibling.setAttributeNS(null, "x", parseInt(startx)+15);
+            sibling.setAttributeNS(null, "y", parseInt(starty)+19);
+            selectedElement = false;
+            sibling = false;
+            return;
+          }
+        }
+        if (rcdata[dropi][0] == "space") {
+          if (rcdata[starti][1] < 3) {
+            selectedElement.setAttributeNS(null, "x", startx);
+            selectedElement.setAttributeNS(null, "y", starty);
+            sibling.setAttributeNS(null, "x", parseInt(startx)+15);
+            sibling.setAttributeNS(null, "y", parseInt(starty)+19);
+            selectedElement = false;
+            sibling = false;
+            return;
+          }
+        }
         selectedElement = false;
         sibling = false;
 
@@ -2617,7 +2639,7 @@ function makeDraggable(svg) {
           d = dist(x, y, rcdata2[i][5], rcdata2[i][4]);
           keyname = rcdata2[i][0];
           if (d < closestdist) {
-            if (keyname == "mod" || keyname == "back" || keyname == "space" || keyname == "tab" || keyname == "ctrl" || keyname == "enter") {
+            if (keyname == "mod" || keyname == "back" || keyname == "tab" || keyname == "ctrl" || keyname == "enter") {
             } else {
               closestdist = d;
               dropi = i;
