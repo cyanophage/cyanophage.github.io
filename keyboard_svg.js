@@ -2094,8 +2094,7 @@ function generatePlots() {
         continue;
       }
       var height = 100*word_effort[word]/word.length;
-      stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
-        .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+      stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(word);
       stats.append("text").attr("x", x + 165).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
       i += 1;
