@@ -203,12 +203,12 @@ var rcdata = [
   ["/", 2, 10, 0.14315604, 0, 0, 1, 31],
   ["\\", 2, 0, 0, 0, 0, 1, 32],
   ["^", 3, 4, 0, 0, 0, 1, 33],
-  ["tab", 0, 0, 0, 0, 0, 1],
-  ["ctrl", 1, 0, 0, 0, 0, 1],
-  ["enter", 2, 11, 0, 0, 0, 1],
-  ["mod", 3, 5, 0, 0, 0, 1],
-  ["back", 3, 6, 0, 0, 0, 1],
-  ["space", 3, 7, 0, 0, 0, 1],
+  ["tab", 0, 0, 0, 0, 0, 1, 34],
+  ["ctrl", 1, 0, 0, 0, 0, 1, 35],
+  ["enter", 2, 11, 0, 0, 0, 1, 36],
+  ["mod", 3, 5, 0, 0, 0, 1, 37],
+  ["back", 3, 6, 0, 0, 0, 1, 38],
+  ["space", 3, 7, 0, 0, 0, 1, 39],
 ]
 
 var effort = [
@@ -2238,7 +2238,7 @@ function makeDraggable(svg) {
           }
         }
         // console.log("keyname = "+keyname);
-        if (keyname == "mod" || keyname == "back" || keyname == "tab" || keyname == "ctrl" || keyname == "enter"){
+        if (keyname == "mod" || keyname == "back" || keyname == "tab" || keyname == "enter"){
           selectedElement = null;
           return;
         }
@@ -2277,7 +2277,7 @@ function makeDraggable(svg) {
         d = dist(x, y, rcdata[i][5], rcdata[i][4]);
         keyname = rcdata[i][0];
         if (d < closestdist) {
-          if (keyname == "mod" || keyname == "back" || keyname == "tab" || keyname == "ctrl" || keyname == "enter") {
+          if (keyname == "mod" || keyname == "back" || keyname == "tab" || keyname == "enter") {
           } else {
             closestdist = d;
             dropi = i;
