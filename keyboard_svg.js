@@ -39,7 +39,6 @@ function scroll(event){
   const svgRect = el.getBoundingClientRect();
   const mouseX = event.clientX - svgRect.left;
   const mouseY = event.clientY - svgRect.top;
-  console.log(mouseX + " " + mouseY);
   if (mouseX > 570 && mouseX < 770 && mouseY > 345){
     hw_scroll_amount += Math.sign(event.deltaY);
     if (hw_scroll_amount < 0){hw_scroll_amount = 0;}
@@ -1465,12 +1464,6 @@ function measureWords() {
       if (i > 1) {
         skip = ppchar + "_" + char;
         trigram = ppchar + prevchar + char;
-        // if (trigram == "the"){
-        //   console.log("the:")
-        //   console.log("finger1: "+ppfinger)
-        //   console.log("finger2: "+prevfinger)
-        //   console.log("finger3: "+finger)
-        // }
         if (finger == ppfinger && ppchar != char) {
           if (!m_skip_bigram[skip]) {
             m_skip_bigram[skip] = 0;
@@ -1586,31 +1579,6 @@ function measureWords() {
             m_trigram_count_roll_out[trigram] += count;
           // }
         }
-
-        // trigram row
-        // if (row == prevrow && prevrow == pprow) {
-        //   cat2 = "trigram same row"
-        // } else if (row == 0 && prevrow == 2 && pprow == 0) {
-        //   cat2 = "double jump"
-        // } else if (row == 2 && prevrow == 0 && pprow == 2) {
-        //   cat2 = "double jump"
-        // } else if (row == 0 && prevrow == 1 && pprow == 2) {
-        //   // cat2 = "TMB"
-        // } else if (row == 2 && prevrow == 1 && pprow == 0) {
-        //   // cat2 = "BMT"
-        // } else if (row == prevrow || prevrow == pprow) {
-        //   cat2 = "bigram same row"
-        // // } else if (Math.abs(row - prevrow) == 2) {
-        //   // cat2 = "2u"
-        // } else {
-        //   // cat2 = (row+1) +" " + (prevrow+1) +" " + (pprow+1)
-        // }
-
-
-        // if (!m_trigram_count_2[cat2]) {
-        //   m_trigram_count_2[cat2] = 0;
-        // }
-        // m_trigram_count_2[cat2] += count;
       }
       pprow = prevrow
       prevcol = col;
@@ -2018,6 +1986,7 @@ function generatePlots() {
   ///////////////////////////////////  T R I G R A M   S T A T S   ///////////////////////////////
   var x = 760;
   var y = 390;
+  dx = 105;
   sum = 0;
   scale = 1;
   var trigram_title = "Trigram Stats"
@@ -2031,6 +2000,7 @@ function generatePlots() {
     }
     trigram_title = "Trigram Stats"
     scale = 1;
+    dx = 105;
   } else if (trigram_toggle == 1) {
     var keyValueArray = Object.entries(m_trigram_count_alt);
     keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -2040,6 +2010,7 @@ function generatePlots() {
     }
     trigram_title = "Trigram Stats (alts)"
     scale = 3;
+    dx = 47;
   } else if (trigram_toggle == 2) {
     var keyValueArray = Object.entries(m_trigram_count_red);
     keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -2049,6 +2020,7 @@ function generatePlots() {
     }
     trigram_title = "Trigram Stats (redirects)"
     scale = 3;
+    dx = 47;
   } else if (trigram_toggle == 3) {
     var keyValueArray = Object.entries(m_trigram_count_roll_in);
     keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -2058,6 +2030,7 @@ function generatePlots() {
     }
     trigram_title = "Trigram Stats (roll in)"
     scale = 3;
+    dx = 47;
   } else if (trigram_toggle == 4) {
     var keyValueArray = Object.entries(m_trigram_count_roll_out);
     keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -2067,6 +2040,7 @@ function generatePlots() {
     }
     trigram_title = "Trigram Stats (roll out)"
     scale = 3;
+    dx = 47;
   }
   const trigram_desc = {
     "alt":"the hands used to type the trigram are either LRL or RLR",
@@ -2089,11 +2063,11 @@ function generatePlots() {
   //   }
   // }
   stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle(-1)")
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Change pages to see different trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle(-1)")
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
 
   stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle(1)")
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Change pages to see different trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle(1)")
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
 
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text(trigram_title)
@@ -2107,7 +2081,7 @@ function generatePlots() {
     }
     var width = scale * 200 * tmp[cat] / sum;
     if (width > 200) { width = 200; }
-    stats.append("rect").attr("x", x + 105).attr("y", y + i * 15).attr("width", width).attr("height", 10)
+    stats.append("rect").attr("x", x + dx).attr("y", y + i * 15).attr("width", width).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
