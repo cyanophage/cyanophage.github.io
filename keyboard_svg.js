@@ -20,6 +20,7 @@ var red = 0;
 var scroll_amount = 0;
 var hw_scroll_amount = 0;
 var sh_scroll_amount = 0;
+var trigram_scroll_amount = 0;
 var green = 128;
 var mode = params.mode;
 if (!mode){  mode = "ergo"}
@@ -38,12 +39,16 @@ function scroll(event){
   const svgRect = el.getBoundingClientRect();
   const mouseX = event.clientX - svgRect.left;
   const mouseY = event.clientY - svgRect.top;
+  console.log(mouseX + " " + mouseY);
   if (mouseX > 570 && mouseX < 770 && mouseY > 345){
     hw_scroll_amount += Math.sign(event.deltaY);
     if (hw_scroll_amount < 0){hw_scroll_amount = 0;}
   } else if (mouseX > 200 && mouseX < 430 && mouseY > 345){
     sh_scroll_amount += Math.sign(event.deltaY);
     if (sh_scroll_amount < 0){sh_scroll_amount = 0;}
+  } else if (mouseX > 780 && mouseX < 970 && mouseY > 345){
+    trigram_scroll_amount += Math.sign(event.deltaY);
+    if (trigram_scroll_amount < 0){trigram_scroll_amount = 0;}
   } else {
     scroll_amount += Math.sign(event.deltaY);
     if (scroll_amount < 0){scroll_amount = 0;}
@@ -544,9 +549,15 @@ function sfbToggle(v) {
   }
   generatePlots();
 }
-var trigram_toggle = true;
-function trigramToggle() {
-  trigram_toggle = !trigram_toggle
+var trigram_toggle = 0;
+function trigramToggle(v) {
+  trigram_toggle += v
+  if (trigram_toggle > 4){
+    trigram_toggle = 0
+  }
+  if (trigram_toggle < 0){
+    trigram_toggle = 4
+  }
   generatePlots();
 }
 
@@ -1026,7 +1037,10 @@ var m_lat_stretch2 = {};
 var m_letter_freq = {};
 var m_row_usage = {};
 var m_trigram_count = {};
-var m_trigram_count_2 = {};
+var m_trigram_count_alt = {};
+var m_trigram_count_red = {};
+var m_trigram_count_roll_in = {};
+var m_trigram_count_roll_out = {};
 var m_input_length = 0;
 var m_effort = 0;
 var m_total_word_effort = 0;
@@ -1269,7 +1283,10 @@ function measureWords() {
   m_letter_freq = {};
   m_row_usage = {};
   m_trigram_count = {};
-  m_trigram_count_2 = {};
+  m_trigram_count_alt = {};
+  m_trigram_count_red = {};
+  m_trigram_count_roll_in = {};
+  m_trigram_count_roll_out = {};
   m_finger_pairs = {};
   samehandstrings = {};
   samehandcount = {};
@@ -1448,6 +1465,12 @@ function measureWords() {
       if (i > 1) {
         skip = ppchar + "_" + char;
         trigram = ppchar + prevchar + char;
+        // if (trigram == "the"){
+        //   console.log("the:")
+        //   console.log("finger1: "+ppfinger)
+        //   console.log("finger2: "+prevfinger)
+        //   console.log("finger3: "+finger)
+        // }
         if (finger == ppfinger && ppchar != char) {
           if (!m_skip_bigram[skip]) {
             m_skip_bigram[skip] = 0;
@@ -1462,13 +1485,13 @@ function measureWords() {
           }
         }
         cat = "other";
-        cat2 = "other";
+        // cat2 = "other";
         if (ppfinger <= 5 && prevfinger <= 5 && finger <= 5) { // left hand
           if (ppfinger < prevfinger && prevfinger < finger) {
             cat = "roll in"
           } else if (ppfinger > prevfinger && prevfinger > finger) {
             cat = "roll out"
-          } else if ((ppfinger < prevfinger && finger < prevfinger) || (ppfinger > prevfinger && finger > prevfinger)) {
+          } else if ((ppfinger < prevfinger && finger < prevfinger && finger != ppfinger) || (ppfinger > prevfinger && finger > prevfinger && finger != ppfinger)) {
             cat = "redirect"
             // if (!m_redirects[trigram]) {
             //   m_redirects[trigram] = 0;
@@ -1485,7 +1508,7 @@ function measureWords() {
             cat = "roll in"
           } else if (ppfinger < prevfinger && prevfinger < finger) {
             cat = "roll out"
-          } else if ((ppfinger > prevfinger && finger > prevfinger) || (ppfinger < prevfinger && finger < prevfinger)) {
+          } else if ((ppfinger > prevfinger && finger > prevfinger && finger != ppfinger) || (ppfinger < prevfinger && finger < prevfinger && finger != ppfinger)) {
             cat = "redirect"
             // if (!m_redirects[trigram]) {
             //   m_redirects[trigram] = 0;
@@ -1530,31 +1553,64 @@ function measureWords() {
           m_trigram_count[cat] = 0;
         }
         m_trigram_count[cat] += count;
+        if (cat == "alt"){
+          if (!m_trigram_count_alt[trigram]) {
+            m_trigram_count_alt[trigram] = 0;
+          }
+          // if (count > 20){
+            m_trigram_count_alt[trigram] += count;
+          // }
+          // if (count > 10){ console.log(trigram + " "+ count);}
+        }
+        if (cat == "redirect" || cat == "weak redirect"){
+          if (!m_trigram_count_red[trigram]) {
+            m_trigram_count_red[trigram] = 0;
+          }
+          // if (count > 20){
+            m_trigram_count_red[trigram] += count;
+          // }
+        }
+        if (cat == "roll in" || cat == "bigram roll in"){
+          if (!m_trigram_count_roll_in[trigram]) {
+            m_trigram_count_roll_in[trigram] = 0;
+          }
+          // if (count > 20){
+            m_trigram_count_roll_in[trigram] += count;
+          // }
+        }
+        if (cat == "roll out" || cat == "bigram roll out"){
+          if (!m_trigram_count_roll_out[trigram]) {
+            m_trigram_count_roll_out[trigram] = 0;
+          }
+          // if (count > 20){
+            m_trigram_count_roll_out[trigram] += count;
+          // }
+        }
 
         // trigram row
-        if (row == prevrow && prevrow == pprow) {
-          cat2 = "trigram same row"
-        } else if (row == 0 && prevrow == 2 && pprow == 0) {
-          cat2 = "double jump"
-        } else if (row == 2 && prevrow == 0 && pprow == 2) {
-          cat2 = "double jump"
-        } else if (row == 0 && prevrow == 1 && pprow == 2) {
-          // cat2 = "TMB"
-        } else if (row == 2 && prevrow == 1 && pprow == 0) {
-          // cat2 = "BMT"
-        } else if (row == prevrow || prevrow == pprow) {
-          cat2 = "bigram same row"
-        // } else if (Math.abs(row - prevrow) == 2) {
-          // cat2 = "2u"
-        } else {
-          // cat2 = (row+1) +" " + (prevrow+1) +" " + (pprow+1)
-        }
+        // if (row == prevrow && prevrow == pprow) {
+        //   cat2 = "trigram same row"
+        // } else if (row == 0 && prevrow == 2 && pprow == 0) {
+        //   cat2 = "double jump"
+        // } else if (row == 2 && prevrow == 0 && pprow == 2) {
+        //   cat2 = "double jump"
+        // } else if (row == 0 && prevrow == 1 && pprow == 2) {
+        //   // cat2 = "TMB"
+        // } else if (row == 2 && prevrow == 1 && pprow == 0) {
+        //   // cat2 = "BMT"
+        // } else if (row == prevrow || prevrow == pprow) {
+        //   cat2 = "bigram same row"
+        // // } else if (Math.abs(row - prevrow) == 2) {
+        //   // cat2 = "2u"
+        // } else {
+        //   // cat2 = (row+1) +" " + (prevrow+1) +" " + (pprow+1)
+        // }
 
 
-        if (!m_trigram_count_2[cat2]) {
-          m_trigram_count_2[cat2] = 0;
-        }
-        m_trigram_count_2[cat2] += count;
+        // if (!m_trigram_count_2[cat2]) {
+        //   m_trigram_count_2[cat2] = 0;
+        // }
+        // m_trigram_count_2[cat2] += count;
       }
       pprow = prevrow
       prevcol = col;
@@ -1905,7 +1961,7 @@ function generatePlots() {
     i += 1;
     if (i > 10) { break; }
   }
-  //////////////////////////// P I N K Y - R I N G   S C I S S O R S  ///////////////////////////////
+  ////////////////////////////  S C I S S O R S  ///////////////////////////////
   var x = 760;
   var y = 180;
   sum = 0;
@@ -1963,22 +2019,54 @@ function generatePlots() {
   var x = 760;
   var y = 390;
   sum = 0;
+  scale = 1;
+  var trigram_title = "Trigram Stats"
 
-  if (trigram_toggle) {
+  if (trigram_toggle == 0) {
     var keyValueArray = Object.entries(m_trigram_count);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var cat in tmp) {
       sum += tmp[cat]
     }
-  } else {
-    var keyValueArray = Object.entries(m_trigram_count_2);
+    trigram_title = "Trigram Stats"
+    scale = 1;
+  } else if (trigram_toggle == 1) {
+    var keyValueArray = Object.entries(m_trigram_count_alt);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var cat in tmp) {
       sum += tmp[cat]
     }
-
+    trigram_title = "Trigram Stats (alts)"
+    scale = 3;
+  } else if (trigram_toggle == 2) {
+    var keyValueArray = Object.entries(m_trigram_count_red);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+    trigram_title = "Trigram Stats (redirects)"
+    scale = 3;
+  } else if (trigram_toggle == 3) {
+    var keyValueArray = Object.entries(m_trigram_count_roll_in);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+    trigram_title = "Trigram Stats (roll in)"
+    scale = 3;
+  } else if (trigram_toggle == 4) {
+    var keyValueArray = Object.entries(m_trigram_count_roll_out);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (var cat in tmp) {
+      sum += tmp[cat]
+    }
+    trigram_title = "Trigram Stats (roll out)"
+    scale = 3;
   }
   const trigram_desc = {
     "alt":"the hands used to type the trigram are either LRL or RLR",
@@ -1990,9 +2078,9 @@ function generatePlots() {
     "roll out":"the three characters of the trigram are typed with the same hand and go from the inside to the outside",
     "roll in":"the three characters of the trigram are typed with the same hand and go from the outside to the inside",
     "other":"all other trigrams that don\\'t fit into any of the other categories",
-    "bigram same row":"two adjacent characters in the trigram are typed on the same row",
-    "trigram same row":"the three characters in the trigram are typed on the same row",
-    "double jump":"trigram is typed top, bottom, top or bottom, top, bottom",
+    // "bigram same row":"two adjacent characters in the trigram are typed on the same row",
+    // "trigram same row":"the three characters in the trigram are typed on the same row",
+    // "double jump":"trigram is typed top, bottom, top or bottom, top, bottom",
   };
   // for(var tri in m_redirects){
   //   if (m_redirects[tri] > 40){
@@ -2001,20 +2089,25 @@ function generatePlots() {
   //   }
   // }
   stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle(-1)")
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
 
   stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle()")
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between col trigram stats and row trigram stats')").attr("onmouseout","hideTooltip()").attr("onclick","trigramToggle(1)")
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
 
-  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Trigram Stats")
+  stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text(trigram_title)
 
   var i = 0
+  var t = trigram_scroll_amount;
   for (var cat in tmp) {
-    var height = 200 * tmp[cat] / sum;
-    if (height > 200) { height = 200; }
-    stats.append("rect").attr("x", x + 105).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+    if (t > 0){
+      t -= 1;
+      continue;
+    }
+    var width = scale * 200 * tmp[cat] / sum;
+    if (width > 200) { width = 200; }
+    stats.append("rect").attr("x", x + 105).attr("y", y + i * 15).attr("width", width).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
