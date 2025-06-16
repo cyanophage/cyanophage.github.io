@@ -26,6 +26,9 @@ if (!mode){  mode = "ergo"}
 var lang = "english";
 if (params.lan) {
   lang = params.lan;
+  if (lang != "english"){
+    selectLanguage(lang);
+  }
 }
 var needs_update = true;
 
