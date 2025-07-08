@@ -296,25 +296,6 @@ function openCorpusPopup() {
   document.getElementById('corpusPopup').style.display = 'flex';
 }
 
-function containsOneCopyOfAllLetters(str) {
-  str = str.toUpperCase();
-  if (strCount(str,",")!=1) {return false;}
-  if (strCount(str,".")!=1) {return false;}
-  if (strCount(str,";")>1) {return false;}
-  if (strCount(str,"/")>1) {return false;}
-  if (strCount(str,"'")>1) {return false;}
-  if (strCount(str,"\\")>1) {return false;}
-  if (strCount(str,"-")>1) {return false;}
-  // Convert the string to uppercase
-
-  // Remove non-alphabetic characters
-  str = str.replace(/[^A-Z]/g, '');
-
-  // Check if the string has exactly one copy of each letter
-  const uniqueLetters = new Set(str);
-  return uniqueLetters.size === 26; //wlrdzqgubj-shnt,.aeoi'fmvc/;pxky
-}
-
 function deepCopy(arr) {
   return arr.map(item => Array.isArray(item) ? deepCopy(item) : item);
 }
@@ -327,8 +308,6 @@ function strCount(str,char) {
 function closeImportPopup() {
   var importString = document.getElementById('importText').value;
   importString = importString.replace(/\s+/g, '');
-  // if we import a string that is 30 characters long and doesn't contain - or ' then we add them in
-  // but then what if we add a 30 character string that does contain - or '. well then we should add something else in
   if (importString.length == 0) {
     document.getElementById('importPopup').style.display = 'none';
     return
@@ -352,13 +331,29 @@ function closeImportPopup() {
       importString = importString.slice(0, 10) + "+" + importString.slice(10,20) + "*" + importString.slice(20) + "\\^";
     }
   }
-  if (containsOneCopyOfAllLetters(importString)){ // fwhmzqouybjsnrtk-aeicxvpld/;,'.g\^
+  const letters = importString.toUpperCase().match(/[A-Z\.\,\/\-\'\;]/g) || [];
+  // Count occurrences of each letter
+  const letterCount = {};
+  letters.forEach(letter => {
+    letterCount[letter] = (letterCount[letter] || 0) + 1;
+  });
+  const allLetters = Array.from({length: 26}, (_, i) => String.fromCharCode(65 + i)).concat(['.', ',',';','/','-','\'']);
+  const missing = allLetters.filter(letter => !letterCount[letter]);
+  const duplicates = Object.keys(letterCount).filter(letter => letterCount[letter] > 1);
+  var message = ""
+  if (missing.length > 0){
+    message = message + "These letters are missing: "+missing.join(" ")+"\n"
+  }
+  if (duplicates.length > 0){
+    message = message + "These letters are duplicated: "+duplicates.join(" ")+"\n"
+  }
+  if (message.length > 0){
+    document.getElementById('importMessage').innerText = message
+    return
+  } else {
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
-    } else if (importString.length == 33 || importString.length == 34) {
-      if (importString.length == 33) {
-        importString = importString + "^"
-      }
+    } else if (importString.length <= 35) {
       needs_update = true;
       importLayout(importString);
       var queryParams = new URLSearchParams(window.location.search);
@@ -373,13 +368,12 @@ function closeImportPopup() {
       generatePlots();
       document.getElementById('importPopup').style.display = 'none';
     } else {
-      document.getElementById('importMessage').innerText = "Input string needs to be 30,32 or 33 characters"
-      // console.log(document.getElementById('importMessage'));
+      document.getElementById('importMessage').innerText = "Input string contains too many characters"
       console.log("input string is length "+ importString.length + "  " + importString);
+      return
     }
-  } else {
-    document.getElementById('importMessage').innerText = "Imported layout should have only 1 of A-Z and . and , "
   }
+
   needs_update = true;
 }
 
@@ -392,7 +386,7 @@ function closeCorpusPopup() {
     return;
   }
   if (massive_string.length < 1000) {
-    document.getElementById('corpusMessage').innerText = "You call that a corpus?";
+    document.getElementById('corpusMessage').innerText = "Input text not large enough";
     return;
   }
   list = massive_string.split(" ")
@@ -586,35 +580,35 @@ function setMode() {
   generateCoords()
 }
 
-function setErgo() {
-  if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-  console.log("setErgo");
-  rcdata[32][1] = 2
-  rcdata[32][2] = 0
-  rcdata[32][6] = 1
-  rcdata[33][1] = 3
-  rcdata[33][2] = 4
-  rcdata[33][6] = 1
-  rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
-  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1]
-  rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
-  rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1]
-  rcdata[38] = ["back", 3, 6, 0, 0, 0, 1]
-  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1]
-  mode = "ergo"
-  fingerAssignment = [
-                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
-                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
-                 [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
-               ]
+// function setErgo() {
+//   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
+//   console.log("setErgo");
+//   rcdata[32][1] = 2
+//   rcdata[32][2] = 0
+//   rcdata[32][6] = 1
+//   rcdata[33][1] = 3
+//   rcdata[33][2] = 4
+//   rcdata[33][6] = 1
+//   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
+//   rcdata[35] = [rcdata[35][0], 1, 0, 0, 0, 0, 1, 35]
+//   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
+//   rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1]
+//   rcdata[38] = ["back", 3, 6, 0, 0, 0, 1]
+//   rcdata[39] = ["space", 3, 7, 0, 0, 0, 1]
+//   mode = "ergo"
+//   fingerAssignment = [
+//                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+//                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
+//                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
+//                ]
 
-  var queryParams = new URLSearchParams(window.location.search);
-  queryParams.set("layout", exportLayout());
-  queryParams.set("mode",mode)
-  queryParams.set("lan",lang)
-  history.replaceState(null, null, "?"+queryParams.toString());
-  generateCoords()
-}
+//   var queryParams = new URLSearchParams(window.location.search);
+//   queryParams.set("layout", exportLayout());
+//   queryParams.set("mode",mode)
+//   queryParams.set("lan",lang)
+//   history.replaceState(null, null, "?"+queryParams.toString());
+//   generateCoords()
+// }
 
 
 function activateErgo() {
@@ -637,7 +631,7 @@ function setErgo() {
   rcdata[33][2] = 4
   rcdata[33][6] = 1
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1, 34]
-  rcdata[35] = ["ctrl", 1, 0, 0, 0, 0, 1, 35]
+  rcdata[35] = [rcdata[35][0], 1, 0, 0, 0, 0, 1, 35]
   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1, 36]
   rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1, 37]
   rcdata[38] = ["back", 3, 6, 0, 0, 0, 1, 38]
@@ -768,34 +762,91 @@ function setAnsi() {
 }
 
 function importLayout(layout) {
-  var decodedString = decodeURIComponent(layout);
-  console.log("importing: "+decodedString)
-  layout = decodedString
-  for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
-    for (let j = 0; j < 34; j++) {
-      if (layout.charAt(i) == rcdata[j][0]) {
-        // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
-        // swap
-        indices = [0, 3, 7]
-        for (let id = 0; id < indices.length; id++){
-          var k = indices[id];
-          tmp = rcdata[i][k];
-          rcdata[i][k] = rcdata[j][k];
-          rcdata[j][k] = tmp;
+  if (layout.length == 35) {
+    console.log("35 char long layout string");
+    var decodedString = decodeURIComponent(layout);
+    console.log("importing: "+decodedString)
+    layout = decodedString
+    // change shift to =
+    for (let i = 0; i < 34; i++) {
+      if (rcdata[i][0] == "^") {
+        rcdata[i][0] = "*"
+      }
+    }
+    // change ctrl to *
+    for (let i = 0; i < 37; i++) {
+      if (rcdata[i][0] == "ctrl") {
+        rcdata[i][0] = "="
+        console.log("setting "+i+" to *")
+      }
+    }
+    //
+    for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
+      for (let j = 0; j < 34; j++) {
+        if (layout.charAt(i) == rcdata[j][0]) {
+          // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
+          // swap
+          indices = [0, 3, 7] // letter, freq, keyname
+          for (let id = 0; id < indices.length; id++){
+            var k = indices[id];
+            tmp = rcdata[i][k];
+            rcdata[i][k] = rcdata[j][k];
+            rcdata[j][k] = tmp;
+          }
         }
       }
     }
-  }
-  for (let i = 0; i < 34; i++) {
-    if (rcdata[i][0] == "^") {
-      if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
-        // cool
-      } else {
-        rcdata[i][0] = "="
+    // last letter
+    var swap1 = 0
+    var swap2 = 0
+    for (let i = 0; i < 36; i++) {
+      if (rcdata[i][7] == 35) {
+        swap1 = i
       }
     }
-  }
+    for (let i = 0; i < 36; i++) {
+      if (rcdata[i][0] == layout.charAt(34)) {
+        swap2 = i
+      }
+    }
+    indices = [0, 3, 7] // letter, freq, keyname
+    for (let id = 0; id < indices.length; id++){
+      var k = indices[id];
+      tmp = rcdata[swap1][k];
+      rcdata[swap1][k] = rcdata[swap2][k];
+      rcdata[swap2][k] = tmp;
+    }
 
+  } else {
+    var decodedString = decodeURIComponent(layout);
+    console.log("importing: "+decodedString)
+    layout = decodedString
+    for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
+      for (let j = 0; j < 34; j++) {
+        if (layout.charAt(i) == rcdata[j][0]) {
+          // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
+          // swap
+          indices = [0, 3, 7] // letter, freq, keyname
+          for (let id = 0; id < indices.length; id++){
+            var k = indices[id];
+            tmp = rcdata[i][k];
+            rcdata[i][k] = rcdata[j][k];
+            rcdata[j][k] = tmp;
+          }
+        }
+      }
+    }
+    for (let i = 0; i < 34; i++) {
+      if (rcdata[i][0] == "^") {
+        if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
+          // cool
+        } else {
+          rcdata[i][0] = "="
+        }
+      }
+    }
+
+  }
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
@@ -807,6 +858,9 @@ function exportLayout() {
   var str = "";
   for (let i = 0; i <= 33; i++) {
     str += rcdata[i][0];
+  }
+  if (rcdata[35][0] != "ctrl") {
+    str += rcdata[35][0];
   }
   return str;
 }
@@ -2411,7 +2465,6 @@ function makeDraggable(svg) {
         rcdata[starti][k] = rcdata[dropi][k];
         rcdata[dropi][k] = tmp;
       }
-      // console.log(rcdata)
 
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
