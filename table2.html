@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Keyboard Layout Stats</title>
+    <style>
+    body {font-family: Arial, sans-serif;background-color:#1b1c1f}
+    h1 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:10px;}
+    h2 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:5px;}
+    h3 {color: #dfe2eb; margin:auto; width:75%; text-align:center; padding:5px;}
+    a:link {  color: #dfe2eb;text-decoration: none;}
+    a:visited {  color: #dfe2eb;text-decoration: none;}
+    a:hover {  color: #dfe2eb;text-decoration: none;background-color: #40434a;}
+    a:active {  color: #dfe2eb;text-decoration: none;}
+     table {
+       width: 99%;
+       border: 1px solid #333333;
+       border-collapse: collapse;
+     }
+     th {
+     padding-top: 8px;
+     padding-bottom: 8px;
+     text-align: center;
+     background-color: #363846;
+     color: white;
+     }
+     tr:nth-child(even){background-color: #1b1c1f;color:#cccccc}
+     tr:nth-child(odd){background-color: #111111;color:#cccccc}
+     tr:hover {background-color: #2e3036;}
+     td {
+       padding-left: 8px;
+       padding-right: 8px;
+       padding-top: 3px;
+       padding-bottom: 3px;
+       text-align: center;
+     
+       border: 1px solid #444;
+     }
+     .center {
+       margin-left: auto;
+       margin-right: auto;
+     }
+    </style>
+</head>
+<body>
+  <table id="sortableTable" class="center">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th onclick="sortTable(1)">thumb</th>
+        <th onclick="sortTable(2)">effort</th>
+        <th onclick="sortTable(3)">distance</th>
+        <th onclick="sortTable(4)">pinky dist</th>
+        <th onclick="sortTable(5)">pinky off home</th>
+        <th onclick="sortTable(6)">sfb</th>
+        <th onclick="sortTable(7)">skip bigrams</th>
+        <th onclick="sortTable(8)">skip bigrams2</th>
+        <th onclick="sortTable(9)">lateral stretch</th>
+        <th onclick="sortTable(10)">pinky scissors</th>
+        <th onclick="sortTable(11)">tworow sfb</th>
+        <th onclick="sortTable(12)">tworow jumps</th>
+        <th onclick="sortTable(13)">trigram alt</th>
+        <th onclick="sortTable(14)">tri redirect</th>
+        <th onclick="sortTable(15)">roll in</th>
+        <th onclick="sortTable(16)">roll out</th>
+        <th onclick="sortTable(17)">col5&6</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#gallium">gallium</a></td>
+        <td>shift</td>
+        <td>512.93</td>
+        <td>189.14</td>
+        <td>18.01</td>
+        <td>3.81%</td>
+        <td>0.64%</td>
+        <td>0.2%</td>
+        <td>2.71%</td>
+        <td>0.85%</td>
+        <td>0.48%</td>
+        <td>0.03%</td>
+        <td>0.86%</td>
+        <td>37.68%</td>
+        <td>2.65%</td>
+        <td>21.64%</td>
+        <td>24.43%</td>
+        <td>6.09%</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#middlemak">middlemak</a></td>
+        <td>shift</td>
+        <td>557.73</td>
+        <td>207.08</td>
+        <td>4.56</td>
+        <td>0.95%</td>
+        <td>1.22%</td>
+        <td>0.6%</td>
+        <td>4.28%</td>
+        <td>1.91%</td>
+        <td>0.37%</td>
+        <td>0.18%</td>
+        <td>1.23%</td>
+        <td>25.92%</td>
+        <td>7.46%</td>
+        <td>31.35%</td>
+        <td>17.88%</td>
+        <td>8.47%</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#northstar">northstar</a></td>
+        <td>shift</td>
+        <td>523.05</td>
+        <td>194.71</td>
+        <td>16.96</td>
+        <td>3.28%</td>
+        <td>0.78%</td>
+        <td>0.19%</td>
+        <td>3.61%</td>
+        <td>0.98%</td>
+        <td>0.33%</td>
+        <td>0.04%</td>
+        <td>0.95%</td>
+        <td>36.05%</td>
+        <td>2.93%</td>
+        <td>20.66%</td>
+        <td>24.82%</td>
+        <td>6.09%</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#dusk">dusk</a></td>
+        <td>r</td>
+        <td>480.87</td>
+        <td>170.63</td>
+        <td>16.95</td>
+        <td>3.7%</td>
+        <td>0.41%</td>
+        <td>0.14%</td>
+        <td>2.2%</td>
+        <td>1.53%</td>
+        <td>0.44%</td>
+        <td>0.04%</td>
+        <td>0.98%</td>
+        <td>32.91%</td>
+        <td>4.2%</td>
+        <td>24.56%</td>
+        <td>26.19%</td>
+        <td>6.89%</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#stern">stern</a></td>
+        <td>r</td>
+        <td>434.27</td>
+        <td>170.32</td>
+        <td>15.18</td>
+        <td>3.35%</td>
+        <td>0.39%</td>
+        <td>0.32%</td>
+        <td>2.19%</td>
+        <td>0.69%</td>
+        <td>0.55%</td>
+        <td>0.05%</td>
+        <td>1.03%</td>
+        <td>38.29%</td>
+        <td>3.17%</td>
+        <td>22.3%</td>
+        <td>23.76%</td>
+        <td>4.59%</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#racket">racket</a></td>
+        <td>r</td>
+        <td>440.69</td>
+        <td>170.9</td>
+        <td>19.27</td>
+        <td>4.4%</td>
+        <td>0.37%</td>
+        <td>0.32%</td>
+        <td>2.17%</td>
+        <td>0.47%</td>
+        <td>0.61%</td>
+        <td>0.04%</td>
+        <td>0.67%</td>
+        <td>35.29%</td>
+        <td>4.34%</td>
+        <td>29.14%</td>
+        <td>19.2%</td>
+        <td>3.74%</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#handsdown-gold">handsdown-gold</a></td>
+        <td>t</td>
+        <td>455.4</td>
+        <td>178.5</td>
+        <td>8.28</td>
+        <td>1.78%</td>
+        <td>0.59%</td>
+        <td>0.42%</td>
+        <td>3.09%</td>
+        <td>0.54%</td>
+        <td>0.57%</td>
+        <td>0.04%</td>
+        <td>0.7%</td>
+        <td>38.79%</td>
+        <td>1.37%</td>
+        <td>32.22%</td>
+        <td>12.05%</td>
+        <td>5.97%</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><a href="index2.html#handsdown-dash">handsdown-dash</a></td>
+        <td>e</td>
+        <td>466.12</td>
+        <td>163.32</td>
+        <td>12.04</td>
+        <td>2.54%</td>
+        <td>0.82%</td>
+        <td>0.37%</td>
+        <td>2.92%</td>
+        <td>0.39%</td>
+        <td>0.85%</td>
+        <td>0.05%</td>
+        <td>0.57%</td>
+        <td>28.08%</td>
+        <td>1.65%</td>
+        <td>22.53%</td>
+        <td>19.88%</td>
+        <td>6.22%</td>
+      </tr>
+    </tbody>
+  </table>
+<script>  var up = -1;  function sortTable(columnIndex) {    up *= -1;    var table, rows, i, j, x, y, lowest;    table = document.getElementById("sortableTable");    rows = table.getElementsByTagName("tr");    for (i = 1; i < rows.length-1; i++) {      x = rows[i].getElementsByTagName("td")[columnIndex];      best = x;      lowest = i;      for (j = i+1; j < rows.length; j++) {        y = rows[j].getElementsByTagName("td")[columnIndex];        if (up > 0) {          if (parseFloat(y.innerHTML) < parseFloat(best.innerHTML)) {            lowest = j;            best = rows[j].getElementsByTagName("td")[columnIndex];          }        } else {          if (parseFloat(y.innerHTML) > parseFloat(best.innerHTML)) {            lowest = j;            best = rows[j].getElementsByTagName("td")[columnIndex];          }        }      }      rows[i].parentNode.insertBefore(rows[lowest], rows[i]);    }  }</script></body>
+</html>
