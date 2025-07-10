@@ -580,37 +580,6 @@ function setMode() {
   generateCoords()
 }
 
-// function setErgo() {
-//   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-//   console.log("setErgo");
-//   rcdata[32][1] = 2
-//   rcdata[32][2] = 0
-//   rcdata[32][6] = 1
-//   rcdata[33][1] = 3
-//   rcdata[33][2] = 4
-//   rcdata[33][6] = 1
-//   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1]
-//   rcdata[35] = [rcdata[35][0], 1, 0, 0, 0, 0, 1, 35]
-//   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1]
-//   rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1]
-//   rcdata[38] = ["back", 3, 6, 0, 0, 0, 1]
-//   rcdata[39] = ["space", 3, 7, 0, 0, 0, 1]
-//   mode = "ergo"
-//   fingerAssignment = [
-//                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
-//                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
-//                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10]
-//                ]
-
-//   var queryParams = new URLSearchParams(window.location.search);
-//   queryParams.set("layout", exportLayout());
-//   queryParams.set("mode",mode)
-//   queryParams.set("lan",lang)
-//   history.replaceState(null, null, "?"+queryParams.toString());
-//   generateCoords()
-// }
-
-
 function activateErgo() {
   needs_update = true;
   setErgo();
@@ -763,7 +732,6 @@ function setAnsi() {
 
 function importLayout(layout) {
   if (layout.length == 35) {
-    console.log("35 char long layout string");
     var decodedString = decodeURIComponent(layout);
     console.log("importing: "+decodedString)
     layout = decodedString
@@ -1094,6 +1062,7 @@ var m_trigram_count_alt = {};
 var m_trigram_count_red = {};
 var m_trigram_count_roll_in = {};
 var m_trigram_count_roll_out = {};
+var m_pinky_off = 0;
 var m_input_length = 0;
 var m_effort = 0;
 var m_total_word_effort = 0;
@@ -1349,6 +1318,7 @@ function measureWords() {
   m_finger_pairs = {};
   samehandstrings = {};
   samehandcount = {};
+  m_pinky_off = 0;
   m_input_length = 0;
   m_effort = 0;
   m_total_word_effort = 0;
@@ -1397,6 +1367,9 @@ function measureWords() {
       if (col < 0) { continue; } // this is the part that just skips numbers and other characters
       if (!m_column_usage[col]) {
         m_column_usage[col] = 0;
+      }
+      if ((row == 0 && col == 1)||(row == 2 && col == 1)||(row == 0 && col == 10)||(row == 2 && col == 10)||(row == 0 && col == 11)||(row == 1 && col == 11)) {
+        m_pinky_off += count
       }
       if (row < 3){ m_column_usage[col] += count;}
       // finger usage //
