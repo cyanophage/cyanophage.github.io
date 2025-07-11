@@ -633,7 +633,6 @@ function activateIso(anglemod) {
 }
 
 function setIso(anglemod) {
-  // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   hasshift = false
   for(let i = 0; i < 34; i++){
@@ -689,7 +688,6 @@ function activateAnsi() {
 }
 
 function setAnsi() {
-  // console.log(rcdata)
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
   hasshift = false
   for(let i = 0; i < 34; i++){
@@ -824,7 +822,6 @@ function importLayout(layout) {
       rcdata[33][k] = rcdata[39][k];
       rcdata[39][k] = tmp;
     }
-    console.log(rcdata);
   }
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
