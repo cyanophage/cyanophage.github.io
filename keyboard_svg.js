@@ -23,7 +23,9 @@ var sh_scroll_amount = 0;
 var trigram_scroll_amount = 0;
 var green = 128;
 var mode = params.mode;
-if (!mode){  mode = "ergo"}
+if (!mode){ mode = "ergo" }
+var thumb = params.thumb;
+if (!thumb){ thumb = "l" }
 var lang = "english";
 if (params.lan) {
   lang = params.lan;
@@ -600,11 +602,11 @@ function setErgo() {
   rcdata[33][2] = 4
   rcdata[33][6] = 1
   rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1, 34]
-  rcdata[35] = [rcdata[35][0], 1, 0, 0, 0, 0, 1, 35]
+  rcdata[35] = [rcdata[35][0], 1, 0, 0, 0, 0, 1, rcdata[35][7]]
   rcdata[36] = ["enter", 2, 11, 0, 0, 0, 1, 36]
   rcdata[37] = ["mod", 3, 5, 0, 0, 0, 1, 37]
   rcdata[38] = ["back", 3, 6, 0, 0, 0, 1, 38]
-  rcdata[39] = ["space", 3, 7, 0, 0, 0, 1, 39]
+  rcdata[39] = [rcdata[39][0], 3, 7, 0, 0, 0, 1, rcdata[39][7]]
   mode = "ergo"
   fingerAssignment = [
                  [1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -616,6 +618,7 @@ function setErgo() {
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
   queryParams.set("lan",lang)
+  queryParams.set("thumb",thumb)
   history.replaceState(null, null, "?"+queryParams.toString());
 }
 
@@ -784,7 +787,6 @@ function importLayout(layout) {
       rcdata[swap1][k] = rcdata[swap2][k];
       rcdata[swap2][k] = tmp;
     }
-
   } else {
     var decodedString = decodeURIComponent(layout);
     console.log("importing: "+decodedString)
@@ -813,19 +815,37 @@ function importLayout(layout) {
         }
       }
     }
-
+  }
+  if (thumb == "r") {
+    indices = [0, 3, 7] // letter, freq, keyname
+    for (let id = 0; id < indices.length; id++){
+      var k = indices[id];
+      tmp = rcdata[33][k];
+      rcdata[33][k] = rcdata[39][k];
+      rcdata[39][k] = tmp;
+    }
+    console.log(rcdata);
   }
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("layout", exportLayout());
   queryParams.set("mode",mode)
   queryParams.set("lan",lang)
+  queryParams.set("thumb",thumb)
   history.replaceState(null, null, "?"+queryParams.toString());
 }
 
 function exportLayout() {
   var str = "";
   for (let i = 0; i <= 33; i++) {
-    str += rcdata[i][0];
+    if (rcdata[i][0] == "space" && i == 33){
+      str += rcdata[39][0];
+      thumb = "r"
+    } else {
+      if (rcdata[i][0] != "space" && i == 33){
+        thumb = "l"
+      }
+      str += rcdata[i][0];
+    }
   }
   if (rcdata[35][0] != "ctrl") {
     str += rcdata[35][0];
@@ -2438,11 +2458,18 @@ function makeDraggable(svg) {
         rcdata[starti][k] = rcdata[dropi][k];
         rcdata[dropi][k] = tmp;
       }
+      if (rcdata[33][0] == "space" && rcdata[33][1] == 3 && rcdata[33][2] == 4){
+        thumb = "r"
+      }
+      if (rcdata[39][0] == "space" && rcdata[39][1] == 3 && rcdata[39][2] == 7){
+        thumb = "l"
+      }
 
       var queryParams = new URLSearchParams(window.location.search);
       queryParams.set("layout", exportLayout());
       queryParams.set("mode",mode)
       queryParams.set("lan",lang)
+      queryParams.set("thumb",thumb)
       history.replaceState(null, null, "?"+queryParams.toString());
 
       d3.select(svg).selectAll("*").remove();
