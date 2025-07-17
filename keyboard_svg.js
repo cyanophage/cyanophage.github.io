@@ -213,7 +213,7 @@ var rcdata = [
   ["\\", 2, 0, 0, 0, 0, 1, 32],
   ["^", 3, 4, 0, 0, 0, 1, 33],
   ["tab", 0, 0, 0, 0, 0, 1, 34],
-  ["ctrl", 1, 0, 0, 0, 0, 1, 35],
+  ["$", 1, 0, 0, 0, 0, 1, 35],
   ["enter", 2, 11, 0, 0, 0, 1, 36],
   ["mod", 3, 5, 0, 0, 0, 1, 37],
   ["back", 3, 6, 0, 0, 0, 1, 38],
@@ -649,7 +649,7 @@ function setIso(anglemod) {
     rcdata[33][6] = 1.25
     rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5, 34]
     rcdata[35] = ["back", 0, 12, 0, 0, 0, 2.25, 35]
-    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75, 36]
+    rcdata[36] = ["$", 1, 0, 0, 0, 0, 1.75, 36]
     rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2, 37]
     rcdata[38] = ["rshift", 2, 12, 0, 0, 0, 2.5, 38]
     rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5, 39]
@@ -711,7 +711,7 @@ function setAnsi() {
 
     rcdata[34] = ["tab", 0, 0, 0, 0, 0, 1.5, 34]
     rcdata[35] = ["back", 0, 13, 0, 0, 0, 1.25, 35]
-    rcdata[36] = ["ctrl", 1, 0, 0, 0, 0, 1.75, 36]
+    rcdata[36] = ["$", 1, 0, 0, 0, 0, 1.75, 36]
     rcdata[37] = ["enter", 1, 12, 0, 0, 0, 2, 37]
     rcdata[38] = ["rshift", 2, 11, 0, 0, 0, 2.5, 38]
     rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5, 39]
@@ -744,7 +744,7 @@ function importLayout(layout) {
     }
     // change ctrl to *
     for (let i = 0; i < 37; i++) {
-      if (rcdata[i][0] == "ctrl") {
+      if (rcdata[i][0] == "$") {
         rcdata[i][0] = "="
         console.log("setting "+i+" to *")
       }
@@ -844,7 +844,7 @@ function exportLayout() {
       str += rcdata[i][0];
     }
   }
-  if (rcdata[35][0] != "ctrl") {
+  if (rcdata[35][0] != "$") {
     str += rcdata[35][0];
   }
   return str;
@@ -860,7 +860,7 @@ function getX(name, row, col) {
         off = w*0.5;
       }
     } else if (row == 1) {
-      if (name === "ctrl") {
+      if (name === "$") {
         off = 0;
       } else {
         off = w*0.75;
@@ -887,7 +887,7 @@ function getX(name, row, col) {
         off = w*0.5;
       }
     } else if (row == 1){
-      if (name === "ctrl") {
+      if (name === "$") {
         off = 0;
       } else {
         off = w*0.75;
@@ -993,6 +993,7 @@ function generateLayout() {
     hex_bg = green.toString(16);
 
     fontsize = 16;
+    if (letter == "$") { letter = "ctrl"}
     if (letter.length > 1) { fontsize = 10; }
     if (letter.length > 4 && mode == "ergo") { fontsize = 9; }
 
