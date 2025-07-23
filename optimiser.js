@@ -179,7 +179,6 @@ const dragHandler = d3.drag()
       offsety = event.y - starty
     }
   }
-  // console.log("closest start",closestdist,"x",offsetx,"y",offsety,"key",startkey)
   if (closestdist < 12){
     d3.select(this).raise();
     console.log(startkey,startx,starty);
@@ -198,7 +197,6 @@ const dragHandler = d3.drag()
       dropi = i;
     }
   }
-  // console.log("end","x:",event.x.toFixed(0),"y:",event.y.toFixed(0),"drop i:",dropi,"closestdist:",closestdist);
 
   d3.select(this).attr("transform", `translate(${startx}, ${starty})`);
   if (closestdist < 12){
@@ -228,13 +226,6 @@ const dragHandler = d3.drag()
     // console.log("closest end",closestdist)
   }
 });
-
-function removeStuff(){
-  console.log("remove Stuff")
-  // svg.selectAll(".keyboard-key").remove();
-  // svg.selectAll(".stats").remove();
-  // svg.selectAll(".letter-group").remove();
-}
 
 function generateSVG(){
   generateButtons();
@@ -320,24 +311,15 @@ function generateLayout() {
     rcdata[i].y = y;
     // console.log(i, rcdata[i].x, rcdata[i].y)
   }
-  // The Data-Join: Bind the data to a selection of <g> elements.
-  // This creates the enter, update, and exit selections.
   const keyGroups = svg.selectAll("g.key-group")
-    .data(rcdata, d => `${d.row}-${d.col}`)// Using a key function (d => `${d.row}-${d.col}`) helps D3 track objects.
-    // .data(data, d => d.char); // Using a key function (d => d.char) helps D3 track objects.
+    .data(rcdata, d => `${d.row}-${d.col}`)
 
-  // 1. Handle exiting elements: Remove groups that are no longer in the data.
   keyGroups.exit().remove();
 
-  // 2. Handle entering elements: Create the group and its children (<rect> and <text>).
-  // These attributes are set only once when the elements are first created.
   const keyGroupsEnter = keyGroups.enter()
       .append("g")
       .attr("class", "key-group")
       .on("click", function(event, d) {
-        // This function would need to be defined elsewhere
-        // For example: d.enabled = d.enabled === 1 ? 0 : 1; renderKeys();
-        console.log(d.char + " was clicked!");
         toggleKeyOnOff(d);
         // renderKeys();
       });
@@ -360,21 +342,14 @@ function generateLayout() {
     .attr("dominant-baseline", "middle")
     .style("pointer-events", "none"); // Prevents text from capturing mouse events from the group
 
-  // 3. Handle entering AND updating elements
-  // We merge the 'enter' selection with the 'update' selection
-  // so that attribute changes apply to both new and existing elements.
   const mergedGroups = keyGroupsEnter.merge(keyGroups);
 
-  // Update the group's position
-  mergedGroups
-    .attr("transform", d => `translate(${d.x}, ${d.y})`);
+  mergedGroups.attr("transform", d => `translate(${d.x}, ${d.y})`);
 
-  // Update the rectangle's stroke based on the data
   mergedGroups.select("rect")
     .attr("stroke-width", "1")
     .attr("stroke", d => d.enabled === 1 ? "#00dd00" : "#dd0000");
 
-  // Update the text content based on the data
   mergedGroups.select("text")
     .text(d => d.char == " " ? "␣" : d.char);
 }
@@ -384,7 +359,7 @@ function sortLetterFreq(){
   var keyValueArray = Object.entries(letter_freq);
   keyValueArray.sort((a, b) => b[1].count - a[1].count);
   var tmp = Object.fromEntries(keyValueArray);
-
+  letter_position = []
   var ix = 920;
   x = ix;
   y = 20;
@@ -405,13 +380,8 @@ function generateCharacters() {
   const letterGroups = svg.selectAll("g.letter-group")
     .data(letter_position, d => d.letter);
 
-  // --- EXIT ---
-  // Remove any groups that are no longer in the data array.
   letterGroups.exit().remove();
 
-  // --- ENTER ---
-  // Create the group and its children for any new data points.
-  // These attributes only need to be set once when the element is created.
   const letterGroupsEnter = letterGroups.enter()
     .append("g")
       .attr("class", "letter-group")
@@ -441,24 +411,16 @@ function generateCharacters() {
     .attr("dominant-baseline", "middle")
     .style("pointer-events", "none"); // Ensures clicks are registered by the group <g>
 
-  // --- ENTER + UPDATE ---
-  // Merge the new groups with the existing ones that are being updated.
   const mergedGroups = letterGroupsEnter.merge(letterGroups);
 
-  // Update the group's position based on its data.
   mergedGroups.attr("transform", d => `translate(${d.x}, ${d.y})`);
 
-  // Update the rectangle's stroke color based on the 'enabled' status.
-  mergedGroups.select("rect")
-    .attr("stroke", d => letter_freq[d.letter].enabled == 1 ? "#00ff00" : "#ff0000");
+  mergedGroups.select("rect").attr("stroke", d => letter_freq[d.letter].enabled == 1 ? "#00ff00" : "#ff0000");
 
-  // Update the text content.
-  mergedGroups.select("text")
-    .text(d => d.letter == " " ? "␣" : d.letter); // Use a special character for space
+  mergedGroups.select("text").text(d => d.letter == " " ? "␣" : d.letter); // Use a special character for space
 }
 
 function countCharsKeys() {
-  // === error messages ===
   var key_count = 0;
   var char_count = 0;
   for (let i = 0; i < rcdata.length; i++) {
@@ -695,17 +657,23 @@ function toggleKeyOnOff(d) {
   } else {
     d.enabled = 1;
     console.log("setting key to blank")
+    for (var m in letter_freq) {
+      if (m == d.char) {
+        letter_freq[m].enabled = 1;
+      }
+    }
     d.char = "";
   }
-  // generateSVG();
+
   countCharsKeys();
   generateStats();
   generateLayout();
+  generateCharacters();
 }
 
 function toggleCharOnOff(char) {
   for (var m in letter_freq) {
-    if (m[0] == char) {
+    if (m == char) {
       if (letter_freq[m].enabled == 0) {
         letter_freq[m].enabled = 1;
       } else {
@@ -736,7 +704,6 @@ function shuffle(array) { // https://stackoverflow.com/questions/2450954/how-to-
   while (currentIndex != 0) {
     let randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    // [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     var tmp = array[currentIndex];
     array[currentIndex] = array[randomIndex];
     array[randomIndex] = tmp;
@@ -746,10 +713,7 @@ function shuffle(array) { // https://stackoverflow.com/questions/2450954/how-to-
 
 function shuffleData(data, times) {
   var tmp_keys = _.cloneDeep(data)
-  // console.log("<247> shuffling "+times+" times")
   var editable_keys = [];
-  // console.log("BEFORE:")
-  // console.log(tmp_keys)
   for (let i = 0; i < tmp_keys.length; i++) {
     if (tmp_keys[i].enabled == 1) {
       editable_keys.push(i);
@@ -765,10 +729,7 @@ function shuffleData(data, times) {
     tmp = tmp_keys[key1].char
     tmp_keys[key1].char = tmp_keys[key2].char
     tmp_keys[key2].char = tmp
-    // console.log("<263> shuffling "+key1+" and "+key2)
   }
-  // console.log("AFTER:")
-  // console.log(tmp_keys)
   return tmp_keys
 }
 
@@ -824,7 +785,8 @@ function clearLetters() {
       rcdata[i].char = ""
     }
   }
-  generateSVG();
+  generateLayout();
+  generateCharacters();
 }
 
 var results;
@@ -894,8 +856,6 @@ function run() {
         }
       }
     }
-    // console.log("rcdata: <341:optimiser>");
-    // console.log(rcdata);
 
     for (let i = 0; i < editable_keys.length; i++) {
       for (let j = 0; j < editable_keys.length; j++) {
@@ -909,7 +869,6 @@ function run() {
           tmp_keys[q].char = tmp
           var uid = create_uid(tmp_keys)
           if (uid_set.has(uid)) {
-            // console.log("skipping "+uid)
           } else {
             uid_set.add(uid)
             messages_sent += 1;
@@ -954,7 +913,6 @@ function run() {
         }
       }
     }
-    // console.log("messages sent: "+messages_sent)
 
     // Listen for results coming back from the worker
     myWorker.onmessage = function(e) {
@@ -985,7 +943,6 @@ function run() {
       hbalance_data.score = (result.hand_balance - hbalance_data.min) * hbalance_data.weight
       if (hbalance_data.score < 0) {hbalance_data.score = 0}
 
-      // console.log(s_psfb + "  psfb: " + psfb + "  min: " + psfb_min + "  weight: "+psfb_weight);
 
       score += sfb_data.score
       score += effort_data.score
@@ -998,17 +955,13 @@ function run() {
       score += vowels_data.score
       score += hbalance_data.score
       m_score = score
-      // console.log(typeof(s_sfb) + "  " + s_effort + "  " + s_psfb + "  " + "score: "+score);
 
       results.push({score: score, config: config, result: result})
       if (score < best_score) {
         best_score = score;
         found_new_result = true;
-        // console.log(uid + " : "+ sfb + " "+ effort + " "+ score);
 
       }
-      // console.log('Main: Final results array:', result);
-      // console.log("SFBs: "+(100*result/input_length));
       messages_received += 1;
       // console.log("sent = "+messages_sent+"  received = "+messages_received);
       if (messages_received == messages_sent) {
@@ -1017,9 +970,6 @@ function run() {
           run();
         } else {
           if (iter < times) {
-            // console.log("best layout so far:")
-            // console.log(rcdata)
-            // console.log("no new result found. shuffling rcdata")
             console.log("=== "+(times-iter)+" ===")
             time_to_shuffle = true;
             best_score = 1000000;
