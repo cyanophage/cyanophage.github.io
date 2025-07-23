@@ -265,34 +265,35 @@ function generateButtons() {
   svg.append("rect").attr("x", 1).attr("y", 1).attr("width", swidth-2).attr("height", sheight-2)
   .attr("stroke", "#777777").attr("fill","#1b1c1f").attr("fill-opacity", "0").attr("rx", 8).attr("ry", 8)
 
-  x = 1120
+  x = 1100
   y = 550
   // Clear button
-  svg.append("rect").attr("x", x).attr("y", y-30).attr("width", 60).attr("height", 26).attr("rx", 1).attr("ry", 1)
+  svg.append("rect").attr("x", x).attr("y", y-30).attr("width", 80).attr("height", 26).attr("rx", 1).attr("ry", 1)
     .attr("stroke", "#111111").attr("fill", "#aaaaaa").attr("fill-opacity", "1.0").attr("onclick", "clearLetters()");
-  svg.append("text").attr("x", x + 30).attr("y", y-30+19).attr("font-size", 14).attr("text-anchor", "middle")
+  svg.append("text").attr("x", x + 40).attr("y", y-30+19).attr("font-size", 16).attr("text-anchor", "middle")
     .attr("onclick", "clearLetters()").text("CLEAR");
 
   // Run button
-  svg.append("rect").attr("x", x).attr("y", y).attr("width", 60).attr("height", 26)
+  svg.append("rect").attr("x", x).attr("y", y).attr("width", 80).attr("height", 26)
     .attr("stroke", "#111111").attr("fill", "#aaaaaa").attr("fill-opacity", "1.0").attr("rx", 1).attr("ry", 1)
     .attr("onclick", "clicked_run()");
-    // .on("click", clicked_run())
-  svg.append("text").attr("x", x + 30).attr("y", y+19).attr("font-size", 16).attr("text-anchor", "middle")
+
+  svg.append("text").attr("x", x + 40).attr("y", y+19).attr("font-size", 16).attr("text-anchor", "middle")
     .attr("onclick", "clicked_run()")
-    // .on("click", clicked_run())
     .text("RUN");
 
   // key weight edit button
-  svg.append("rect").attr("x", x-20).attr("y", y-100).attr("width", 80).attr("height", 25)
+  svg.append("rect").attr("x", x).attr("y", y-90).attr("width", 80).attr("height", 25)
   .attr("stroke", "#777777").attr("fill", "#aaaaaa").attr("fill-opacity", "1.0").attr("onclick", "openEffortPopup()")
-  svg.append("text").attr("x", x-20+40).attr("y", y-100+18).attr("font-size", 16).attr("text-anchor", "middle")
+  svg.append("text").attr("x", x+40).attr("y", y-90+18).attr("font-size", 16).attr("text-anchor", "middle")
      .attr("onclick", "openEffortPopup()").text("Edit Effort");
 
-  const timesField = svg.append("foreignObject").attr("x", x).attr("y", y - 65)
-   .attr("width", 50).attr("height", 25).append("xhtml:input")
+  svg.append("text").attr("x", x-40).attr("y", y-60+19).attr("font-size", 16).attr("text-anchor", "middle").attr("fill", "#aaaaaa")
+    .text("Iterations:");
+  const timesField = svg.append("foreignObject").attr("x", x).attr("y", y - 60)
+   .attr("width", 80).attr("height", 26).append("xhtml:input")
    .attr("type", "number").attr("step", "0.01").style("width", "100%").style("height", "100%").style("border", "1px solid #ccc")
-   .style("background", "#555").style("padding", "3px").style("font-size", "16px");
+   .style("background", "#555").style("padding", "3px").style("font-size", "16px").style("text-align", "center");
 
   timesField.property("value", times);
   timesField.on("input", function() {
@@ -485,8 +486,6 @@ function countCharsKeys() {
 function generateStats() {
   console.log("generateStats")
   const infoPanel = d3.select("#info-panel");
-  // console.log(infoPanel.node());
-  // infoPanel.raise();
 
   infoPanel.html(null);
 
@@ -496,7 +495,7 @@ function generateStats() {
   .text(error_text);
 
   // === RUN COUNTER ===
-  x = 1075
+  x = 1050
   y = 568
   infoPanel.append("text").attr("x", x).attr("y", y).attr("fill", "#aaaaaa")
   .attr("font-size", 20).attr("text-anchor", "left").text(runs);
@@ -567,7 +566,7 @@ function addStatLine(x, y, data) {
   const weight_field = infoPanel.append("foreignObject").attr("x", x + weight_x).attr("y", y - 20)
    .attr("width", 50).attr("height", 25).append("xhtml:input")
    .attr("type", "number").attr("step", "0.01").style("width", "100%").style("height", "100%").style("border", "1px solid #ccc")
-   .style("background", "#555").style("padding", "3px").style("font-size", "16px");
+   .style("background", "#555").style("padding", "3px").style("font-size", "16px").style("text-align", "right");
 
   weight_field.property("value", data.weight);
   weight_field.on("input", function() {
@@ -583,7 +582,7 @@ function addStatLine(x, y, data) {
   const min_field = infoPanel.append("foreignObject").attr("x", x + min_x).attr("y", y - 20)
    .attr("width", 50).attr("height", 25).append("xhtml:input")
    .attr("type", "number").style("width", "100%").style("height", "100%").style("border", "1px solid #ccc")
-   .style("background", "#555").style("padding", "3px").style("font-size", "16px");
+   .style("background", "#555").style("padding", "3px").style("font-size", "16px").style("text-align", "right");
 
   min_field.property("value", data.min);
   min_field.on("input", function() {
