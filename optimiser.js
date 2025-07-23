@@ -13,22 +13,22 @@ var y = 0;
 var on = 0;
 var error = true;
 var runs = 0;
-var times = 100;
+var times = 20;
 var iter;
 var error_text = "";
 
 var m_score = 0;
 
-var sfb_data = {label: "SFB:", metric: 0, score: 0, weight: 3, min: 0.39}
-var effort_data = {label: "Effort:", metric: 0, score: 0, weight: 7, min: 0}
-var psfb_data = {label: "pSFB:", metric: 0, score: 0, weight: 0.7, min: 0}
-var rsfb_data = {label: "rSFB:", metric: 0, score: 0, weight: 0.3, min: 0}
-var scissors_data = {label: "Scissors:", metric: 0, score: 0, weight: 1, min: 0}
-var prscissors_data = {label: "PRScissor:", metric: 0, score: 0, weight: 0.9, min: 0.2}
-var wscissors_data = {label: "WScissors:", metric: 0, score: 0, weight: 1, min: 0}
-var latstr_data = {label: "LSB:", metric: 0, score: 0, weight: 1, min: 0.12}
-var vowels_data = {label: "Vowels:", metric: 0, score: 0, weight: 3, min: 0}
-var hbalance_data = {label: "Hand Bal:", metric: 0, score: 0, weight: 0.7, min: 1}
+var sfb_data = {label: "SFB:", metric: 0, score: 0, weight: 3, min: 0.39, desc: "Single finger bigrams"}
+var effort_data = {label: "Effort:", metric: 0, score: 0, weight: 7, min: 0, desc: "Effort based on defined matrix"}
+var psfb_data = {label: "pSFB:", metric: 0, score: 0, weight: 0.7, min: 0, desc: "Additional penalty for SFBs on the pinky"}
+var rsfb_data = {label: "rSFB:", metric: 0, score: 0, weight: 0.3, min: 0, desc: "Additional penalty for SFBs on the ring finger"}
+var scissors_data = {label: "Scissors:", metric: 0, score: 0, weight: 1, min: 0, desc: "Two letters on the same hand, two rows between them, on adjacent fingers"}
+var prscissors_data = {label: "PRScissor:", metric: 0, score: 0, weight: 0.9, min: 0.2, desc: "Two letters typed with the ring and pinky with at least one row between them"}
+var wscissors_data = {label: "WScissors:", metric: 0, score: 0, weight: 1, min: 0, desc: "Two letters on the same hand, two rows between them, more than one column between them" }
+var latstr_data = {label: "LSB:", metric: 0, score: 0, weight: 1, min: 0.12, desc: "Lateral stretch bigrams"}
+var vowels_data = {label: "Vowels:", metric: 0, score: 0, weight: 3, min: 0, desc: "Should vowels be on the same side"}
+var hbalance_data = {label: "Hand Bal:", metric: 0, score: 0, weight: 0.7, min: 1, desc: "Hand balance, how much different from 50/50 usage" }
 
 var rcdata = [
   {char:"", row:0, col:0, enabled:0, finger:1, x:0, y:1, effort:7},
@@ -93,7 +93,7 @@ var bigram_freq = {};
 var trigram_freq = {};
 var input_length = 0;
 function getCharacters() {
-  letter_freq = {};
+  letter_position = [];
   var count = 0;
   var wordt;
   for (var word in words) {
@@ -181,7 +181,6 @@ const dragHandler = d3.drag()
   }
   if (closestdist < 12){
     d3.select(this).raise();
-    console.log(startkey,startx,starty);
   }
 })
 .on("drag", function(event, d) {
@@ -213,10 +212,8 @@ const dragHandler = d3.drag()
         }
       }
       rcdata[dropi].char = startkey
-      console.log("setting rcdata["+dropi+"].char to "+startkey)
       rcdata[dropi].enabled = 0
       letter_freq[startkey].enabled = 0
-      console.log("setting "+startkey+" in letter freq to off")
       generateLayout();
       generateCharacters();
     } else {
@@ -510,6 +507,7 @@ function generateStats() {
   infoPanel.append("text").attr("x", x+score_x).attr("y", y).attr("fill", "#aaaaaa").attr("font-family", "Roboto Mono")
   .attr("font-size", 14).attr("text-anchor", "left").text(m_score.toFixed(2));
 
+  infoPanel.raise();
 }
 
 function addStatLine(x, y, data) {
@@ -519,7 +517,7 @@ function addStatLine(x, y, data) {
   var min_x = 196
   var score_x = 255
   infoPanel.append("text").attr("x", x).attr("y", y).attr("fill", "#aaaaaa").attr("font-family", "Roboto Mono")
-  .attr("font-size", 14).attr("text-anchor", "left").text(data.label);
+  .attr("font-size", 14).attr("text-anchor", "left").text(data.label).attr("onmouseover", "showTooltip(evt,'"+data.desc+"')").attr("onmouseout", "hideTooltip()");
   infoPanel.append("text").attr("x", x+value_x).attr("y", y).attr("fill", "#aaaaaa").attr("font-family", "Roboto Mono")
   .attr("font-size", 14).attr("text-anchor", "left").text(data.metric);
   infoPanel.append("text").attr("x", x+score_x).attr("y", y).attr("fill", "#aaaaaa").attr("font-family", "Roboto Mono")
@@ -595,6 +593,43 @@ function closeEffortPopup() {
   document.getElementById('popup').style.display = 'none';
 }
 
+function openCorpusPopup() {
+  document.getElementById('corpusPopup').style.display = 'flex';
+}
+
+function closeCorpusPopup() {
+  var massive_string = document.getElementById('corpusText').value;
+  massive_string = massive_string.toLowerCase().replace(/\s+/g, ' ');
+  if (massive_string.length == 0) {
+    document.getElementById('corpusPopup').style.display = 'none';
+    return;
+  }
+  words = {};
+  list = massive_string.split(" ")
+  var regex = /\d/;
+  list.forEach(element => {
+    if (regex.test(element)){
+      // no numbers please
+    } else {
+      if (words[element]) {
+        words[element] += 1
+      } else {
+        words[element] = 1
+      }
+    }
+  });
+  input_length = 0;
+  letter_freq = {};
+  bigram_freq = {};
+  trigram_freq = {};
+  getCharacters();
+  countCharsKeys();
+  generateCharacters();
+  generateStats();
+  // hide popup
+  document.getElementById('corpusPopup').style.display = 'none';
+}
+
 function copyEffortGridToClipboard() {
   values = []
   for (var row = 0; row < 3; row++) {
@@ -656,7 +691,6 @@ function toggleKeyOnOff(d) {
     d.enabled = 0
   } else {
     d.enabled = 1;
-    console.log("setting key to blank")
     for (var m in letter_freq) {
       if (m == d.char) {
         letter_freq[m].enabled = 1;
