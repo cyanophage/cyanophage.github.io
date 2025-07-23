@@ -141,6 +141,7 @@
   <body>
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
     <a href="index.html">back</a>
+    <p><a onclick="openCorpusPopup()">corpus</a></p>
     <div class="layout-svg" id = "svglayout"></div>
     <div id="popup" class="overlay">
       <div class="popup">
@@ -192,6 +193,14 @@
         <button onclick="copyEffortGridToClipboard()" style="float: left;">Copy</button>
         <button onclick="pasteEffortGridFromClipboard()" style="float: left;margin-left: 5px;">Paste</button>
         <button onclick="closeEffortPopup()" style="float: right;">OK</button>
+      </div>
+    </div>
+    <div id="corpusPopup" class="overlay">
+      <div class="popup2">
+        <p id="corpusMessage">Text</p>
+        <input type="text" id="corpusText" class="importText">
+        <br>
+        <button onclick="closeCorpusPopup()">OK</button>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.js"></script>

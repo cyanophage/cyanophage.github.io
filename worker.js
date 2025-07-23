@@ -104,7 +104,6 @@ function calculateMetrics(letter_freq, bigrams, config){
       sfb += count
       if (finger1 == 1 || finger1 == 10){
         psfb += count
-        // console.log(item + " " + count)
       }
       if (finger1 == 2 || finger1 == 9){
         rsfb += count
