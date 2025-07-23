@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Keyboard Layout</title>
-    <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
+    <script type = "text/javascript" src = "https://d3js.org/d3.v7.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
     <link rel="icon" type="image/x-icon" href="favicon.gif">
     <style>
@@ -25,8 +25,8 @@
       .draggable {
         cursor: move;
       }
-      .layout-svg{margin:auto;width:1000px;}
-      .stats-svg{margin:auto;width:1000px;}
+      .layout-svg{margin:auto;width:1200px;}
+      .stats-svg{margin:auto;width:1200px;}
       .overlay {
         display: none;
         position: fixed;
@@ -125,38 +125,23 @@
         display: block;
       }
 
-      </style>
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
+
+    </style>
   </head>
   <body>
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
     <a href="index.html">back</a>
-    |
-    <a onclick="openImportPopup()">import</a>
-    |
-    <a onclick="openCorpusPopup()">corpus</a>
-    |
-    <div class="dropdown">
-      <button class="dropbtn" id="langDropDown">English</button>
-      <div class="dropdown-content">
-        <a onclick="selectLanguage('dutch')">Dutch</a>
-        <a onclick="selectLanguage('english')">English</a>
-        <a onclick="selectLanguage('estonian')">Estonian</a>
-        <a onclick="selectLanguage('finnish')">Finnish</a>
-        <a onclick="selectLanguage('french')">French</a>
-        <a onclick="selectLanguage('german')">German</a>
-        <a onclick="selectLanguage('hungarian')">Hungarian</a>
-        <a onclick="selectLanguage('italian')">Italian</a>
-        <a onclick="selectLanguage('norweigan')">Norweigan</a>
-        <a onclick="selectLanguage('polish')">Polish</a>
-        <a onclick="selectLanguage('portuguese')">Portuguese</a>
-        <a onclick="selectLanguage('spanish')">Spanish</a>
-        <a onclick="selectLanguage('swedish')">Swedish</a>
-      </div>
-    </div>
     <div class="layout-svg" id = "svglayout"></div>
-    <br>
-    <div class="stats-svg" id = "svgstats"></div>
-    <br>
     <div id="popup" class="overlay">
       <div class="popup">
         <input type="text" id="textInput-0-0" class="effort" maxlength="1">
@@ -206,26 +191,10 @@
         <br>
         <button onclick="copyEffortGridToClipboard()" style="float: left;">Copy</button>
         <button onclick="pasteEffortGridFromClipboard()" style="float: left;margin-left: 5px;">Paste</button>
-        <button onclick="closePopup()" style="float: right;">OK</button>
+        <button onclick="closeEffortPopup()" style="float: right;">OK</button>
       </div>
     </div>
-    <div id="importPopup" class="overlay">
-      <div class="popup2">
-        <p id="importMessage">Import</p>
-        <input type="text" id="importText" class="importText">
-        <br>
-        <button onclick="closeImportPopup()">OK</button>
-      </div>
-    </div>
-    <div id="corpusPopup" class="overlay">
-      <div class="popup2">
-        <p id="corpusMessage">Text</p>
-        <input type="text" id="corpusText" class="importText">
-        <br>
-        <button onclick="closeCorpusPopup()">OK</button>
-      </div>
-    </div>
-
-    <script type = "text/javascript" src="keyboard_svg.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.js"></script>
+    <script type = "text/javascript" src="optimiser.js" defer></script>
   </body>
 </html>
