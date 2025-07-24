@@ -71,6 +71,8 @@ var rcdata = [
   {char:" ", row:3, col:6, enabled:0, finger:6, x:0, y:1, effort:0}
 ]
 
+rcdata = loadEffortValuesFromCookie("rcdataEffort", rcdata);
+
 var letter_position = [];
 
 const word_list_url = 'word_list.json';
@@ -248,10 +250,9 @@ function clicked_run() {
 }
 
 function generateButtons() {
-  // border - probably get rid of this later
-
-  svg.append("rect").attr("x", 1).attr("y", 1).attr("width", swidth-2).attr("height", sheight-2)
-  .attr("stroke", "#777777").attr("fill","#1b1c1f").attr("fill-opacity", "0").attr("rx", 8).attr("ry", 8)
+  // border
+  // svg.append("rect").attr("x", 1).attr("y", 1).attr("width", swidth-2).attr("height", sheight-2)
+  // .attr("stroke", "#777777").attr("fill","#1b1c1f").attr("fill-opacity", "0").attr("rx", 8).attr("ry", 8)
 
   x = 1100
   y = 550
@@ -583,6 +584,44 @@ function openEffortPopup() {
   document.getElementById('popup').style.display = 'flex';
 }
 
+function loadEffortValuesFromCookie(cookieName, data) {
+  const nameEQ = cookieName + "=";
+  const ca = document.cookie.split(';');
+  for(let i=0;i < ca.length;i++) {
+    let c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+    if (c.indexOf(nameEQ) == 0) {
+      const effortValuesString = c.substring(nameEQ.length,c.length);
+      if (effortValuesString) {
+        const effortValues = JSON.parse(effortValuesString);
+
+        // Update the rcdata array with the loaded effort values
+        if (Array.isArray(effortValues) && effortValues.length === data.length) {
+          return data.map((item, index) => {
+            item.effort = effortValues[index];
+            return item;
+          });
+        }
+      }
+      return data; // Return original data if cookie is empty or malformed
+    }
+  }
+  return data; // Return original data if cookie not found
+}
+
+function saveEffortValuesToCookie(cookieName, data, daysToExpire) {
+  const effortValues = data.map(item => item.effort);
+  const effortValuesString = JSON.stringify(effortValues);
+
+  let expires = "";
+  if (daysToExpire) {
+    const date = new Date();
+    date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = cookieName + "=" + (effortValuesString || "")  + expires + "; path=/";
+}
+
 function closeEffortPopup() {
   for (var row = 0; row < 3; row++) {
     for (var col = 0; col < 12; col++) {
@@ -590,6 +629,7 @@ function closeEffortPopup() {
       setEffort(row, col, document.getElementById(name).value);
     }
   }
+  saveEffortValuesToCookie("rcdataEffort", rcdata, 28);
   document.getElementById('popup').style.display = 'none';
 }
 
