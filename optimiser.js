@@ -95,6 +95,10 @@ var bigram_freq = {};
 var trigram_freq = {};
 var input_length = 0;
 function getCharacters() {
+  letter_freq = {};
+  bigram_freq = {};
+  trigram_freq = {};
+  input_length = 0;
   letter_position = [];
   var count = 0;
   var wordt;
@@ -721,6 +725,37 @@ function pasteEffortGridFromClipboard() {
   });
 }
 
+
+function selectLanguage(lan) {
+  document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+  lan
+  if (lan == "english"){
+    console.log("============ ENGLISH ============")
+    fetch(word_list_url)
+      .then(response => response.json())
+      .then(data => {
+        words = data; // Assign data to the global variable
+        console.log("fetchData");
+        getCharacters()
+        generateCharacters()
+      })
+      .catch(error => console.error('Error loading JSON file:', error));
+    return;
+  }
+
+  var word_list = 'words-'+lan+'.json'; // words-german.json
+  console.log("============ "+lan.toUpperCase()+" ============")
+  fetch(word_list)
+    .then(response => response.json())
+    .then(data => {
+      words = data; // Assign data to the global variable
+      console.log("fetchData");
+      getCharacters()
+      generateCharacters()
+    })
+    .catch(error => console.error('Error loading JSON file:', error));
+}
+
 function dist(x1, y1, x2, y2) {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
@@ -1095,6 +1130,7 @@ function run() {
             vowels_data.score = (best_results[besti].result.vowels - vowels_data.min) * vowels_data.weight
             hbalance_data.score = (best_results[besti].result.hand_balance - hbalance_data.min) * hbalance_data.weight
             if (hbalance_data.score < 0) {hbalance_data.score = 0}
+
             m_score = sfb_data.score +
                       effort_data.score +
                       psfb_data.score +
