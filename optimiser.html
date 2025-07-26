@@ -141,7 +141,27 @@
   <body>
     <div id="tooltip" display="none" style="position: absolute;display: none;"></div>
     <a href="index.html">back</a>
-    <p><a onclick="openCorpusPopup()">corpus</a></p>
+    |
+    <a onclick="openCorpusPopup()">corpus</a>
+    |
+    <div class="dropdown">
+      <button class="dropbtn" id="langDropDown">English</button>
+      <div class="dropdown-content">
+        <a onclick="selectLanguage('dutch')">Dutch</a>
+        <a onclick="selectLanguage('english')">English</a>
+        <a onclick="selectLanguage('estonian')">Estonian</a>
+        <a onclick="selectLanguage('finnish')">Finnish</a>
+        <a onclick="selectLanguage('french')">French</a>
+        <a onclick="selectLanguage('german')">German</a>
+        <a onclick="selectLanguage('hungarian')">Hungarian</a>
+        <a onclick="selectLanguage('italian')">Italian</a>
+        <a onclick="selectLanguage('norweigan')">Norweigan</a>
+        <a onclick="selectLanguage('polish')">Polish</a>
+        <a onclick="selectLanguage('portuguese')">Portuguese</a>
+        <a onclick="selectLanguage('spanish')">Spanish</a>
+        <a onclick="selectLanguage('swedish')">Swedish</a>
+      </div>
+    </div>
     <div class="layout-svg" id = "svglayout"></div>
     <div id="popup" class="overlay">
       <div class="popup">
