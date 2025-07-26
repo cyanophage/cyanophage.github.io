@@ -1010,7 +1010,7 @@ function run() {
       psfb_data.score = calculateScore(result.psfb, psfb_data.weight, psfb_data.min, input_length, true)
       rsfb_data.score = calculateScore(result.rsfb, rsfb_data.weight, rsfb_data.min, input_length, true)
       scissors_data.score = calculateScore(result.scissors, scissors_data.weight, scissors_data.min, input_length, true)
-      prscissors_data.score = calculateScore(result.scissors, prscissors_data.weight, prscissors_data.min, input_length, true)
+      prscissors_data.score = calculateScore(result.prscissors, prscissors_data.weight, prscissors_data.min, input_length, true)
       wscissors_data.score = calculateScore(result.wide_scissors, wscissors_data.weight, wscissors_data.min, input_length, true)
       latstr_data.score = calculateScore(result.lat_str, latstr_data.weight, latstr_data.min, input_length, true)
       vowels_data.score = (result.vowels - vowels_data.min) * vowels_data.weight
