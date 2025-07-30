@@ -997,18 +997,25 @@ function generateLayout() {
     if (letter.length > 1) { fontsize = 10; }
     if (letter.length > 4 && mode == "ergo") { fontsize = 9; }
 
+    let rectClasses = "draggable";
+    let textClasses = "draggable legend";
+    if (letter == "mod" || letter == "back" || letter == "tab" || letter == "enter") {
+      rectClasses = "";
+      textClasses = "legend";
+    }
+
     svg.append("rect").attr("x", x).attr("y", y)
       .attr("width", keywidth*w-gap).attr("height", w-gap).attr("rx", 4).attr("ry", 4)
       .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", "black")
-      .attr("stroke-width", "1").attr("class", "draggable");
+      .attr("stroke-width", "1").attr("class", rectClasses);
     if (letter.length > 1 && mode != "ergo") {
       svg.append("text").attr("x", x + 5).attr("y", y + 19)
-      .attr("font-size", fontsize).attr("font-family", "Roboto Mono")
-      .attr("text-anchor", "left").attr("class", "draggable legend").text(letter);
+        .attr("font-size", fontsize).attr("font-family", "Roboto Mono")
+        .attr("text-anchor", "left").attr("class", textClasses).text(letter);
     } else {
       svg.append("text").attr("x", x + 15).attr("y", y + 19)
         .attr("font-size", fontsize).attr("font-family", "Roboto Mono")
-        .attr("text-anchor", "middle").attr("class", "draggable legend").text(letter);
+        .attr("text-anchor", "middle").attr("class", textClasses).text(letter);
     }
   }
   //
