@@ -20,13 +20,14 @@ var error_text = "";
 var m_score = 0;
 
 var sfb_data = {label: "SFB:", metric: 0, score: 0, weight: 3, min: 0.39, desc: "Single finger bigrams"}
-var effort_data = {label: "Effort:", metric: 0, score: 0, weight: 7, min: 0, desc: "Effort based on defined matrix"}
+var effort_data = {label: "Effort:", metric: 0, score: 0, weight: 3, min: 0, desc: "Effort based on defined matrix"}
 var psfb_data = {label: "pSFB:", metric: 0, score: 0, weight: 0.7, min: 0, desc: "Additional penalty for SFBs on the pinky"}
 var rsfb_data = {label: "rSFB:", metric: 0, score: 0, weight: 0.3, min: 0, desc: "Additional penalty for SFBs on the ring finger"}
 var scissors_data = {label: "Scissors:", metric: 0, score: 0, weight: 1, min: 0, desc: "Two letters on the same hand, two rows between them, on adjacent fingers"}
 var prscissors_data = {label: "PRScissor:", metric: 0, score: 0, weight: 0.9, min: 0.2, desc: "Two letters typed with the ring and pinky with at least one row between them"}
 var wscissors_data = {label: "WScissors:", metric: 0, score: 0, weight: 1, min: 0, desc: "Two letters on the same hand, two rows between them, more than one column between them" }
 var latstr_data = {label: "LSB:", metric: 0, score: 0, weight: 1, min: 0.12, desc: "Lateral stretch bigrams"}
+var sfs_data = {label: "SFS:", metric: 0, score: 0, weight: 0.8, min: 0, desc: "Single finger skipgrams"}
 var vowels_data = {label: "Vowels:", metric: 0, score: 0, weight: 3, min: 0, desc: "Should vowels be on the same side"}
 var hbalance_data = {label: "Hand Bal:", metric: 0, score: 0, weight: 0.7, min: 1, desc: "Hand balance, how much different from 50/50 usage" }
 
@@ -134,6 +135,12 @@ function getCharacters() {
     bigram_count += 1
   }
   console.log("there are "+bigram_count+ " bigrams")
+
+  for(var tmp in trigram_freq) {
+    if (trigram_freq[tmp] <= 30){
+      Reflect.deleteProperty(trigram_freq, tmp)
+    }
+  }
   var trigram_count = 0
   for(var tmp in trigram_freq) {
     trigram_count += 1
@@ -501,6 +508,8 @@ function generateStats() {
   addStatLine(x,y,wscissors_data)
   y += 35
   addStatLine(x,y,latstr_data)
+  y += 35
+  addStatLine(x,y,sfs_data)
   y += 35
   addStatLine(x,y,vowels_data)
   y += 35
@@ -984,7 +993,7 @@ function run() {
             myWorker.postMessage({
               letter_freq: letter_freq,
               bigrams: bigram_freq,
-              // trigrams: trigram_freq,
+              trigrams: trigram_freq,
               config: tmp_keys,
             });
           }
@@ -1015,7 +1024,7 @@ function run() {
             myWorker.postMessage({
               letter_freq: letter_freq,
               bigrams: bigram_freq,
-              // trigrams: trigram_freq,
+              trigrams: trigram_freq,
               config: tmp_keys,
             });
           }
@@ -1037,6 +1046,7 @@ function run() {
       prscissors_data.metric = (100*result.prscissors / input_length).toFixed(2) + "%"
       wscissors_data.metric = (100*result.wide_scissors / input_length).toFixed(2) + "%"
       latstr_data.metric = (100*result.lat_str / input_length).toFixed(2) + "%"
+      sfs_data.metric = (100*result.sfs / input_length).toFixed(2) + "%"
       vowels_data.metric = (result.vowels)
       hbalance_data.metric = (result.hand_balance).toFixed(2)
 
@@ -1048,10 +1058,10 @@ function run() {
       prscissors_data.score = calculateScore(result.prscissors, prscissors_data.weight, prscissors_data.min, input_length, true)
       wscissors_data.score = calculateScore(result.wide_scissors, wscissors_data.weight, wscissors_data.min, input_length, true)
       latstr_data.score = calculateScore(result.lat_str, latstr_data.weight, latstr_data.min, input_length, true)
+      sfs_data.score = calculateScore(result.sfs, sfs_data.weight, sfs_data.min, input_length, true)
       vowels_data.score = (result.vowels - vowels_data.min) * vowels_data.weight
       hbalance_data.score = (result.hand_balance - hbalance_data.min) * hbalance_data.weight
       if (hbalance_data.score < 0) {hbalance_data.score = 0}
-
 
       score += sfb_data.score
       score += effort_data.score
@@ -1061,6 +1071,7 @@ function run() {
       score += prscissors_data.score
       score += wscissors_data.score
       score += latstr_data.score
+      score += sfs_data.score
       score += vowels_data.score
       score += hbalance_data.score
       m_score = score
@@ -1116,6 +1127,7 @@ function run() {
             prscissors_data.metric = (100*best_results[besti].result.prscissors / input_length).toFixed(2) + "%"
             wscissors_data.metric = (100*best_results[besti].result.wide_scissors / input_length).toFixed(2) + "%"
             latstr_data.metric = (100*best_results[besti].result.lat_str / input_length).toFixed(2) + "%"
+            sfs_data.metric = (100*best_results[besti].result.sfs / input_length).toFixed(2) + "%"
             vowels_data.metric = (best_results[besti].result.vowels)
             hbalance_data.metric = (best_results[besti].result.hand_balance).toFixed(2)
 
@@ -1127,6 +1139,7 @@ function run() {
             prscissors_data.score = calculateScore(best_results[besti].result.prscissors, prscissors_data.weight, prscissors_data.min, input_length, true)
             wscissors_data.score = calculateScore(best_results[besti].result.wide_scissors, wscissors_data.weight, wscissors_data.min, input_length, true)
             latstr_data.score = calculateScore(best_results[besti].result.lat_str, latstr_data.weight, latstr_data.min, input_length, true)
+            sfs_data.score = calculateScore(best_results[besti].result.sfs, sfs_data.weight, sfs_data.min, input_length, true)
             vowels_data.score = (best_results[besti].result.vowels - vowels_data.min) * vowels_data.weight
             hbalance_data.score = (best_results[besti].result.hand_balance - hbalance_data.min) * hbalance_data.weight
             if (hbalance_data.score < 0) {hbalance_data.score = 0}
@@ -1139,8 +1152,10 @@ function run() {
                       prscissors_data.score +
                       wscissors_data.score +
                       latstr_data.score +
+                      sfs_data.score +
                       vowels_data.score +
                       hbalance_data.score
+
             generateLayout();
             generateStats();
           }
