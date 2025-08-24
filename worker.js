@@ -1,7 +1,5 @@
 // worker.js
 
-// console.log('Worker: Script loaded and ready to receive messages.');
-
 var lookup = {};
 
 function makeLookup(config) {
@@ -10,11 +8,8 @@ function makeLookup(config) {
   }
 }
 
-// function calculateMetrics(bigrams, trigrams, config){
-function calculateMetrics(letter_freq, bigrams, config){
+function calculateMetrics(letter_freq, bigrams, trigrams, config){
   makeLookup(config);
-  // console.log(letter_freq)
-  // console.log(lookup)
   var count = 0;
   var a = "";
   var b = "";
@@ -39,6 +34,7 @@ function calculateMetrics(letter_freq, bigrams, config){
   var wide_scissors = 0;
   var effort = 0;
   var sfs = 0; // eXd on qwerty where X is not in the same column as e/d - this needs trigrams
+  var sfss = {}; // remove this. just for debugging
   var left_hand = 0;
   var right_hand = 0;
   var hand_balance;
@@ -163,41 +159,49 @@ function calculateMetrics(letter_freq, bigrams, config){
       }
     }
   }
-  // for (var item in trigrams) {
-  //   a = item.charAt(0);
-  //   b = item.charAt(1);
-  //   c = item.charAt(1);
-  //   count = bigrams[item]
+  for (var item in trigrams) {
+    a = item.charAt(0);
+    b = item.charAt(1);
+    c = item.charAt(2);
+    count = trigrams[item]
 
-  //   if (lookup[a]){
-  //     row1 = lookup[a].row;
-  //     col1 = lookup[a].col;
-  //     finger1 = lookup[a].finger;
-  //     effort += lookup[a].effort * count
-  //   } else {
-  //     // console.log("Can't find lookup info for "+a);
-  //     finger1 = -1;
-  //   }
-  //   if (lookup[b]){
-  //     row2 = lookup[b].row;
-  //     col2 = lookup[b].col;
-  //     finger2 = lookup[b].finger;
-  //     effort += lookup[b].effort * count
-  //   } else {
-  //     // console.log("Can't find lookup info for "+a);
-  //     finger2 = -2;
-  //   }
-  //   if (lookup[c]){
-  //     row3 = lookup[c].row;
-  //     col3 = lookup[c].col;
-  //     finger3 = lookup[c].finger;
-  //     effort += lookup[c].effort * count
-  //   } else {
-  //     // console.log("Can't find lookup info for "+a);
-  //     finger3 = -3;
-  //   }
+    if (lookup[a]){
+      row1 = lookup[a].row;
+      col1 = lookup[a].col;
+      finger1 = lookup[a].finger;
+      effort += lookup[a].effort * count
+    } else {
+      // console.log("Can't find lookup info for "+a);
+      finger1 = -1;
+    }
+    if (lookup[b]){
+      row2 = lookup[b].row;
+      col2 = lookup[b].col;
+      finger2 = lookup[b].finger;
+      effort += lookup[b].effort * count
+    } else {
+      // console.log("Can't find lookup info for "+a);
+      finger2 = -2;
+    }
+    if (lookup[c]){
+      row3 = lookup[c].row;
+      col3 = lookup[c].col;
+      finger3 = lookup[c].finger;
+      effort += lookup[c].effort * count
+    } else {
+      // console.log("Can't find lookup info for "+a);
+      finger3 = -3;
+    }
 
-  // }
+    if (finger1 == finger3 && finger2 != finger1 && Math.abs(row1-row3) >= 2) {
+      if (row1 <= 2 && row3 <= 2){
+        sfs += count
+        sfss[item] = count
+      }
+    }
+  }
+
+
   return {
           sfb: sfb,
           effort: effort,
@@ -207,6 +211,8 @@ function calculateMetrics(letter_freq, bigrams, config){
           prscissors: prscissors,
           wide_scissors: wide_scissors,
           lat_str: lat_str,
+          sfs: sfs,
+          sfss: sfss,
           hand_balance: hand_balance,
           vowels: vowels
          };
@@ -216,15 +222,13 @@ function calculateMetrics(letter_freq, bigrams, config){
 self.onmessage = function(e) {
   // Destructure the data and config from the event object
   // const { bigrams, trigrams, config } = e.data;
-  const { letter_freq, bigrams, config } = e.data;
+  const { letter_freq, bigrams, trigrams, config } = e.data;
 
-  // if (!bigrams || !config || !trigrams) {
-  if (!letter_freq || !bigrams || !config) {
+  if (!letter_freq || !bigrams || !config || !trigrams) {
     self.postMessage('Error: Missing data or config.');
     return;
   }
-  // metrics = calculateMetrics(bigrams, trigrams, config);
-  metrics = calculateMetrics(letter_freq, bigrams, config);
+  metrics = calculateMetrics(letter_freq, bigrams, trigrams, config);
 
   // Send the final results back to the main script
   self.postMessage({
