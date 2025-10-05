@@ -737,7 +737,6 @@ function pasteEffortGridFromClipboard() {
 
 function selectLanguage(lan) {
   document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
-  lan
   if (lan == "english"){
     console.log("============ ENGLISH ============")
     fetch(word_list_url)
