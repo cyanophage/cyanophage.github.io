@@ -70,6 +70,8 @@ const dictionary_url = 'dictionary.json';
 const effort_url = 'bigram_effort.json';
 let words = {};
 let dictionary = [];
+var dictionaryloaded = false;
+var effortloaded = false;
 let bigram_effort = {};
 
 function fetchData(){
@@ -1369,6 +1371,7 @@ function measureWords() {
     samehand = char
     for (let i = 0; i < word.length; i++) {
       char = word.charAt(i);
+      if (i > 0){prevchar = word.charAt(i-1);}
       // freq //
       if (!m_letter_freq[char]) {
         m_letter_freq[char] = 0;
@@ -1377,6 +1380,7 @@ function measureWords() {
       // finger usage //
       row = getRow(char);
       col = getCol(char);
+      if (i > 0){prevcol = getCol(prevchar);}
       if (col <= 5){
         hand = "L"
       } else {
@@ -1430,7 +1434,7 @@ function measureWords() {
       m_row_usage[row] += count;
 
       // bigram stuff
-      if (i > 0) {
+      if (i > 0 && prevcol >= 0) {
         bigram = prevchar + char;
         if (finger == prevfinger && prevchar != char) {
           if (!m_same_finger[bigram]) {
@@ -1512,7 +1516,7 @@ function measureWords() {
         }
       }
       // trigram stuff
-      if (i > 1) {
+      if (i > 1 && prevcol >= 0) {
         skip = ppchar + "_" + char;
         trigram = ppchar + prevchar + char;
         if (finger == ppfinger && ppchar != char) {
