@@ -76,7 +76,7 @@ rcdata = loadEffortValuesFromCookie("rcdataEffort", rcdata);
 
 var letter_position = [];
 
-const word_list_url = 'word_list.json';
+const word_list_url = 'words-english.json';
 async function loadAllData() {
   try {
     const [wordsData] = await Promise.all([
@@ -445,11 +445,14 @@ function countCharsKeys() {
   }
   error_text = "";
   error = false;
+  var diff = 0
   if (key_count > char_count) {
-    error_text = "Too many keys; Select more characters or deselect some keys";
+    diff = key_count - char_count
+    error_text = "Too many keys ("+diff+"); Select more characters or deselect some keys";
     error = true;
   } else if(char_count > key_count) {
-    error_text = "Too many chars; Select fewer characters or select some more keys";
+    diff = char_count - key_count
+    error_text = "Too many chars ("+diff+"); Select fewer characters or select some more keys";
     error = true;
   }
 }
@@ -735,28 +738,31 @@ function pasteEffortGridFromClipboard() {
 }
 
 
-function selectLanguage(lan) {
-  document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
-  if (lan == "english"){
-    console.log("============ ENGLISH ============")
-    fetch(word_list_url)
-      .then(response => response.json())
-      .then(data => {
-        words = data; // Assign data to the global variable
-        console.log("fetchData");
-        getCharacters()
-        generateCharacters()
-      })
-      .catch(error => console.error('Error loading JSON file:', error));
-    return;
-  }
-
-  var word_list = 'words-'+lan+'.json'; // words-german.json
+function selectLanguage(lan, event) {
+  var word_list = 'words-'+lan+'.json';
   console.log("============ "+lan.toUpperCase()+" ============")
   fetch(word_list)
-    .then(response => response.json())
-    .then(data => {
-      words = data; // Assign data to the global variable
+  .then(response => response.json())
+  .then(data => {
+      if (event.ctrlKey){
+        console.log("adding "+lan+" to words")
+        for (var word in data) {
+          if (words[word]){
+            words[word] += data[word]
+          } else {
+            words[word] = data[word]
+          }
+        }
+        for (var word in words) {
+          if (words[word] > 1000) {
+            console.log(word)
+          }
+        }
+        document.getElementById("langDropDown").innerHTML += ("+"+lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase());
+      } else {
+        words = data; // Assign data to the global variable
+        document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+      }
       console.log("fetchData");
       getCharacters()
       generateCharacters()
@@ -1075,11 +1081,10 @@ function run() {
       score += hbalance_data.score
       m_score = score
 
-      results.push({score: score, config: config, result: result})
+      results.push({score: score, config: config, result: result, iter: iter})
       if (score < best_score) {
         best_score = score;
         found_new_result = true;
-
       }
       messages_received += 1;
       // console.log("sent = "+messages_sent+"  received = "+messages_received);
@@ -1111,6 +1116,7 @@ function run() {
             for (let i = 0; i < best_results.length; i++) {
               if (best_results[i].score < bestest_score) {
                 bestest_score = best_results[i].score
+                best_result = best_results[i].result
                 besti = i
               }
             }
@@ -1118,29 +1124,29 @@ function run() {
             console.log(bestest_score);
             rcdata = best_results[besti].config
             // metrics
-            sfb_data.metric = ((100*best_results[besti].result.sfb) / input_length).toFixed(2) + "%"
-            effort_data.metric = (best_results[besti].result.effort / input_length).toFixed(2)
-            psfb_data.metric = (100*best_results[besti].result.psfb / input_length).toFixed(2) + "%"
-            rsfb_data.metric = (100*best_results[besti].result.rsfb / input_length).toFixed(2) + "%"
-            scissors_data.metric = (100*best_results[besti].result.scissors / input_length).toFixed(2) + "%"
-            prscissors_data.metric = (100*best_results[besti].result.prscissors / input_length).toFixed(2) + "%"
-            wscissors_data.metric = (100*best_results[besti].result.wide_scissors / input_length).toFixed(2) + "%"
-            latstr_data.metric = (100*best_results[besti].result.lat_str / input_length).toFixed(2) + "%"
-            sfs_data.metric = (100*best_results[besti].result.sfs / input_length).toFixed(2) + "%"
-            vowels_data.metric = (best_results[besti].result.vowels)
-            hbalance_data.metric = (best_results[besti].result.hand_balance).toFixed(2)
+            sfb_data.metric = ((100*best_result.sfb) / input_length).toFixed(2) + "%"
+            effort_data.metric = (best_result.effort / input_length).toFixed(2)
+            psfb_data.metric = (100*best_result.psfb / input_length).toFixed(2) + "%"
+            rsfb_data.metric = (100*best_result.rsfb / input_length).toFixed(2) + "%"
+            scissors_data.metric = (100*best_result.scissors / input_length).toFixed(2) + "%"
+            prscissors_data.metric = (100*best_result.prscissors / input_length).toFixed(2) + "%"
+            wscissors_data.metric = (100*best_result.wide_scissors / input_length).toFixed(2) + "%"
+            latstr_data.metric = (100*best_result.lat_str / input_length).toFixed(2) + "%"
+            sfs_data.metric = (100*best_result.sfs / input_length).toFixed(2) + "%"
+            vowels_data.metric = (best_result.vowels)
+            hbalance_data.metric = (best_result.hand_balance).toFixed(2)
 
-            sfb_data.score = calculateScore(best_results[besti].result.sfb, sfb_data.weight, sfb_data.min, input_length, true)
-            effort_data.score = calculateScore(best_results[besti].result.effort, effort_data.weight, effort_data.min, input_length, false)
-            psfb_data.score = calculateScore(best_results[besti].result.psfb, psfb_data.weight, psfb_data.min, input_length, true)
-            rsfb_data.score = calculateScore(best_results[besti].result.rsfb, rsfb_data.weight, rsfb_data.min, input_length, true)
-            scissors_data.score = calculateScore(best_results[besti].result.scissors, scissors_data.weight, scissors_data.min, input_length, true)
-            prscissors_data.score = calculateScore(best_results[besti].result.prscissors, prscissors_data.weight, prscissors_data.min, input_length, true)
-            wscissors_data.score = calculateScore(best_results[besti].result.wide_scissors, wscissors_data.weight, wscissors_data.min, input_length, true)
-            latstr_data.score = calculateScore(best_results[besti].result.lat_str, latstr_data.weight, latstr_data.min, input_length, true)
-            sfs_data.score = calculateScore(best_results[besti].result.sfs, sfs_data.weight, sfs_data.min, input_length, true)
-            vowels_data.score = (best_results[besti].result.vowels - vowels_data.min) * vowels_data.weight
-            hbalance_data.score = (best_results[besti].result.hand_balance - hbalance_data.min) * hbalance_data.weight
+            sfb_data.score = calculateScore(best_result.sfb, sfb_data.weight, sfb_data.min, input_length, true)
+            effort_data.score = calculateScore(best_result.effort, effort_data.weight, effort_data.min, input_length, false)
+            psfb_data.score = calculateScore(best_result.psfb, psfb_data.weight, psfb_data.min, input_length, true)
+            rsfb_data.score = calculateScore(best_result.rsfb, rsfb_data.weight, rsfb_data.min, input_length, true)
+            scissors_data.score = calculateScore(best_result.scissors, scissors_data.weight, scissors_data.min, input_length, true)
+            prscissors_data.score = calculateScore(best_result.prscissors, prscissors_data.weight, prscissors_data.min, input_length, true)
+            wscissors_data.score = calculateScore(best_result.wide_scissors, wscissors_data.weight, wscissors_data.min, input_length, true)
+            latstr_data.score = calculateScore(best_result.lat_str, latstr_data.weight, latstr_data.min, input_length, true)
+            sfs_data.score = calculateScore(best_result.sfs, sfs_data.weight, sfs_data.min, input_length, true)
+            vowels_data.score = (best_result.vowels - vowels_data.min) * vowels_data.weight
+            hbalance_data.score = (best_result.hand_balance - hbalance_data.min) * hbalance_data.weight
             if (hbalance_data.score < 0) {hbalance_data.score = 0}
 
             m_score = sfb_data.score +

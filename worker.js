@@ -8,6 +8,13 @@ function makeLookup(config) {
   }
 }
 
+function printConfig(config) {
+  console.log("---")
+  console.log(config[1].char + " " + config[2].char + " " + config[3].char + " " + config[4].char + " " + config[5].char + "   " + config[6].char + " " + config[7].char + " " + config[8].char + " " + config[9].char + " " + config[10].char)
+  console.log(config[13].char + " " + config[14].char + " " + config[15].char + " " + config[16].char + " " + config[17].char + "   " + config[18].char + " " + config[19].char + " " + config[20].char + " " + config[21].char + " " + config[22].char)
+  console.log(config[25].char + " " + config[26].char + " " + config[27].char + " " + config[28].char + " " + config[29].char + "   " + config[30].char + " " + config[31].char + " " + config[32].char + " " + config[33].char + " " + config[34].char)
+}
+
 function calculateMetrics(letter_freq, bigrams, trigrams, config){
   makeLookup(config);
   var count = 0;
@@ -34,7 +41,6 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
   var wide_scissors = 0;
   var effort = 0;
   var sfs = 0; // eXd on qwerty where X is not in the same column as e/d - this needs trigrams
-  var sfss = {}; // remove this. just for debugging
   var left_hand = 0;
   var right_hand = 0;
   var hand_balance;
@@ -183,7 +189,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
       // console.log("Can't find lookup info for "+a);
       finger2 = -2;
     }
-    if (lookup[c]){
+    if (lookup[c]) {
       row3 = lookup[c].row;
       col3 = lookup[c].col;
       finger3 = lookup[c].finger;
@@ -196,7 +202,6 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
     if (finger1 == finger3 && finger2 != finger1 && Math.abs(row1-row3) >= 2) {
       if (row1 <= 2 && row3 <= 2){
         sfs += count
-        sfss[item] = count
       }
     }
   }
@@ -212,7 +217,6 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
           wide_scissors: wide_scissors,
           lat_str: lat_str,
           sfs: sfs,
-          sfss: sfss,
           hand_balance: hand_balance,
           vowels: vowels
          };
