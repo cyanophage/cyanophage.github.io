@@ -1,6 +1,6 @@
 
 var swidth = 1200;
-var sheight = 600;
+var sheight = 700;
 var svg = d3.select("#svglayout").append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("width", swidth).attr("height", sheight);
 
 svg.append("g").attr("id", "info-panel");
@@ -19,14 +19,14 @@ var error_text = "";
 
 var m_score = 0;
 
-var sfb_data = {label: "SFB:", metric: 0, score: 0, weight: 3, min: 0.39, desc: "Single finger bigrams"}
+var sfb_data = {label: "SFB:", metric: 0, score: 0, weight: 4, min: 0.3, desc: "Single finger bigrams"}
 var effort_data = {label: "Effort:", metric: 0, score: 0, weight: 3, min: 0, desc: "Effort based on defined matrix"}
 var psfb_data = {label: "pSFB:", metric: 0, score: 0, weight: 0.7, min: 0, desc: "Additional penalty for SFBs on the pinky"}
 var rsfb_data = {label: "rSFB:", metric: 0, score: 0, weight: 0.3, min: 0, desc: "Additional penalty for SFBs on the ring finger"}
-var scissors_data = {label: "Scissors:", metric: 0, score: 0, weight: 1, min: 0, desc: "Two letters on the same hand, two rows between them, on adjacent fingers"}
-var prscissors_data = {label: "PRScissor:", metric: 0, score: 0, weight: 0.9, min: 0.2, desc: "Two letters typed with the ring and pinky with at least one row between them"}
-var wscissors_data = {label: "WScissors:", metric: 0, score: 0, weight: 1, min: 0, desc: "Two letters on the same hand, two rows between them, more than one column between them" }
-var latstr_data = {label: "LSB:", metric: 0, score: 0, weight: 1, min: 0.12, desc: "Lateral stretch bigrams"}
+var scissors_data = {label: "Scissors:", metric: 0, score: 0, weight: 0.8, min: 0, desc: "Two letters on the same hand, two rows between them, on adjacent fingers"}
+var prscissors_data = {label: "PRScissor:", metric: 0, score: 0, weight: 0.8, min: 0.2, desc: "Two letters typed with the ring and pinky with at least one row between them"}
+var wscissors_data = {label: "WScissors:", metric: 0, score: 0, weight: 0.5, min: 0.05, desc: "Two letters on the same hand, two rows between them, more than one column between them" }
+var latstr_data = {label: "LSB:", metric: 0, score: 0, weight: 0.5, min: 0.12, desc: "Lateral stretch bigrams"}
 var sfs_data = {label: "SFS:", metric: 0, score: 0, weight: 0.8, min: 0, desc: "Single finger skipgrams"}
 var vowels_data = {label: "Vowels:", metric: 0, score: 0, weight: 3, min: 0, desc: "Should vowels be on the same side"}
 var hbalance_data = {label: "Hand Bal:", metric: 0, score: 0, weight: 0.7, min: 1, desc: "Hand balance, how much different from 50/50 usage" }
@@ -137,7 +137,7 @@ function getCharacters() {
   console.log("there are "+bigram_count+ " bigrams")
 
   for(var tmp in trigram_freq) {
-    if (trigram_freq[tmp] <= 30){
+    if (trigram_freq[tmp] <= 30) {
       Reflect.deleteProperty(trigram_freq, tmp)
     }
   }
@@ -154,7 +154,7 @@ function getCharacters() {
 }
 
 function getX(row, col) {
-  dx = 355;
+  dx = 370;
   if (col > 5) {
     dx = dx + 40;
   }
@@ -241,6 +241,9 @@ function generateSVG(){
   generateButtons();
   generateLayout();
   generateCharacters();
+  generateGraphs();
+  generateGraphs2();
+  generateModeButtons();
   countCharsKeys();
   generateStats();
 }
@@ -304,13 +307,368 @@ function generateButtons() {
     } else {
       times = parseInt(value);
     }
+    generateGraphs();
+    generateGraphs2();
   });
 
   // keyboard layout bounding box
-  svg.append("rect").attr("x", 345).attr("y", 0).attr("width", 510).attr("height", 170)
+  svg.append("rect").attr("x", 360).attr("y", 0).attr("width", 508).attr("height", 168)
   .attr("stroke", "#777777").attr("fill", "#1b1c1f").attr("fill-opacity", "0.0").attr("rx", 8).attr("ry", 8)
 }
 
+function handleCircleHover(data, element) {
+  rcdata = data.config;
+
+  d3.select(element)
+    .attr("r", 5)
+    .attr("fill", "#ff6600")
+  // redraw the layout
+  generateLayout();
+}
+
+function handleCircleLeave(data, element) {
+  // Reset the circle
+  d3.select(element)
+    .attr("r", 3)
+    .attr("fill", "#999999");
+
+  svg.selectAll(".tooltip").remove();
+}
+
+function generateGraphs() {
+  console.log("generateGraphs")
+  var yBase = 390;
+  var xLeft = 380;
+  // Draw axes once (only if they don't exist)
+  if (svg.select(".x-axis").empty()) {
+    svg.append("line") // x axis
+      .attr("class", "x-axis")
+      .attr("x1", xLeft)
+      .attr("y1", yBase)
+      .attr("x2", 900)
+      .attr("y2", yBase)
+      .style('stroke-width', 2)
+      .style("stroke", "#999999");
+  }
+
+  if (svg.select(".y-axis").empty()) {
+    svg.append("line") // y axis
+      .attr("class", "y-axis")
+      .attr("x1", xLeft)
+      .attr("y1", yBase-150)
+      .attr("x2", xLeft)
+      .attr("y2", yBase)
+      .style('stroke-width', 2)
+      .style("stroke", "#999999");
+  }
+  svg.selectAll(".x-label").remove();
+  // Draw x-axis labels once
+  var xstep = (900-xLeft)/times
+  var k = 1;
+  while ((900-xLeft)/(times/k) < 20 && k < 10){
+    k += 1
+  }
+  for (let i = k; i <= times; i += k) {
+    svg.append("text")
+      .attr("class", "x-label")
+      .attr("x", xLeft + (i-0.5) * xstep)
+      .attr("y", yBase+18)
+      .attr("font-size", 14)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#999999")
+      .text(i);
+  }
+
+  // Calculate scale
+  var min_score = 100000;
+  var max_score = 0;
+  for (let i = 0; i < best_results.length; i++) {
+    if (best_results[i].score < min_score) {
+      min_score = best_results[i].score;
+    }
+    if (best_results[i].score > max_score) {
+      max_score = best_results[i].score;
+    }
+  }
+  if (max_score==0){
+    max_score = 10;
+  }
+  // Remove and redraw y-axis ticks when scale changes
+  svg.selectAll(".y-tick").remove();
+
+  var validIntervals = [100,50,20,10,5,2,1,0.5,0.2,0.1]
+  var it=0;
+  while (max_score/validIntervals[it]<5){
+    it+=1;
+  }
+  var tickInterval = validIntervals[it];
+  var maxTick = tickInterval * Math.ceil(max_score/tickInterval)
+  var tickCount = Math.ceil(max_score/tickInterval)
+  var scale = 150 / maxTick;
+  console.log("graph",max_score, tickCount, tickInterval, scale);
+
+  svg.append("text")
+    .attr("class", "y-tick")
+    .attr("x", xLeft-20)
+    .attr("y", yBase-75)
+    .attr("transform","rotate(-90, "+(xLeft-40)+","+(yBase-75)+")")
+    .attr("font-size", 14)
+    .attr("text-anchor", "end")
+    .attr("fill", "#999999")
+    .text("Score");
+
+  for (let i = 0; i <= tickCount; i++) {
+    var tickValue = i * tickInterval;
+    var yPos = yBase - i*tickInterval*scale;
+
+    // Tick mark
+    svg.append("line")
+      .attr("class", "y-tick")
+      .attr("x1", xLeft-5)
+      .attr("y1", yPos)
+      .attr("x2", xLeft+1)
+      .attr("y2", yPos)
+      .style('stroke-width', 2)
+      .style("stroke", "#999999");
+
+    // Tick label
+    svg.append("text")
+      .attr("class", "y-tick")
+      .attr("x", xLeft-10)
+      .attr("y", yPos + 5)
+      .attr("font-size", 14)
+      .attr("text-anchor", "end")
+      .attr("fill", "#999999")
+      .text(tickValue);
+  }
+
+  // Use D3 data binding with enter/exit pattern
+  var circles = svg.selectAll(".data-point")
+    .data(best_results, d => d.iter); // Use iter as key for object constancy
+
+  // Remove old circles (if needed)
+  circles.exit().remove();
+
+  // Add new circles
+  circles.enter()
+    .append("circle")
+    .attr("class", "data-point")
+    .attr("cx", d => xLeft + (d.iter + 0.5) * xstep)
+    .attr("cy", d => yBase - d.score * scale)
+    .attr("r", 3)
+    .attr("fill", "#999999")
+    .attr("stroke", "#ffffff")
+    .attr("onmouseover", d => "showTooltip(evt,'"+(d.score).toFixed(2)+"')").attr("onmouseout", "hideTooltip()")
+    .on("mouseover", function(event, d) {
+      handleCircleHover(d, this);
+    })
+    .on("mouseout", function(event, d) {
+      handleCircleLeave(d, this);
+    });
+
+  // Update existing circles (in case positions need to change based on scale)
+  circles
+    .attr("cx", d => xLeft + (d.iter + 0.5) * xstep)
+    .attr("cy", d => yBase - d.score * scale);
+}
+
+var mode = 'sfb';
+var mult = 100;
+var yLabel = "SFB";
+function generateGraphs2() {
+  console.log("generateGraphs2")
+  var yBase = 590;
+  var xLeft = 380;
+  // Draw axes once (only if they don't exist)
+  if (svg.select(".x-axis2").empty()) {
+    svg.append("line") // x axis
+      .attr("class", "x-axis2")
+      .attr("x1", xLeft)
+      .attr("y1", yBase)
+      .attr("x2", 900)
+      .attr("y2", yBase)
+      .style('stroke-width', 2)
+      .style("stroke", "#999999");
+  }
+
+  if (svg.select(".y-axis2").empty()) {
+    svg.append("line") // y axis
+      .attr("class", "y-axis2")
+      .attr("x1", xLeft)
+      .attr("y1", yBase-150)
+      .attr("x2", xLeft)
+      .attr("y2", yBase)
+      .style('stroke-width', 2)
+      .style("stroke", "#999999");
+  }
+  svg.selectAll(".x-label2").remove();
+  // Draw x-axis labels once
+  var xstep = (900-xLeft)/times
+  var k = 1;
+  while ((900-xLeft)/(times/k) < 20 && k < 10){
+    k += 1
+  }
+  for (let i = k; i <= times; i += k) {
+    svg.append("text")
+      .attr("class", "x-label2")
+      .attr("x", xLeft + (i-0.5) * xstep)
+      .attr("y", yBase+18)
+      .attr("font-size", 14)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#999999")
+      .text(i);
+  }
+
+  // Calculate scale
+  var min_score = 100000;
+  var max_score = 0;
+  var percentage = 0;
+  for (let i = 0; i < best_results.length; i++) {
+    percentage = mult*best_results[i].result[mode]/input_length;
+    if (percentage < min_score) {
+      min_score = percentage;
+    }
+    if (percentage > max_score) {
+      max_score = percentage;
+    }
+  }
+  if (max_score==0){
+    max_score = 1;
+  }
+  // Remove and redraw y-axis ticks when scale changes
+  svg.selectAll(".y-tick2").remove();
+
+  var validIntervals = [100,50,20,10,5,2,1,0.5,0.2,0.1]
+  var it=0;
+  while (max_score/validIntervals[it]<5){
+    it+=1;
+  }
+  var tickInterval = validIntervals[it];
+  var maxTick = tickInterval * Math.ceil(max_score/tickInterval)
+  var tickCount = Math.ceil(max_score/tickInterval)
+  var scale = 150 / maxTick;
+  console.log("graph2",max_score, tickCount, tickInterval, scale);
+
+  svg.append("text")
+    .attr("class", "y-tick2")
+    .attr("x", xLeft-20)
+    .attr("y", yBase-75)
+    .attr("transform","rotate(-90, "+(xLeft-40)+","+(yBase-75)+")")
+    .attr("font-size", 14)
+    .attr("text-anchor", "end")
+    .attr("fill", "#999999")
+    .text(yLabel);
+
+  for (let i = 0; i <= tickCount; i++) {
+    var tickValue = (i * tickInterval).toString()
+    if (max_score < 1000 && tickValue.length > 3){
+      tickValue = tickValue.substring(0,3)
+    }
+    var yPos = yBase - i*tickInterval*scale;
+
+    // Tick mark
+    svg.append("line")
+      .attr("class", "y-tick2")
+      .attr("x1", xLeft-5)
+      .attr("y1", yPos)
+      .attr("x2", xLeft+1)
+      .attr("y2", yPos)
+      .style('stroke-width', 2)
+      .style("stroke", "#999999");
+
+    // Tick label
+    svg.append("text")
+      .attr("class", "y-tick2")
+      .attr("x", xLeft-10)
+      .attr("y", yPos + 5)
+      .attr("font-size", 14)
+      .attr("text-anchor", "end")
+      .attr("fill", "#999999")
+      .text(tickValue);
+  }
+
+  // Use D3 data binding with enter/exit pattern
+  var circles = svg.selectAll(".data-point2")
+    .data(best_results, d => d.iter); // Use iter as key for object constancy
+
+  // Remove old circles (if needed)
+  circles.exit().remove();
+
+  // Add new circles
+  circles.enter()
+    .append("circle")
+    .attr("class", "data-point2")
+    .attr("cx", d => xLeft + (d.iter + 0.5) * xstep)
+    .attr("cy", d => yBase - (mult*d.result[mode]/input_length) * scale)
+    .attr("r", 3)
+    .attr("fill", "#999999")
+    .attr("stroke", "#ffffff")
+    .attr("onmouseover", d => "showTooltip(evt,'"+(mult*d.result[mode]/input_length).toFixed(2)+"')").attr("onmouseout", "hideTooltip()")
+    .on("mouseover", function(event, d) {
+      handleCircleHover(d, this);
+    })
+    .on("mouseout", function(event, d) {
+      handleCircleLeave(d, this);
+    });
+
+  // Update existing circles (in case positions need to change based on scale)
+  circles
+    .attr("cx", d => xLeft + (d.iter + 0.5) * xstep)
+    .attr("cy", d => yBase - (mult*d.result[mode]/input_length) * scale)
+    .attr("onmouseover", d => "showTooltip(evt,'"+(mult*d.result[mode]/input_length).toFixed(2)+"')").attr("onmouseout", "hideTooltip()");
+}
+
+function setMode(thing){
+  if (thing == 'SFB'){
+    mode = 'sfb';
+    mult = 100;
+  } else if (thing == 'Effort') {
+    mode = 'effort';
+    mult = 1;
+  } else if (thing == "Scissors") {
+    mode = 'scissors';
+    mult = 100;
+  } else if (thing == "LSB") {
+    mode = 'lat_str';
+    mult = 100;
+  } else if (thing == "SFS") {
+    mode = 'sfs';
+    mult = 100;
+  }
+  yLabel = thing
+  console.log("setting mode to "+mode);
+  generateGraphs2();
+}
+
+function generateModeButtons() {
+  var yBase = 640;
+  var xLeft = 380;
+  var buttons = ["SFB","Effort","Scissors","LSB","SFS"]
+  if (svg.select(".mode-button").empty()) {
+
+    for(var i = 0; i < buttons.length; i++){
+      svg.append("rect") // x axis
+        .attr("class", "mode-button")
+        .attr("x", xLeft+(i*100))
+        .attr("y", yBase)
+        .attr("width", 90)
+        .attr("height", 30)
+        .attr("stroke", "#333333")
+        .attr("fill", "#222222")
+        .attr("onclick", "setMode('"+buttons[i]+"')")
+      svg.append("text")
+        .attr("x", xLeft+(i*100)+45)
+        .attr("y", yBase+16)
+        .attr("fill", "#999")
+        .attr("font-size", 16)
+        .attr("font-family", "Roboto Mono, monospace")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .style("pointer-events", "none")
+        .text(buttons[i])
+    }
+  }
+}
 
 function generateLayout() {
   for (let i = 0; i < rcdata.length; i++) {
@@ -330,7 +688,6 @@ function generateLayout() {
       .attr("class", "key-group")
       .on("click", function(event, d) {
         toggleKeyOnOff(d);
-        // renderKeys();
       });
 
   // Append the rectangle to each new group
@@ -343,8 +700,8 @@ function generateLayout() {
 
   // Append the text to each new group
   keyGroupsEnter.append("text")
-    .attr("x", 15) // Centered in a 36px wide box
-    .attr("y", 15) // Centered in a 36px high box
+    .attr("x", 15)
+    .attr("y", 15)
     .attr("font-size", 16)
     .attr("font-family", "Roboto Mono, monospace")
     .attr("text-anchor", "middle")
@@ -386,8 +743,7 @@ function sortLetterFreq(){
 function generateCharacters() {
   console.log("generateCharacters");
 
-  const letterGroups = svg.selectAll("g.letter-group")
-    .data(letter_position, d => d.letter);
+  const letterGroups = svg.selectAll("g.letter-group").data(letter_position, d => d.letter);
 
   letterGroups.exit().remove();
 
@@ -464,22 +820,22 @@ function generateStats() {
   infoPanel.html(null);
 
   infoPanel.append("text").attr("x", 340).attr("y", 200).attr("fill", "#ffaaaa")
-  .attr("font-size", 14).attr("text-anchor", "left")
+  .attr("font-size", 13).attr("text-anchor", "left")
   .attr("font-family", "Roboto Mono")
   .text(error_text);
 
   // === RUN COUNTER ===
   x = 1050
   y = 568
-  infoPanel.append("text").attr("x", x).attr("y", y).attr("fill", "#aaaaaa")
-  .attr("font-size", 20).attr("text-anchor", "left").text(runs);
+  // infoPanel.append("text").attr("x", x).attr("y", y).attr("fill", "#aaaaaa")
+  // .attr("font-size", 20).attr("text-anchor", "left").text(runs);
   if (iter > 0) {
-    infoPanel.append("text").attr("x", x-100).attr("y", y).attr("fill", "#aaaaaa")
-    .attr("font-size", 20).attr("text-anchor", "left").text((100 * iter / times).toFixed(1) + "%");
+    infoPanel.append("text").attr("x", x-50).attr("y", y).attr("fill", "#aaaaaa")
+    .attr("font-size", 20).attr("text-anchor", "left").text((100 * (iter+1) / times).toFixed(1) + "%");
   }
   // === SCORES ===
   x = 20
-  y = 40
+  y = 30
   var weight_x = 136
   var min_x = 196
   var score_x = 255
@@ -753,11 +1109,6 @@ function selectLanguage(lan, event) {
             words[word] = data[word]
           }
         }
-        for (var word in words) {
-          if (words[word] > 1000) {
-            console.log(word)
-          }
-        }
         document.getElementById("langDropDown").innerHTML += ("+"+lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase());
       } else {
         words = data; // Assign data to the global variable
@@ -834,7 +1185,8 @@ function shuffle(array) { // https://stackoverflow.com/questions/2450954/how-to-
   return array
 }
 
-function shuffleData(data, times) {
+function shuffleData(data, reps) {
+  if (times<20){reps+=(20-times)}
   var tmp_keys = _.cloneDeep(data)
   var editable_keys = [];
   for (let i = 0; i < tmp_keys.length; i++) {
@@ -842,7 +1194,7 @@ function shuffleData(data, times) {
       editable_keys.push(i);
     }
   }
-  for (let i = 0; i < times; i++) {
+  for (let i = 0; i < reps; i++) {
     // pick a random key
     var key1 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
     var key2 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
@@ -908,19 +1260,19 @@ function clearLetters() {
       rcdata[i].char = ""
     }
   }
+  best_results = [];
   generateLayout();
   generateCharacters();
 }
 
 var results;
-var best_results;
+var best_results=[];
 var uid_set;
 var best_score;
 var best_result;
 var bestest_score;
 var time_to_shuffle;
 var editable_keys;
-
 
 function calculateScore(value, weight, min, denom, perc) {
   if (perc==true) {
@@ -1043,17 +1395,6 @@ function run() {
       uid = create_uid(config)
       var score = 0;
 
-      sfb_data.metric = ((100*result.sfb) / input_length).toFixed(2) + "%"
-      effort_data.metric = (result.effort / input_length).toFixed(2)
-      psfb_data.metric = (100*result.psfb / input_length).toFixed(2) + "%"
-      rsfb_data.metric = (100*result.rsfb / input_length).toFixed(2) + "%"
-      scissors_data.metric = (100*result.scissors / input_length).toFixed(2) + "%"
-      prscissors_data.metric = (100*result.prscissors / input_length).toFixed(2) + "%"
-      wscissors_data.metric = (100*result.wide_scissors / input_length).toFixed(2) + "%"
-      latstr_data.metric = (100*result.lat_str / input_length).toFixed(2) + "%"
-      sfs_data.metric = (100*result.sfs / input_length).toFixed(2) + "%"
-      vowels_data.metric = (result.vowels)
-      hbalance_data.metric = (result.hand_balance).toFixed(2)
 
       sfb_data.score = calculateScore(result.sfb, sfb_data.weight, sfb_data.min, input_length, true)
       effort_data.score = calculateScore(result.effort, effort_data.weight, effort_data.min, input_length, false)
@@ -1079,7 +1420,7 @@ function run() {
       score += sfs_data.score
       score += vowels_data.score
       score += hbalance_data.score
-      m_score = score
+      // m_score = score
 
       results.push({score: score, config: config, result: result, iter: iter})
       if (score < best_score) {
@@ -1089,80 +1430,68 @@ function run() {
       messages_received += 1;
       // console.log("sent = "+messages_sent+"  received = "+messages_received);
       if (messages_received == messages_sent) {
-        console.log("best result: "+best_score);
+        console.log(iter + " best result: "+best_score);
         if (found_new_result) {
           run();
         } else {
-          if (iter < times) {
-            console.log("=== "+(times-iter)+" ===")
-            time_to_shuffle = true;
-            best_score = 1000000;
-            for (let i = 0; i < results.length; i++) {
-              if (results[i].score < best_score) {
-                best_config = results[i].config
-                best_score = results[i].score
-                best_result = results[i].result
-              }
+          time_to_shuffle = true;
+          best_score = 1000000;
+          for (let i = 0; i < results.length; i++) {
+            if (results[i].score < best_score) {
+              best_config = results[i].config
+              best_score = results[i].score
+              best_result = results[i].result
             }
-            best_results.push({config: best_config, score: best_score, result: best_result})
-            results = [];
-            generateLayout();
-            generateStats();
+          }
+          rcdata = best_config
+          best_results.push({config: best_config, score: best_score, result: best_result, iter: iter})
+          results = [];
+
+          sfb_data.metric = ((100*best_result.sfb) / input_length).toFixed(2) + "%"
+          effort_data.metric = (best_result.effort / input_length).toFixed(2)
+          psfb_data.metric = (100*best_result.psfb / input_length).toFixed(2) + "%"
+          rsfb_data.metric = (100*best_result.rsfb / input_length).toFixed(2) + "%"
+          scissors_data.metric = (100*best_result.scissors / input_length).toFixed(2) + "%"
+          prscissors_data.metric = (100*best_result.prscissors / input_length).toFixed(2) + "%"
+          wscissors_data.metric = (100*best_result.wide_scissors / input_length).toFixed(2) + "%"
+          latstr_data.metric = (100*best_result.lat_str / input_length).toFixed(2) + "%"
+          sfs_data.metric = (100*best_result.sfs / input_length).toFixed(2) + "%"
+          vowels_data.metric = (best_result.vowels)
+          hbalance_data.metric = (best_result.hand_balance).toFixed(2)
+
+          sfb_data.score = calculateScore(best_result.sfb, sfb_data.weight, sfb_data.min, input_length, true)
+          effort_data.score = calculateScore(best_result.effort, effort_data.weight, effort_data.min, input_length, false)
+          psfb_data.score = calculateScore(best_result.psfb, psfb_data.weight, psfb_data.min, input_length, true)
+          rsfb_data.score = calculateScore(best_result.rsfb, rsfb_data.weight, rsfb_data.min, input_length, true)
+          scissors_data.score = calculateScore(best_result.scissors, scissors_data.weight, scissors_data.min, input_length, true)
+          prscissors_data.score = calculateScore(best_result.prscissors, prscissors_data.weight, prscissors_data.min, input_length, true)
+          wscissors_data.score = calculateScore(best_result.wide_scissors, wscissors_data.weight, wscissors_data.min, input_length, true)
+          latstr_data.score = calculateScore(best_result.lat_str, latstr_data.weight, latstr_data.min, input_length, true)
+          sfs_data.score = calculateScore(best_result.sfs, sfs_data.weight, sfs_data.min, input_length, true)
+          vowels_data.score = (best_result.vowels - vowels_data.min) * vowels_data.weight
+          hbalance_data.score = (best_result.hand_balance - hbalance_data.min) * hbalance_data.weight
+          if (hbalance_data.score < 0) {hbalance_data.score = 0}
+
+          m_score = sfb_data.score +
+                    effort_data.score +
+                    psfb_data.score +
+                    rsfb_data.score +
+                    scissors_data.score +
+                    prscissors_data.score +
+                    wscissors_data.score +
+                    latstr_data.score +
+                    sfs_data.score +
+                    vowels_data.score +
+                    hbalance_data.score
+
+          generateLayout();
+          generateStats();
+          generateGraphs();
+          generateGraphs2();
+
+          if (iter+1 < times) {
+            // console.log("=== "+(times-iter)+" ===")
             run();
-          } else {
-            console.log("best_results:");
-            console.log(best_results);
-            var besti = 0
-            for (let i = 0; i < best_results.length; i++) {
-              if (best_results[i].score < bestest_score) {
-                bestest_score = best_results[i].score
-                best_result = best_results[i].result
-                besti = i
-              }
-            }
-            console.log("bestest_score:");
-            console.log(bestest_score);
-            rcdata = best_results[besti].config
-            // metrics
-            sfb_data.metric = ((100*best_result.sfb) / input_length).toFixed(2) + "%"
-            effort_data.metric = (best_result.effort / input_length).toFixed(2)
-            psfb_data.metric = (100*best_result.psfb / input_length).toFixed(2) + "%"
-            rsfb_data.metric = (100*best_result.rsfb / input_length).toFixed(2) + "%"
-            scissors_data.metric = (100*best_result.scissors / input_length).toFixed(2) + "%"
-            prscissors_data.metric = (100*best_result.prscissors / input_length).toFixed(2) + "%"
-            wscissors_data.metric = (100*best_result.wide_scissors / input_length).toFixed(2) + "%"
-            latstr_data.metric = (100*best_result.lat_str / input_length).toFixed(2) + "%"
-            sfs_data.metric = (100*best_result.sfs / input_length).toFixed(2) + "%"
-            vowels_data.metric = (best_result.vowels)
-            hbalance_data.metric = (best_result.hand_balance).toFixed(2)
-
-            sfb_data.score = calculateScore(best_result.sfb, sfb_data.weight, sfb_data.min, input_length, true)
-            effort_data.score = calculateScore(best_result.effort, effort_data.weight, effort_data.min, input_length, false)
-            psfb_data.score = calculateScore(best_result.psfb, psfb_data.weight, psfb_data.min, input_length, true)
-            rsfb_data.score = calculateScore(best_result.rsfb, rsfb_data.weight, rsfb_data.min, input_length, true)
-            scissors_data.score = calculateScore(best_result.scissors, scissors_data.weight, scissors_data.min, input_length, true)
-            prscissors_data.score = calculateScore(best_result.prscissors, prscissors_data.weight, prscissors_data.min, input_length, true)
-            wscissors_data.score = calculateScore(best_result.wide_scissors, wscissors_data.weight, wscissors_data.min, input_length, true)
-            latstr_data.score = calculateScore(best_result.lat_str, latstr_data.weight, latstr_data.min, input_length, true)
-            sfs_data.score = calculateScore(best_result.sfs, sfs_data.weight, sfs_data.min, input_length, true)
-            vowels_data.score = (best_result.vowels - vowels_data.min) * vowels_data.weight
-            hbalance_data.score = (best_result.hand_balance - hbalance_data.min) * hbalance_data.weight
-            if (hbalance_data.score < 0) {hbalance_data.score = 0}
-
-            m_score = sfb_data.score +
-                      effort_data.score +
-                      psfb_data.score +
-                      rsfb_data.score +
-                      scissors_data.score +
-                      prscissors_data.score +
-                      wscissors_data.score +
-                      latstr_data.score +
-                      sfs_data.score +
-                      vowels_data.score +
-                      hbalance_data.score
-
-            generateLayout();
-            generateStats();
           }
         }
       }
