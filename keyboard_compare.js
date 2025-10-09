@@ -48,7 +48,7 @@ var stats = d3.select("#svgstats").append("svg").attr("width", swidth).attr("hei
 // const el = document.querySelector("#svgstats");
 // el.onwheel = scroll;
 
-const word_list_url = 'word_list.json';
+const word_list_url = 'words-english.json';
 const dictionary_url = 'dictionary.json';
 const effort_url = 'bigram_effort.json';
 let words = {};
