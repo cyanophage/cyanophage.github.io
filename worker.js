@@ -122,7 +122,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
           if (Math.abs(row1-row2) == 2){
             if (Math.abs(col1-col2)==1){
               scissors += count
-            } else {
+            } else if (Math.abs(col1-col2)>1){
               wide_scissors += count
               // console.log(item + " " + count)
             }
@@ -145,7 +145,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
           if (Math.abs(row1-row2) == 2){
             if (Math.abs(col1-col2)==1){
               scissors += count
-            } else {
+            } else if (Math.abs(col1-col2)>1){
               wide_scissors += count
               // console.log(item + " " + count)
             }
