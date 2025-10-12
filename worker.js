@@ -199,7 +199,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
       finger3 = -3;
     }
 
-    if (finger1 == finger3 && finger2 != finger1 && Math.abs(row1-row3) >= 2) {
+    if (finger1 == finger3 && finger2 != finger1 && Math.abs(row1-row3) >= 1) {
       if (row1 <= 2 && row3 <= 2){
         sfs += count
       }
@@ -216,7 +216,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config){
           prscissors: prscissors,
           wide_scissors: wide_scissors,
           lat_str: lat_str,
-          sfs: sfs,
+          sfs: sfs, // 1u sfs
           hand_balance: hand_balance,
           vowels: vowels
          };
