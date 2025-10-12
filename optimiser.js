@@ -15,19 +15,21 @@ var error = true;
 var runs = 0;
 var times = 20;
 var iter;
+var running = false;
+var progress = 0;
 var error_text = "";
 
 var m_score = 0;
 
 var sfb_data = {label: "SFB:", metric: 0, score: 0, weight: 4, min: 0.3, desc: "Single finger bigrams"}
-var effort_data = {label: "Effort:", metric: 0, score: 0, weight: 3, min: 0, desc: "Effort based on defined matrix"}
+var effort_data = {label: "Effort:", metric: 0, score: 0, weight: 4, min: 0, desc: "Effort based on defined matrix"}
 var psfb_data = {label: "pSFB:", metric: 0, score: 0, weight: 0.7, min: 0, desc: "Additional penalty for SFBs on the pinky"}
 var rsfb_data = {label: "rSFB:", metric: 0, score: 0, weight: 0.3, min: 0, desc: "Additional penalty for SFBs on the ring finger"}
 var scissors_data = {label: "Scissors:", metric: 0, score: 0, weight: 0.8, min: 0, desc: "Two letters on the same hand, two rows between them, on adjacent fingers"}
 var prscissors_data = {label: "PRScissor:", metric: 0, score: 0, weight: 0.8, min: 0.2, desc: "Two letters typed with the ring and pinky with at least one row between them"}
 var wscissors_data = {label: "WScissors:", metric: 0, score: 0, weight: 0.5, min: 0.05, desc: "Two letters on the same hand, two rows between them, more than one column between them" }
 var latstr_data = {label: "LSB:", metric: 0, score: 0, weight: 0.5, min: 0.12, desc: "Lateral stretch bigrams"}
-var sfs_data = {label: "SFS:", metric: 0, score: 0, weight: 0.8, min: 0, desc: "Single finger skipgrams"}
+var sfs_data = {label: "SFS:", metric: 0, score: 0, weight: 0.2, min: 0, desc: "Single finger skipgrams (1u)"}
 var vowels_data = {label: "Vowels:", metric: 0, score: 0, weight: 3, min: 0, desc: "Should vowels be on the same side"}
 var hbalance_data = {label: "Hand Bal:", metric: 0, score: 0, weight: 0.7, min: 1, desc: "Hand balance, how much different from 50/50 usage" }
 
@@ -260,6 +262,7 @@ function clicked_run() {
   time_to_shuffle = false;
   editable_keys = [];
   setup = false;
+  running = true;
   run();
 }
 
@@ -398,14 +401,14 @@ function generateGraphs() {
 
   var validIntervals = [100,50,20,10,5,2,1,0.5,0.2,0.1]
   var it=0;
-  while (max_score/validIntervals[it]<5){
+  while (max_score/validIntervals[it] < 5 && it < 9){
     it+=1;
   }
   var tickInterval = validIntervals[it];
   var maxTick = tickInterval * Math.ceil(max_score/tickInterval)
   var tickCount = Math.ceil(max_score/tickInterval)
   var scale = 150 / maxTick;
-  console.log("graph",max_score, tickCount, tickInterval, scale);
+  // console.log("graph",max_score, tickCount, tickInterval, scale);
 
   svg.append("text")
     .attr("class", "y-tick")
@@ -418,7 +421,10 @@ function generateGraphs() {
     .text("Score");
 
   for (let i = 0; i <= tickCount; i++) {
-    var tickValue = i * tickInterval;
+    var tickValue = (i * tickInterval).toString()
+    if (max_score < 1000 && tickValue.length > 3){
+      tickValue = tickValue.substring(0,3)
+    }
     var yPos = yBase - i*tickInterval*scale;
 
     // Tick mark
@@ -540,14 +546,14 @@ function generateGraphs2() {
 
   var validIntervals = [100,50,20,10,5,2,1,0.5,0.2,0.1]
   var it=0;
-  while (max_score/validIntervals[it]<5){
+  while (max_score/validIntervals[it] < 5 && it < 9){
     it+=1;
   }
   var tickInterval = validIntervals[it];
   var maxTick = tickInterval * Math.ceil(max_score/tickInterval)
   var tickCount = Math.ceil(max_score/tickInterval)
   var scale = 150 / maxTick;
-  console.log("graph2",max_score, tickCount, tickInterval, scale);
+  // console.log("graph2",max_score, tickCount, tickInterval, scale);
 
   svg.append("text")
     .attr("class", "y-tick2")
@@ -829,8 +835,8 @@ function generateStats() {
   y = 568
   // infoPanel.append("text").attr("x", x).attr("y", y).attr("fill", "#aaaaaa")
   // .attr("font-size", 20).attr("text-anchor", "left").text(runs);
-  if (iter > 0) {
-    infoPanel.append("text").attr("x", x-50).attr("y", y).attr("fill", "#aaaaaa")
+  if (iter >= 0) {
+    infoPanel.append("text").attr("x", x-55).attr("y", y).attr("fill", "#aaaaaa")
     .attr("font-size", 20).attr("text-anchor", "left").text((100 * (iter+1) / times).toFixed(1) + "%");
   }
   // === SCORES ===
@@ -1274,6 +1280,24 @@ var bestest_score;
 var time_to_shuffle;
 var editable_keys;
 
+function update_progress() {
+  svg.selectAll(".progress").remove();
+  if (running) {
+    var x = 1060;
+    for(var r = 0; r < 360; r += 60){
+    svg.append("rect")
+      .attr("class", "progress")
+      .attr("x", x).attr("y", 562)
+      .attr("width", 10).attr("height", 2)
+      .attr("stroke", "#111111")
+      .attr("fill", "#aaaaaa")
+      .attr("transform","rotate("+(progress+r)+","+(x+15)+",563)")
+    }
+    progress += 21;
+    if (progress > 360) {progress -= 360;}
+  }
+}
+
 function calculateScore(value, weight, min, denom, perc) {
   if (perc==true) {
     value = (100*value)/denom
@@ -1303,7 +1327,6 @@ function run() {
   if (window.Worker) {
     const myWorker = new Worker("worker.js");
 
-    // console.log('Main: Sending data and config to the worker.');
     if (setup == false) {
       start();
       for (let i = 0; i < rcdata.length; i++) {
@@ -1345,7 +1368,6 @@ function run() {
           var uid = create_uid(tmp_keys)
           if (uid_set.has(uid)) {
           } else {
-            uid_set.add(uid)
             messages_sent += 1;
             myWorker.postMessage({
               letter_freq: letter_freq,
@@ -1374,9 +1396,7 @@ function run() {
 
           var uid = create_uid(tmp_keys)
           if (uid_set.has(uid)) {
-            // console.log("skipping "+uid)
           } else {
-            uid_set.add(uid)
             messages_sent += 1;
             myWorker.postMessage({
               letter_freq: letter_freq,
@@ -1394,7 +1414,6 @@ function run() {
       const { result, config } = e.data;
       uid = create_uid(config)
       var score = 0;
-
 
       sfb_data.score = calculateScore(result.sfb, sfb_data.weight, sfb_data.min, input_length, true)
       effort_data.score = calculateScore(result.effort, effort_data.weight, effort_data.min, input_length, false)
@@ -1420,7 +1439,6 @@ function run() {
       score += sfs_data.score
       score += vowels_data.score
       score += hbalance_data.score
-      // m_score = score
 
       results.push({score: score, config: config, result: result, iter: iter})
       if (score < best_score) {
@@ -1431,6 +1449,7 @@ function run() {
       // console.log("sent = "+messages_sent+"  received = "+messages_received);
       if (messages_received == messages_sent) {
         console.log(iter + " best result: "+best_score);
+        update_progress();
         if (found_new_result) {
           run();
         } else {
@@ -1444,6 +1463,8 @@ function run() {
             }
           }
           rcdata = best_config
+          var uid = create_uid(rcdata)
+          uid_set.add(uid)
           best_results.push({config: best_config, score: best_score, result: best_result, iter: iter})
           results = [];
 
@@ -1492,6 +1513,8 @@ function run() {
           if (iter+1 < times) {
             // console.log("=== "+(times-iter)+" ===")
             run();
+          } else {
+            running = false;
           }
         }
       }
