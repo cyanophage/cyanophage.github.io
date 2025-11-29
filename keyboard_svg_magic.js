@@ -1142,7 +1142,7 @@ function generateLayout() {
 
   let errorTooltip = ""
   for (let key in errors) {
-    errorTooltip += key
+    errorTooltip += key+",  "
   }
   // console.log(errorTooltip)
   if (errorTooltip.length > 0){
@@ -1548,15 +1548,19 @@ function measureWords() {
         r = getRow(char);
         c = getCol(char);
         if (r < 0 && c < 0){
-          if (char == "'"){
-            key = "Layout does not contain \\"+char
+          if (char == "=" || char == "*"){
+            break
           } else {
-            key = "Layout does not contain "+char
+            if (char == "'") {
+              key = "Layout does not contain \\"+char
+            } else {
+              key = "Layout does not contain \\\""+char+"\\\""
+            }
+            if (!errors[key]) {
+              errors[key] = 0;
+            }
+            errors[key] += 1;
           }
-          if (!errors[key]) {
-            errors[key] = 0;
-          }
-          errors[key] += 1;
           break
         }
         // console.log(word + "  " + modded_word + "  "+char + " row = "+r+" col = "+c)
