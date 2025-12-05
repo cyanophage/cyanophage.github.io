@@ -1474,8 +1474,8 @@ function measureWords() {
           }
           m_scissors[bigram] += count;
         }
-        // all 2u scissors
-        if (Math.abs(row-prevrow) >= 2 && ((finger <= 4 && prevfinger <= 4)||(finger >=7 && prevfinger>=7))) {
+        // all 2u scissors wide scissors
+        if (Math.abs(row-prevrow) >= 2 && Math.abs(col-prevcol)>=1 && ((finger <= 4 && prevfinger <= 4)||(finger >=7 && prevfinger>=7))) {
           if (!m_all_scissors[bigram]) {
             m_all_scissors[bigram] = 0;
           }
@@ -2012,7 +2012,7 @@ function generatePlots() {
     for (var bigram in tmp) {
       sum += tmp[bigram] / m_input_length;
     }
-    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("All 2u row jumps " + parseFloat(100 * sum).toFixed(2) + "%")
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Wide Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
   }
   stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle(-1)")
