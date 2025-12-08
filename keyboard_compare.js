@@ -2197,7 +2197,7 @@ function generatePlots() {
   y = 500;
   sum = 0;
 
-  if (scissors_toggle == 0) {
+  if (scissors_toggle == 1) {
     var keyValueArray = Object.entries(m_pinky_scissors[side]);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -2205,7 +2205,7 @@ function generatePlots() {
       sum += tmp[bigram] / m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
-  } else if (scissors_toggle == 1){
+  } else if (scissors_toggle == 0){
     var keyValueArray = Object.entries(m_scissors[side]);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -2220,7 +2220,7 @@ function generatePlots() {
     for (var bigram in tmp) {
       sum += tmp[bigram] / m_input_length;
     }
-    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("All 2u row jumps " + parseFloat(100 * sum).toFixed(2) + "%")
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Wide scissors " + parseFloat(100 * sum).toFixed(2) + "%")
   }
   stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle(-1)")
