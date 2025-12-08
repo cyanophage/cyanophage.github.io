@@ -1429,8 +1429,8 @@ function updateRcData(lan) {
 
 function measureWords(side) {
   if (dataloaded == false || dictionaryloaded == false || effortloaded == false) {return;}
-  console.log("measureWords "+side);
   if (!needs_update[side]){return;}
+  console.log("measureWords "+side);
   m_column_usage[side] = {};
   m_finger_usage[side] = {};
   m_finger_distance[side] = {};
@@ -1469,7 +1469,7 @@ function measureWords(side) {
   var m_effort_per_word = {};
   var word_count = 0
   for (var word in words) {
-    if (word_count > 20000){break;}
+    if (word_count > 40000){break;}
     word_count += 1
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
     var count = words[word];
