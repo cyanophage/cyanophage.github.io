@@ -131,8 +131,7 @@ async function loadAllData() {
   }
 }
 
-function selectLanguage(lan) {
-  document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+function selectLanguage(lan,event) {
   lang = lan
   var queryParams = new URLSearchParams(window.location.search);
   queryParams.set("lan",lang)
@@ -144,15 +143,29 @@ function selectLanguage(lan) {
     dataloaded = true;
     needs_update = true;
     loadAllData();
+    document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
     return;
   }
 
   var word_list = 'words-'+lan+'.json';
   console.log("============ "+lan.toUpperCase()+" ============")
   fetch(word_list)
-    .then(response => response.json())
-    .then(data => {
-      words = data; // Assign data to the global variable
+  .then(response => response.json())
+  .then(data => {
+      if (event.ctrlKey){
+        console.log("adding "+lan+" to words")
+        for (var word in data) {
+          if (words[word]){
+            words[word] += data[word]
+          } else {
+            words[word] = data[word]
+          }
+        }
+        document.getElementById("langDropDown").innerHTML += ("+"+lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase());
+      } else {
+        words = data; // Assign data to the global variable
+        document.getElementById("langDropDown").innerHTML = lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+      }
       needs_update = true;
       console.log("fetchData");
       dataloaded = true;
