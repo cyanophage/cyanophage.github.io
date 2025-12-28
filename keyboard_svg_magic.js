@@ -365,7 +365,7 @@ function closeComboPopup() {
   document.getElementById('comboPopup').style.display = 'none';
   comboTypeTable = {}
   comboReplaceTable = {}
-  for (var i = 0; i <= 9; i++) {
+  for (var i = 0; i <= 12; i++) {
     var typename = "comboType-" + i
     var typeString = document.getElementById(typename).value;
     var replacename = "comboReplace-" + i
