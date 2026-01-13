@@ -109,7 +109,7 @@ async function loadAllData() {
           fetch(effort_url).then(response => response.json())
       ]);
 
-      // Assign the data to your global variables
+      // Assign the data to your global variables!
       words = wordsData;
       dictionary = dictionaryData.dictionary || [];
       bigram_effort = effortData;
