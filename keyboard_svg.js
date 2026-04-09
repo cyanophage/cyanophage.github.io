@@ -236,6 +236,8 @@ const getRow = letter => row_map[letter] ?? -1;
 const char_map = {}; // Fast char lookup
 for (let i = 0; i < rcdata_len; i++) {
   // (row * w + col) is unique per character
+  row = rcdata[i][1]
+  column = rcdata[i][2]
   char_map[row * w + column] = rcdata[i][0];
 }
 const getChar = (row,col) => char_map[row * w + column] ?? "!";
