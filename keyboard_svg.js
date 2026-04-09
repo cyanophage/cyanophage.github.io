@@ -6,16 +6,17 @@ var url_layout = params.layout;
 
 var swidth = 1000;
 var sheight = 180;
-var w = 38; // seems to be const?
+const w = 38;
 const inv_w = 1.0 / 38
-var gap = 8;
+const gap = 8;
 var letter = "";
 var x = 0;
 var y = 0;
 var dx;
 var fontsize;
 var per;
-var max = 11.870939;
+const default_max = 11.870939;
+const inv_default_max = 1.0 / default_max;
 var red = 0;
 var scroll_amount = 0;
 var hw_scroll_amount = 0;
@@ -991,7 +992,7 @@ function generateLayout() {
     y = rcdata[i][4];
     per = rcdata[i][3];
     keywidth = rcdata[i][6];
-    red = Math.floor(127 * per / max) + 128
+    red = Math.floor(127 * per * inv_default_max) + 128
     if (red < 16) {  red = 16; }
     if (red > 255) { red = 255;}
     hex_red = red.toString(16);
@@ -1024,7 +1025,7 @@ function generateLayout() {
   }
   svg.append("text").attr("x", 640).attr("y", 135).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Total Word Effort "+(m_total_word_effort/100.0).toFixed(1))
   // effort text
-  svg.append("text").attr("x", 640).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort "+(577*m_effort/m_input_length).toFixed(2))
+  svg.append("text").attr("x", 640).attr("y", 165).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Effort " + (577 * m_effort * inv_m_input_length).toFixed(2))
   // edit button
   svg.append("rect").attr("x", 760).attr("y", 147).attr("width", 40).attr("height", 25).attr("rx",0).attr("ry",0)
   .attr("fill","#777777").attr("stroke","black").attr("stroke-width","1").attr("onclick", "openPopup()")
@@ -1087,6 +1088,7 @@ var m_trigram_count_roll_in = {};
 var m_trigram_count_roll_out = {};
 var m_pinky_off = 0;
 var m_input_length = 0;
+var inv_m_input_length = 1;
 var m_effort = 0;
 var m_total_word_effort = 0;
 // var m_simple_effort = {};
@@ -1181,7 +1183,7 @@ function measureDictionary() {
     if (isNaN(total)){
       console.log(word + " gives NaN for effort")
     }
-    word_effort[word] = total/10;
+    word_effort[word] = 0.1 * total;
   }
 }
 
@@ -1661,17 +1663,19 @@ function measureWords() {
     }
     samehandcount[samehand.length] += count
   }
-  var scale = 1006393/m_input_length;
+  inv_m_input_length = 1.0 / m_input_length;
+  var scale = 1006393 * inv_m_input_length;
   m_total_word_effort *= scale;
   // console.log("word count "+word_count)
   var sum = 0;
   for (var letter in m_letter_freq) {
     sum += m_letter_freq[letter]
   }
+  const hundred_inv_sum = 100.0 / sum;
   for (var letter in m_letter_freq) {
     for (let i = 0; i < rcdata_len; i++) {
       if (rcdata[i][0] == letter) {
-        rcdata[i][3] = 100 * m_letter_freq[letter] / sum
+        rcdata[i][3] = hundred_inv_sum * m_letter_freq[letter]
       }
     }
   }
@@ -1686,14 +1690,15 @@ function generatePlots() {
   var x = 500;
   var y = 0;
   stats.append("text").attr("x", x + 40).attr("y", 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Column Usage")
-  var sum = 0;
+  var sum_col_usage = 0;
   for (var col in m_column_usage) {
-    sum += m_column_usage[col];
+    sum_col_usage += m_column_usage[col];
   }
+  const inv_sum_col_usage = 1.0 / sum_col_usage;
   for (var col in m_column_usage) {
-    var height = 300 * m_column_usage[col] / sum;
-    var tip = parseFloat(100 * m_column_usage[col] / sum).toFixed(2);
-    var red = Math.floor(275 * m_column_usage[col] / sum) + 128
+    var height = 300 * m_column_usage[col] * inv_sum_col_usage;
+    var tip = parseFloat(100 * m_column_usage[col] * inv_sum_col_usage).toFixed(2);
+    var red = Math.floor(275 * m_column_usage[col] * inv_sum_col_usage) + 128
     var green = 128;
     if (red < 16) { red = 16; }
     if (red > 255) { red = 255; }
@@ -1711,14 +1716,15 @@ function generatePlots() {
   var x = 770;
   var y = 0;
   stats.append("text").attr("x", x + 40).attr("y", 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Row Usage")
-  var sum = 0;
+  var sum_row_usage = 0;
   for (var row in m_row_usage) {
-    sum += m_row_usage[row];
+    sum_row_usage += m_row_usage[row];
   }
+  const inv_sum_row_usage = 1.0 / sum_row_usage;
   for (var row in m_row_usage) {
-    var height = 200 * m_row_usage[row] / sum;
-    var tip = parseFloat(100 * m_row_usage[row] / sum).toFixed(2);
-    var red = Math.floor(190 * m_row_usage[row] / sum) + 128
+    var height = 200 * m_row_usage[row] * inv_sum_row_usage;
+    var tip = parseFloat(100 * m_row_usage[row] * inv_sum_row_usage).toFixed(2);
+    var red = Math.floor(190 * m_row_usage[row] * inv_sum_row_usage) + 128
     var green = 128;
     if (red < 16) { red = 16; }
     if (red > 255) { red = 255; }
@@ -1747,10 +1753,12 @@ function generatePlots() {
       right += m_finger_usage[finger];
     }
   }
+  var inv_sum = 1.0 / sum;
   for (var finger in m_finger_usage) {
-    var height = 300 * m_finger_usage[finger] / sum;
-    var tip = parseFloat(100 * m_finger_usage[finger] / sum).toFixed(2);
-    var red = Math.floor(275 * m_finger_usage[finger] / sum) + 128
+    var norm_finger_usage = m_finger_usage[finger] * inv_sum
+    var height = 300 * norm_finger_usage;
+    var tip = parseFloat(100 * norm_finger_usage).toFixed(2);
+    var red = Math.floor(275 * norm_finger_usage) + 128
     var green = 128;
     if (red < 16) { red = 16; }
     if (red > 255) { red = 255; }
@@ -1762,12 +1770,12 @@ function generatePlots() {
     stats.append("text").attr("x", x + finger * 20 + 7).attr("y", 111).attr("fill", "#dfe2eb").attr("font-size", 10)
       .attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(finger)
   }
-  stats.append("text").attr("x", x + 57).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * left / sum).toFixed(2) + "%");
-  stats.append("text").attr("x", x + 177).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * right / sum).toFixed(2) + "%");
+  stats.append("text").attr("x", x + 57).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * left * inv_sum).toFixed(2) + "%");
+  stats.append("text").attr("x", x + 177).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * right * inv_sum).toFixed(2) + "%");
   ///////////////////////////////////////   F I N G E R   D I S T A N C E   //////////////////////////////////
   var x = 250;
   var y = 0;
-  var max = m_input_length / 5.110882176;
+  var max = m_input_length / 5.110882176;  // this might be shadowing 'max' above
   sum = 0
   left = 0;
   right = 0;
@@ -1780,13 +1788,15 @@ function generatePlots() {
       right += m_finger_distance[finger];
     }
   }
-
+  var inv_max = 1.0 / max;
+  inv_sum = 1.0 / sum;
   stats.append("text").attr("x", x + 40).attr("y", 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Finger Distance")
   for (var finger in m_finger_distance) {
     if (m_finger_distance[finger] > 0) {
-    var height = 75 * m_finger_distance[finger] / max;
-    var tip = parseFloat(100 * m_finger_distance[finger] / max).toFixed(2);
-    var red = Math.floor(128 * m_finger_distance[finger] / max) + 128
+    var norm_finger_distance = m_finger_distance[finger] * inv_max;
+    var height = 75 * norm_finger_distance;
+    var tip = parseFloat(100 * norm_finger_distance).toFixed(2);
+    var red = Math.floor(128 * norm_finger_distance) + 128
     var green = 128;
     if (red < 16) { red = 16; }
     if (red > 255) { red = 255; }
@@ -1799,9 +1809,9 @@ function generatePlots() {
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     }
   }
-  stats.append("text").attr("x", x + 57).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * left / sum).toFixed(2) + "%");
-  stats.append("text").attr("x", x + 177).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * right / sum).toFixed(2) + "%");
-  stats.append("text").attr("x", x + 117).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * sum/max).toFixed(1));
+  stats.append("text").attr("x", x + 57).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * left * inv_sum).toFixed(2) + "%");
+  stats.append("text").attr("x", x + 177).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * right * inv_sum).toFixed(2) + "%");
+  stats.append("text").attr("x", x + 117).attr("y", 124).attr("fill", "#dfe2eb").attr("font-size", 11).attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(parseFloat(100 * sum * inv_max).toFixed(1));
   // (100*sum/max).toFixed(1)
   ///////////////////////////////////   S A M E   F I N G E R   B I G R A M S    ///////////////////////////////
   var x = 0;
@@ -1823,7 +1833,7 @@ function generatePlots() {
     m_same_finger = Object.fromEntries(keyValueArray);
 
     for (var bigram in m_same_finger) {
-      sum += m_same_finger[bigram] / m_input_length;
+      sum += m_same_finger[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
     // stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
@@ -1835,26 +1845,26 @@ function generatePlots() {
         t -= 1;
         continue;
       }
-      var width = 18000 * m_same_finger[bigram] / m_input_length;
+      var width = 18000 * m_same_finger[bigram] * inv_m_input_length;
       if (width > 200) { width = 200; }
       stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] / m_input_length)).toFixed(2) + "%");
+      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] * inv_m_input_length)).toFixed(2) + "%");
       //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
       i += 1;
       if (i > 10) { break; }
     }
   } else if(sfb_toggle == 1){
     for (var finger in m_same_finger2) {
-      sum += m_same_finger2[finger] / m_input_length;
+      sum += m_same_finger2[finger] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial")
        .attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
     for (var finger in m_same_finger2) {
-      var height = 30000 * m_same_finger2[finger] / m_input_length;
+      var height = 30000 * m_same_finger2[finger] * inv_m_input_length;
       if (height > 150) { height = 150;}
-      var tip = parseFloat(100 * m_same_finger2[finger] / m_input_length).toFixed(2);
-      var red = Math.floor(6000 * m_same_finger2[finger] / m_input_length) + 128
+      var tip = parseFloat(100 * m_same_finger2[finger] * inv_m_input_length).toFixed(2);
+      var red = Math.floor(6000 * m_same_finger2[finger] * inv_m_input_length) + 128
       var green = 128;
       if (red < 16) { red = 16; }
       if (red > 255) { red = 255; }
@@ -1874,7 +1884,7 @@ function generatePlots() {
     m_same_finger3 = Object.fromEntries(keyValueArray);
 
     for (var bigram in m_same_finger3) {
-      sum += m_same_finger3[bigram] / m_input_length;
+      sum += m_same_finger3[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("2u Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
     // stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
@@ -1886,11 +1896,11 @@ function generatePlots() {
         t -= 1;
         continue;
       }
-      var width = 18000 * m_same_finger3[bigram] / m_input_length;
+      var width = 18000 * m_same_finger3[bigram] * inv_m_input_length;
       if (width > 200) { width = 200; }
       stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger3[bigram] / m_input_length)).toFixed(2) + "%");
+      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger3[bigram] * inv_m_input_length)).toFixed(2) + "%");
       //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
       i += 1;
       if (i > 10) { break; }
@@ -1907,7 +1917,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var bigram in tmp) {
-      sum += tmp[bigram] / m_input_length;
+      sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
   } else {
@@ -1915,7 +1925,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var bigram in tmp) {
-      sum += tmp[bigram] / m_input_length;
+      sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams (2u) " + parseFloat(100 * sum).toFixed(2) + "%")
   }
@@ -1934,12 +1944,12 @@ function generatePlots() {
       t -= 1;
       continue;
     }
-    var height = 36000 * tmp[bigram] / m_input_length;
+    var height = 36000 * tmp[bigram] * inv_m_input_length;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 17).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] * inv_m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -1953,7 +1963,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var bigram in tmp) {
-      sum += tmp[bigram] / m_input_length;
+      sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
   } else {
@@ -1961,7 +1971,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var bigram in tmp) {
-      sum += tmp[bigram] / m_input_length;
+      sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Ring LSBs " + parseFloat(100 * sum).toFixed(2) + "%")
   }
@@ -1980,12 +1990,12 @@ function generatePlots() {
       t -= 1;
       continue;
     }
-    var height = 10000 * tmp[bigram] / m_input_length;
+    var height = 10000 * tmp[bigram] * inv_m_input_length;
     if (height > 200) { height = 200; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] * inv_m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -2000,7 +2010,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var bigram in tmp) {
-      sum += tmp[bigram] / m_input_length;
+      sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
   } else if (scissors_toggle == 0){
@@ -2008,7 +2018,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var bigram in tmp) {
-      sum += tmp[bigram] / m_input_length;
+      sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
   } else {
@@ -2016,7 +2026,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
     for (var bigram in tmp) {
-      sum += tmp[bigram] / m_input_length;
+      sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Wide Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
   }
@@ -2034,12 +2044,12 @@ function generatePlots() {
       t -= 1;
       continue;
     }
-    var height = 36000 * tmp[bigram] / m_input_length;
+    var height = 36000 * tmp[bigram] * inv_m_input_length;
     if (height > 180) { height = 180; }
     stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] / m_input_length)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] * inv_m_input_length)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -2135,18 +2145,20 @@ function generatePlots() {
 
   var i = 0
   var t = trigram_scroll_amount;
+  inv_sum = 1.0 / sum;
   for (var cat in tmp) {
     if (t > 0){
       t -= 1;
       continue;
     }
-    var width = scale * 200 * tmp[cat] / sum;
+    var tmp_cat_inv_sum = tmp[cat] * inv_sum;
+    var width = scale * 200 * tmp_cat_inv_sum;
     if (width > 200) { width = 200; }
     stats.append("rect").attr("x", x + dx).attr("y", y + i * 15).attr("width", width).attr("height", 10)
       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       .attr("onmouseover","showTooltip(evt,'"+trigram_desc[cat]+"')").attr("onmouseout","hideTooltip()")
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 9).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(cat);
-    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[cat] / sum)).toFixed(2) + "%");
+    stats.append("text").attr("x", x + 190).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp_cat_inv_sum)).toFixed(2) + "%");
     //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
     i += 1;
     if (i > 10) { break; }
@@ -2161,7 +2173,7 @@ function generatePlots() {
   keyValueArray.sort((a, b) => b[1]*b[0].length - a[1]*a[0].length);
   samehandstrings = Object.fromEntries(keyValueArray);
 
-  scale = 30191.79 / m_input_length
+  scale = 30191.79 * inv_m_input_length
   // console.log("input length: "+m_input_length)
   // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings")
@@ -2193,7 +2205,7 @@ function generatePlots() {
   // var keyValueArray = Object.entries(samehandcount);
   // keyValueArray.sort((a, b) => b - a);
   // samehandcount = Object.fromEntries(keyValueArray);
-  scale = 140.89502 / m_input_length
+  scale = 140.89502 * inv_m_input_length
   // console.log("input length: "+m_input_length)
   // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Count")
