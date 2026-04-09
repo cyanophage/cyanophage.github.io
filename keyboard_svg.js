@@ -8,6 +8,8 @@ var swidth = 1000;
 var sheight = 180;
 const w = 38;
 const inv_w = 1.0 / 38
+const nb_row = 3;
+const nb_columns = 12;
 const gap = 8;
 var letter = "";
 var x = 0;
@@ -140,7 +142,7 @@ function selectLanguage(lan, event) {
   .then(data => {
       if (event && event.ctrlKey){
         console.log("adding "+lan+" to words")
-        for (var word in data) {
+        for (let word in data) {
           if (words[word]){
             words[word] += data[word]
           } else {
@@ -283,8 +285,8 @@ var effort = [
 // 2  \  z  x  c  v  b  n  m  ,  .  /
 
 function openPopup() {
-  for (var row = 0; row < 3; row++){
-    for (var col = 0; col < 12; col++){
+  for (let row = 0; row < nb_row; row++){
+    for (let col = 0; col < nb_columns; col++){
       var name = "textInput-" + row + "-" + col
       document.getElementById(name).value = effort[row][col];
     }
@@ -438,8 +440,8 @@ function closeCorpusPopup() {
 }
 
 function closePopup() {
-  for (var row = 0; row < 3; row++){
-    for (var col = 0; col < 12; col++){
+  for (let row = 0; row < nb_row; row++){
+    for (let col = 0; col < nb_columns; col++){
       var name = "textInput-" + row + "-" + col
       effort[row][col] = document.getElementById(name).value;
     }
@@ -452,9 +454,9 @@ function closePopup() {
 
 function copyEffortGridToClipboard() {
   values = []
-  for (var row = 0; row < 3; row++){
-    for (var col = 0; col < 12; col++){
-      var name = "textInput-" + row + "-" + col
+  for (let row = 0; row < 3; row++){
+    for (let col = 0; col < 12; col++){
+      const name = "textInput-" + row + "-" + col
       values.push(document.getElementById(name).value);
     }
   }
@@ -489,9 +491,9 @@ function pasteEffortGridFromClipboard() {
       return
     }
 
-    for (var row = 0; row < 3; row++){
-      for (var col = 0; col < 12; col++){
-        var name = "textInput-" + row + "-" + col
+    for (let row = 0; row < 3; row++){
+      for (let col = 0; col < 12; col++){
+        const name = "textInput-" + row + "-" + col
         document.getElementById(name).value = numbersArray[row * 12 + col]
       }
     }
@@ -1190,7 +1192,7 @@ function measureDictionary() {
 function getDictionaryFromWords() {
   console.log("getDictionaryFromWords");
   dictionary = [];
-  for (var word in words) {
+  for (let word in words) {
     if (words[word] > 100) {
       dictionary.push(word);
     }
@@ -1199,7 +1201,7 @@ function getDictionaryFromWords() {
 
 function getIndexOfKey(name){
   var x = -1;
-  for (var i = 0; i < 34; i++) {
+  for (let i = 0; i < 34; i++) {
     if (rcdata[i][7] == name) {
       x = i;
     }
@@ -1210,12 +1212,12 @@ function getIndexOfKey(name){
 function updateRcData(lan) {
   // what are the 33 letters ?
   var letters = []
-  for (var word in words) {
+  for (let word in words) {
     if (letters.length>=32){
       break;
     }
     var wordLetters = word.split(""); // Split the word into individual letters
-    for (var i = 0; i < wordLetters.length; i++) {
+    for (let i = 0; i < wordLetters.length; i++) {
       if (letters.indexOf(wordLetters[i]) === -1) {
         letters.push(wordLetters[i]); // Add letter to the list if not already present
       }
@@ -1361,11 +1363,11 @@ function measureWords() {
   var m_effort_per_letter = {};
   var m_effort_per_word = {};
   var word_count = 0
-  for (var word in words) {
+  for (let word in words) {
     if (word_count > 40000){break;}
     word_count += 1
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
-    var count = words[word];
+    const count = words[word];
     word_len = word.length // Compute once
     m_input_length += count * (word_len + 1);
 
@@ -1668,11 +1670,11 @@ function measureWords() {
   m_total_word_effort *= scale;
   // console.log("word count "+word_count)
   var sum = 0;
-  for (var letter in m_letter_freq) {
+  for (let letter in m_letter_freq) {
     sum += m_letter_freq[letter]
   }
   const hundred_inv_sum = 100.0 / sum;
-  for (var letter in m_letter_freq) {
+  for (let letter in m_letter_freq) {
     for (let i = 0; i < rcdata_len; i++) {
       if (rcdata[i][0] == letter) {
         rcdata[i][3] = hundred_inv_sum * m_letter_freq[letter]
@@ -1691,11 +1693,11 @@ function generatePlots() {
   var y = 0;
   stats.append("text").attr("x", x + 40).attr("y", 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Column Usage")
   var sum_col_usage = 0;
-  for (var col in m_column_usage) {
+  for (let col in m_column_usage) {
     sum_col_usage += m_column_usage[col];
   }
   const inv_sum_col_usage = 1.0 / sum_col_usage;
-  for (var col in m_column_usage) {
+  for (let col in m_column_usage) {
     var height = 300 * m_column_usage[col] * inv_sum_col_usage;
     var tip = parseFloat(100 * m_column_usage[col] * inv_sum_col_usage).toFixed(2);
     var red = Math.floor(275 * m_column_usage[col] * inv_sum_col_usage) + 128
@@ -1717,11 +1719,11 @@ function generatePlots() {
   var y = 0;
   stats.append("text").attr("x", x + 40).attr("y", 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Row Usage")
   var sum_row_usage = 0;
-  for (var row in m_row_usage) {
+  for (let row in m_row_usage) {
     sum_row_usage += m_row_usage[row];
   }
   const inv_sum_row_usage = 1.0 / sum_row_usage;
-  for (var row in m_row_usage) {
+  for (let row in m_row_usage) {
     var height = 200 * m_row_usage[row] * inv_sum_row_usage;
     var tip = parseFloat(100 * m_row_usage[row] * inv_sum_row_usage).toFixed(2);
     var red = Math.floor(190 * m_row_usage[row] * inv_sum_row_usage) + 128
@@ -1744,7 +1746,7 @@ function generatePlots() {
   var sum = 0;
   var left = 0;
   var right = 0;
-  for (var finger in m_finger_usage) {
+  for (let finger in m_finger_usage) {
     sum += m_finger_usage[finger];
     if (finger <= 4) {
       left += m_finger_usage[finger];
@@ -1754,7 +1756,7 @@ function generatePlots() {
     }
   }
   var inv_sum = 1.0 / sum;
-  for (var finger in m_finger_usage) {
+  for (let finger in m_finger_usage) {
     var norm_finger_usage = m_finger_usage[finger] * inv_sum
     var height = 300 * norm_finger_usage;
     var tip = parseFloat(100 * norm_finger_usage).toFixed(2);
@@ -1779,7 +1781,7 @@ function generatePlots() {
   sum = 0
   left = 0;
   right = 0;
-  for (var finger in m_finger_distance) {
+  for (let finger in m_finger_distance) {
     sum += m_finger_distance[finger];
     if (finger <= 4) {
       left += m_finger_distance[finger];
@@ -1791,7 +1793,7 @@ function generatePlots() {
   var inv_max = 1.0 / max;
   inv_sum = 1.0 / sum;
   stats.append("text").attr("x", x + 40).attr("y", 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Finger Distance")
-  for (var finger in m_finger_distance) {
+  for (let finger in m_finger_distance) {
     if (m_finger_distance[finger] > 0) {
     var norm_finger_distance = m_finger_distance[finger] * inv_max;
     var height = 75 * norm_finger_distance;
@@ -1832,7 +1834,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     m_same_finger = Object.fromEntries(keyValueArray);
 
-    for (var bigram in m_same_finger) {
+    for (let bigram in m_same_finger) {
       sum += m_same_finger[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -1840,7 +1842,7 @@ function generatePlots() {
 
     var i = 0;
     var t = scroll_amount;
-    for (var bigram in m_same_finger) {
+    for (let bigram in m_same_finger) {
       if (t > 0){
         t -= 1;
         continue;
@@ -1855,12 +1857,12 @@ function generatePlots() {
       if (i > 10) { break; }
     }
   } else if(sfb_toggle == 1){
-    for (var finger in m_same_finger2) {
+    for (let finger in m_same_finger2) {
       sum += m_same_finger2[finger] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial")
        .attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
-    for (var finger in m_same_finger2) {
+    for (let finger in m_same_finger2) {
       var height = 30000 * m_same_finger2[finger] * inv_m_input_length;
       if (height > 150) { height = 150;}
       var tip = parseFloat(100 * m_same_finger2[finger] * inv_m_input_length).toFixed(2);
@@ -1883,7 +1885,7 @@ function generatePlots() {
     keyValueArray.sort((a, b) => b[1] - a[1]);
     m_same_finger3 = Object.fromEntries(keyValueArray);
 
-    for (var bigram in m_same_finger3) {
+    for (let bigram in m_same_finger3) {
       sum += m_same_finger3[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("2u Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -1891,7 +1893,7 @@ function generatePlots() {
 
     var i = 0;
     var t = scroll_amount;
-    for (var bigram in m_same_finger3) {
+    for (let bigram in m_same_finger3) {
       if (t > 0){
         t -= 1;
         continue;
@@ -1916,7 +1918,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_skip_bigram);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var bigram in tmp) {
+    for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -1924,7 +1926,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_skip_bigram2);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var bigram in tmp) {
+    for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams (2u) " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -1939,7 +1941,7 @@ function generatePlots() {
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   var i = 0;
   var t = scroll_amount;
-  for (var bigram in tmp) {
+  for (let bigram in tmp) {
     if (t > 0){
       t -= 1;
       continue;
@@ -1962,7 +1964,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_lat_stretch);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var bigram in tmp) {
+    for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -1970,7 +1972,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_lat_stretch2);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var bigram in tmp) {
+    for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Ring LSBs " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -1985,7 +1987,7 @@ function generatePlots() {
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   var i = 0;
   var t = scroll_amount;
-  for (var bigram in tmp) {
+  for (let bigram in tmp) {
     if (t > 0){
       t -= 1;
       continue;
@@ -2009,7 +2011,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_pinky_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var bigram in tmp) {
+    for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -2017,7 +2019,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var bigram in tmp) {
+    for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -2025,7 +2027,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_all_scissors);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var bigram in tmp) {
+    for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Wide Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
@@ -2039,7 +2041,7 @@ function generatePlots() {
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   var i = 0;
   var t = scroll_amount;
-  for (var bigram in tmp) {
+  for (let bigram in tmp) {
     if (t > 0){
       t -= 1;
       continue;
@@ -2066,7 +2068,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_trigram_count);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var cat in tmp) {
+    for (let cat in tmp) {
       sum += tmp[cat]
     }
     trigram_title = "Trigram Stats"
@@ -2076,7 +2078,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_trigram_count_alt);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var cat in tmp) {
+    for (let cat in tmp) {
       sum += tmp[cat]
     }
     trigram_title = "Trigram Stats (alts)"
@@ -2086,7 +2088,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_trigram_count_red);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var cat in tmp) {
+    for (let cat in tmp) {
       sum += tmp[cat]
     }
     trigram_title = "Trigram Stats (redirects)"
@@ -2096,7 +2098,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_trigram_count_roll_in);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var cat in tmp) {
+    for (let cat in tmp) {
       sum += tmp[cat]
     }
     trigram_title = "Trigram Stats (roll in)"
@@ -2106,7 +2108,7 @@ function generatePlots() {
     var keyValueArray = Object.entries(m_trigram_count_roll_out);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
-    for (var cat in tmp) {
+    for (let cat in tmp) {
       sum += tmp[cat]
     }
     trigram_title = "Trigram Stats (roll out)"
@@ -2146,7 +2148,7 @@ function generatePlots() {
   var i = 0
   var t = trigram_scroll_amount;
   inv_sum = 1.0 / sum;
-  for (var cat in tmp) {
+  for (let cat in tmp) {
     if (t > 0){
       t -= 1;
       continue;
@@ -2179,7 +2181,7 @@ function generatePlots() {
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Strings")
   var i = 0
   t = sh_scroll_amount;
-  for (var word in samehandstrings) {
+  for (let word in samehandstrings) {
     if (t > 0){
       t -= 1;
       continue;
@@ -2210,7 +2212,7 @@ function generatePlots() {
   // console.log("scale       : "+scale)
   stats.append("text").attr("x", x + 20).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Hand Count")
   var i = 0
-  for (var len in samehandcount) {
+  for (let len in samehandcount) {
     var count = samehandcount[len];
     var width = scale * count;
     if (width > 100) {width = 100;}
@@ -2232,7 +2234,7 @@ function generatePlots() {
   stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Hard Words ")
   var i = 0
   t = hw_scroll_amount;
-  for (var word in word_effort) {
+  for (let word in word_effort) {
     word_len = word.length
     if (word_len > 3 && words[word] > 4){
       if (t > 0){
