@@ -6,8 +6,9 @@ var url_layout = params.layout;
 
 var swidth = 1000;
 var sheight = 180;
-var w = 38; // seems to be const?
-const inv_w = 1.0 / 38
+
+var w = 38;
+const inv_w = 1.0 / 38;
 var gap = 8;
 var letter = "";
 var x = 0;
@@ -220,27 +221,6 @@ var rcdata = [
   ["space", 3, 7, 0, 0, 0, 1, 39],
 ]
 const rcdata_len = rcdata.length // Compute once
-
-const column_map = {}; // Fast column lookup
-for (let i = 0; i < rcdata_len; i++) {
-  column_map[rcdata[i][0]] = rcdata[i][2];
-}
-const getCol = letter => column_map[letter] ?? -1;
-
-const row_map = {}; // Fast row lookup
-for (let i = 0; i < rcdata_len; i++) {
-  row_map[rcdata[i][0]] = rcdata[i][1];
-}
-const getRow = letter => row_map[letter] ?? -1;
-
-const char_map = {}; // Fast char lookup
-for (let i = 0; i < rcdata_len; i++) {
-  // (row * w + col) is unique per character
-  row = rcdata[i][1]
-  column = rcdata[i][2]
-  char_map[row * w + column] = rcdata[i][0];
-}
-const getChar = (row,col) => char_map[row * w + column] ?? "!";
 
 var effort = [
   [
@@ -852,21 +832,20 @@ function importLayout(layout) {
 function exportLayout() {
   var str = "";
   for (let i = 0; i <= 32; i++) {
-    str += rcdata[i][0]
+    str += rcdata[i][0];
   }
 
-  maybe_space = rcdata[33][0]
+  maybe_space = rcdata[33][0];
   if (maybe_space == "space"){
     str += "space";
-    thumb = "r"
+    thumb = "r";
   } else {
-    thumb = "l"
-    str += maybe_space
+    thumb = "l";
+    str += maybe_space;
   }
 
-  ch35 = rcdata[35][0]
-  if (ch35 != "$") {
-    str += ch35;
+  if (rcdata[35][0] != "$") {
+    str += rcdata[35][0];
   }
   return str;
 }
@@ -936,6 +915,32 @@ function getY(name, row, col) {
   return 10 + row * w
 }
 
+function getCol(letter) {
+  for (let i = 0; i < rcdata_len; i++) {
+    if (rcdata[i][0] === letter) {
+      return rcdata[i][2];
+    }
+  }
+  return -1;
+}
+
+function getRow(letter) {
+  for (let i = 0; i < rcdata_len; i++) {
+    if (rcdata[i][0] === letter) {
+      return rcdata[i][1];
+    }
+  }
+  return -1;
+}
+function getChar(row,col) {
+  for (let i = 0; i < rcdata_len; i++) {
+    if (rcdata[i][1] == row && rcdata[i][2] == col) {
+      return rcdata[i][0];
+    }
+  }
+  return "!";
+}
+
 function getFinger(row, col) {
   if (row > 2) {
     if (col <= 4) {
@@ -951,7 +956,7 @@ function getFinger(row, col) {
 function dist(x1, y1, x2, y2) {
   dx = x1 - x2
   dy = y1 - y2
-  return inv_w * Math.sqrt(dx*dx + dy*dy); // pow is slow
+  return Math.sqrt(dx*dx + dy*dy) * inv_w;
 }
 
 function generateCoords() {
@@ -1098,10 +1103,9 @@ function measureDictionary() {
     count += 1;
     total = 0.0;
     word = dictionary[wordi];
-    word_len = word.length // Compute once
     char1 = word.charAt(0);
     samehand = `${char1}`;
-    for (let i = 1; i < word_len; i++) {
+    for (let i = 1; i < word.length; i++) {
       char1 = word.charAt(i-1);
       char2 = word.charAt(i);
       col1 = getCol(char1);
@@ -1119,7 +1123,7 @@ function measureDictionary() {
         }
       }
     }
-    char1 = word.charAt(word_len-1);
+    char1 = word.charAt(word.length-1);
     char2 = "_"
     col1 = getCol(char1);
     row1 = getRow(char1);
@@ -1136,7 +1140,7 @@ function measureDictionary() {
       }
     }
 
-    for (let i = 2; i < word_len; i++) {
+    for (let i = 2; i < word.length; i++) {
       char1 = word.charAt(i-2);
       char2 = word.charAt(i);
       col1 = getCol(char1);
@@ -1154,7 +1158,7 @@ function measureDictionary() {
         }
       }
     }
-    char1 = word.charAt(word_len-2);
+    char1 = word.charAt(word.length-2);
     char2 = "_"
     col1 = getCol(char1);
     row1 = getRow(char1);
@@ -1356,8 +1360,7 @@ function measureWords() {
     word_count += 1
     finger_pos = [[0, 0], [1, 1], [1, 2], [1, 3], [1, 4], [3, 4], [3, 7], [1, 7], [1, 8], [1, 9], [1, 10]];
     var count = words[word];
-    word_len = word.length // Compute once
-    m_input_length += count * (word_len + 1);
+    m_input_length += count * (word.length + 1);
 
     if (word_effort[word]){
       // console.log(word +" "+word_effort[word]);
@@ -1366,7 +1369,7 @@ function measureWords() {
 
     char = word.charAt(0);
     samehand = char
-    for (let i = 0; i < word_len; i++) {
+    for (let i = 0; i < word.length; i++) {
       char = word.charAt(i);
       if (i > 0){prevchar = word.charAt(i-1);}
       // freq //
@@ -2166,13 +2169,11 @@ function generatePlots() {
     }
     var count = samehandstrings[word];
     // console.log(word + " " + count)
-    word_len = word.length
-    var word_len_count = word_len * count;
-    var width = scale * word_len_count;
+    var width = scale * word.length * count;
     if (width > 100) {width = 100;}
     stats.append("rect").attr("x", x + 70).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(word);
-    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_len_count)).toFixed(0));//
+    stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word.length*count)).toFixed(0));//
     i += 1;
     if (i > 10) { break; }
   }
@@ -2213,13 +2214,12 @@ function generatePlots() {
   var i = 0
   t = hw_scroll_amount;
   for (var word in word_effort) {
-    word_len = word.length
-    if (word_len > 3 && words[word] > 4){
+    if (word.length > 3 && words[word] > 4){
       if (t > 0){
         t -= 1;
         continue;
       }
-      var height = 100*word_effort[word] / word_len;
+      var height = 100*word_effort[word]/word.length;
       stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(word);
       stats.append("text").attr("x", x + 165).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
