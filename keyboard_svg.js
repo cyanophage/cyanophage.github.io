@@ -916,9 +916,10 @@ function getY(name, row, col) {
 }
 
 function getCol(letter) {
-  for (let i = 0; i < rcdata.length; i++) {
-    if (rcdata[i][0] === letter) {
-      return rcdata[i][2];
+  for (let i = 0; i < rcdata_len; i++) {
+    const key = rcdata[i];
+    if (key[0] === letter) {
+      return key[2];
     }
   }
   return -1;
@@ -926,16 +927,18 @@ function getCol(letter) {
 
 function getRow(letter) {
   for (let i = 0; i < rcdata_len; i++) {
-    if (rcdata[i][0] === letter) {
-      return rcdata[i][1];
+    const key = rcdata[i];
+    if (key[0] === letter) {
+      return key[1];
     }
   }
   return -1;
 }
 function getChar(row,col) {
   for (let i = 0; i < rcdata_len; i++) {
-    if (rcdata[i][1] == row && rcdata[i][2] == col) {
-      return rcdata[i][0];
+    const key = rcdata[i];
+    if (key[1] == row && key[2] == col) {
+      return key[0];
     }
   }
   return "!";
