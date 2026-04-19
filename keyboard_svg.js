@@ -237,35 +237,35 @@ var effort = [
     1, // column 8 i
     2, // column 9 o
     3, // column 10 p
-    5, // column 11 [
+    5, // column 11 -
   ],
   [
     5, // column 0 ctrl
     1, // column 1 a
     0, // column 2 s
     0, // column 3 d
-    0, // column 4
-    5, // column 5
-    5, // column 6
-    0, // column 7
-    0, // column 8
-    0, // column 9
-    1, // column 10
-    5, // column 11
+    0, // column 4 f
+    5, // column 5 g
+    5, // column 6 h
+    0, // column 7 j
+    0, // column 8 k
+    0, // column 9 l
+    1, // column 10 ;
+    5, // column 11 '
   ],
   [
     7, // column 0
-    3, // column 1
-    2, // column 2
-    2, // column 3
-    1, // column 4
-    8, // column 5
-    8, // column 6
-    1, // column 7
-    2, // column 8
-    2, // column 9
-    3, // column 10
-    7, // column 11
+    3, // column 1 z
+    2, // column 2 x
+    2, // column 3 c
+    1, // column 4 v
+    8, // column 5 b
+    8, // column 6 n
+    1, // column 7 m
+    2, // column 8 ,
+    2, // column 9 .
+    3, // column 10 /
+    7, // column 11 enter
   ],
 ];
 
@@ -504,8 +504,12 @@ function pasteEffortGridFromClipboard() {
 }
 
 function getEffort(row, column){
-  if (row == -1 || column == -1) { return 0; }
-  return effort[row][column];
+  if (effort[row]){
+    if (effort[row][column]){
+      return effort[row][column];
+    }
+  }
+  return 0;
 }
 
 var skip_toggle = false;
