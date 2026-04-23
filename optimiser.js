@@ -233,7 +233,7 @@ function getCharacters() {
 	}
 	console.log(`"there are ${trigram_count} trigrams"`);
 
-	letter_freq[" "].count = letter_freq[" "].count / 2;
+	letter_freq[" "].count *= 0.5;
 	console.log(`"input_length: ${input_length}`);
 
 	sortLetterFreq();
@@ -246,9 +246,11 @@ function getX(row, col) {
 	}
 	return dx + col * w;
 }
+
 function getY(row, col) {
 	return 10 + row * w;
 }
+
 function getKey(row, col) {
 	for (let i = 0; i < rcdata_len; i++) {
 		if (rcdata[i].row === row && rcdata[i].col === col) {
@@ -920,14 +922,14 @@ function generateLayout() {
 
 function sortLetterFreq() {
 	// sort letters highest to lowest. ETAOINSHRDLU etc
-	var keyValueArray = Object.entries(letter_freq);
+	const keyValueArray = Object.entries(letter_freq);
 	keyValueArray.sort((a, b) => b[1].count - a[1].count);
-	var tmp = Object.fromEntries(keyValueArray);
+	const tmp = Object.fromEntries(keyValueArray);
 	letter_position = [];
-	var ix = 920;
+	const ix = 920;
 	x = ix;
 	y = 20;
-	for (var letter in tmp) {
+	for (const letter in tmp) {
 		letter_position.push({
 			letter: letter,
 			count: letter_freq[letter].count,
@@ -1645,348 +1647,352 @@ function run() {
 	var messages_received = 0;
 	var found_new_result = false;
 	var best_config;
-	if (window.Worker) {
-		const myWorker = new Worker("worker.js");
 
-		if (setup === false) {
-			start();
-			for (let i = 0; i < rcdata_len; i++) {
-				if (rcdata[i].enabled === 1) {
-					editable_keys.push(i);
+	if (!window.Worker) {
+		console.log("Your browser does not support Web Workers.");
+		return;
+	}
+
+	const myWorker = new Worker("worker.js");
+
+	if (setup === false) {
+		start();
+		for (let i = 0; i < rcdata_len; i++) {
+			if (rcdata[i].enabled === 1) {
+				editable_keys.push(i);
+			}
+		}
+	}
+
+	if (time_to_shuffle) {
+		rcdata = shuffleData(rcdata, times - iter);
+		iter += 1;
+		time_to_shuffle = false;
+		best_score = 1000000;
+	} else {
+		if (results.length > 0) {
+			for (let i = 0; i < results.length; i++) {
+				if (results[i].score < best_score) {
+					best_score = results[i].score;
+					best_config = results[i].config;
+				}
+			}
+			if (best_config) {
+				rcdata = best_config;
+			}
+		}
+	}
+
+	for (let i = 0; i < editable_keys.length; i++) {
+		for (let j = 0; j < editable_keys.length; j++) {
+			if (j > i) {
+				const tmp_keys = _.cloneDeep(rcdata);
+				// swap keys
+				const p = editable_keys[i];
+				const q = editable_keys[j];
+				tmp = tmp_keys[p].char;
+				tmp_keys[p].char = tmp_keys[q].char;
+				tmp_keys[q].char = tmp;
+				const uid = create_uid(tmp_keys);
+				if (uid_set.has(uid)) {
+				} else {
+					messages_sent += 1;
+					myWorker.postMessage({
+						letter_freq: letter_freq,
+						bigrams: bigram_freq,
+						trigrams: trigram_freq,
+						config: tmp_keys,
+					});
 				}
 			}
 		}
+	}
 
-		if (time_to_shuffle) {
-			rcdata = shuffleData(rcdata, times - iter);
-			iter += 1;
-			time_to_shuffle = false;
-			best_score = 1000000;
-		} else {
-			if (results.length > 0) {
+	// column swap
+	for (let c = 1; c <= 10; c++) {
+		for (let d = 1; d <= 10; d++) {
+			if (d > c) {
+				const tmp_keys = _.cloneDeep(rcdata);
+				for (let r = 0; r <= 2; r++) {
+					const p = getKey(r, c);
+					const q = getKey(r, d);
+					if (rcdata[p].enabled === 1 && rcdata[q].enabled === 1) {
+						tmp = tmp_keys[p].char;
+						tmp_keys[p].char = tmp_keys[q].char;
+						tmp_keys[q].char = tmp;
+					}
+				}
+
+				const uid = create_uid(tmp_keys);
+				if (uid_set.has(uid)) {
+				} else {
+					messages_sent += 1;
+					myWorker.postMessage({
+						letter_freq: letter_freq,
+						bigrams: bigram_freq,
+						trigrams: trigram_freq,
+						config: tmp_keys,
+					});
+				}
+			}
+		}
+	}
+
+	// Listen for results coming back from the worker
+	myWorker.onmessage = (e) => {
+		const { result, config } = e.data;
+		uid = create_uid(config);
+		var score = 0;
+
+		sfb_data.score = calculateScore(
+			result.sfb,
+			sfb_data.weight,
+			sfb_data.min,
+			input_length,
+			true,
+		);
+		effort_data.score = calculateScore(
+			result.effort,
+			effort_data.weight,
+			effort_data.min,
+			input_length,
+			false,
+		);
+		psfb_data.score = calculateScore(
+			result.psfb,
+			psfb_data.weight,
+			psfb_data.min,
+			input_length,
+			true,
+		);
+		rsfb_data.score = calculateScore(
+			result.rsfb,
+			rsfb_data.weight,
+			rsfb_data.min,
+			input_length,
+			true,
+		);
+		scissors_data.score = calculateScore(
+			result.scissors,
+			scissors_data.weight,
+			scissors_data.min,
+			input_length,
+			true,
+		);
+		prscissors_data.score = calculateScore(
+			result.prscissors,
+			prscissors_data.weight,
+			prscissors_data.min,
+			input_length,
+			true,
+		);
+		wscissors_data.score = calculateScore(
+			result.wide_scissors,
+			wscissors_data.weight,
+			wscissors_data.min,
+			input_length,
+			true,
+		);
+		latstr_data.score = calculateScore(
+			result.lat_str,
+			latstr_data.weight,
+			latstr_data.min,
+			input_length,
+			true,
+		);
+		sfs_data.score = calculateScore(
+			result.sfs,
+			sfs_data.weight,
+			sfs_data.min,
+			input_length,
+			true,
+		);
+		vowels_data.score =
+			(result.vowels - vowels_data.min) * vowels_data.weight;
+		hbalance_data.score =
+			(result.hand_balance - hbalance_data.min) * hbalance_data.weight;
+		if (hbalance_data.score < 0) {
+			hbalance_data.score = 0;
+		}
+
+		score += sfb_data.score;
+		score += effort_data.score;
+		score += psfb_data.score;
+		score += rsfb_data.score;
+		score += scissors_data.score;
+		score += prscissors_data.score;
+		score += wscissors_data.score;
+		score += latstr_data.score;
+		score += sfs_data.score;
+		score += vowels_data.score;
+		score += hbalance_data.score;
+
+		results.push({
+			score: score,
+			config: config,
+			result: result,
+			iter: iter,
+		});
+		if (score < best_score) {
+			best_score = score;
+			found_new_result = true;
+		}
+		messages_received += 1;
+		// console.log("sent = "+messages_sent+"  received = "+messages_received);
+		if (messages_received === messages_sent) {
+			console.log(iter + " best result: " + best_score);
+			update_progress();
+			if (found_new_result) {
+				run();
+			} else {
+				time_to_shuffle = true;
+				best_score = 1000000;
 				for (let i = 0; i < results.length; i++) {
 					if (results[i].score < best_score) {
-						best_score = results[i].score;
 						best_config = results[i].config;
+						best_score = results[i].score;
+						best_result = results[i].result;
 					}
 				}
-				if (best_config) {
-					rcdata = best_config;
+				rcdata = best_config;
+				const uid = create_uid(rcdata);
+				uid_set.add(uid);
+				best_results.push({
+					config: best_config,
+					score: best_score,
+					result: best_result,
+					iter: iter,
+				});
+				results = [];
+
+				const inv_input_lenght = 1.0 / input_length;
+				sfb_data.metric =
+					(100 * best_result.sfb * inv_input_lenght).toFixed(2) + "%";
+				effort_data.metric = (best_result.effort * inv_input_lenght).toFixed(
+					2,
+				);
+				psfb_data.metric =
+					(100 * best_result.psfb * inv_input_lenght).toFixed(2) + "%";
+				rsfb_data.metric =
+					(100 * best_result.rsfb * inv_input_lenght).toFixed(2) + "%";
+				scissors_data.metric =
+					(100 * best_result.scissors * inv_input_lenght).toFixed(2) + "%";
+				prscissors_data.metric =
+					(100 * best_result.prscissors * inv_input_lenght).toFixed(2) + "%";
+				wscissors_data.metric =
+					(100 * best_result.wide_scissors * inv_input_lenght).toFixed(2) +
+					"%";
+				latstr_data.metric =
+					(100 * best_result.lat_str * inv_input_lenght).toFixed(2) + "%";
+				sfs_data.metric =
+					(100 * best_result.sfs * inv_input_lenght).toFixed(2) + "%";
+				vowels_data.metric = best_result.vowels;
+				hbalance_data.metric = best_result.hand_balance.toFixed(2);
+
+				sfb_data.score = calculateScore(
+					best_result.sfb,
+					sfb_data.weight,
+					sfb_data.min,
+					input_length,
+					true,
+				);
+				effort_data.score = calculateScore(
+					best_result.effort,
+					effort_data.weight,
+					effort_data.min,
+					input_length,
+					false,
+				);
+				psfb_data.score = calculateScore(
+					best_result.psfb,
+					psfb_data.weight,
+					psfb_data.min,
+					input_length,
+					true,
+				);
+				rsfb_data.score = calculateScore(
+					best_result.rsfb,
+					rsfb_data.weight,
+					rsfb_data.min,
+					input_length,
+					true,
+				);
+				scissors_data.score = calculateScore(
+					best_result.scissors,
+					scissors_data.weight,
+					scissors_data.min,
+					input_length,
+					true,
+				);
+				prscissors_data.score = calculateScore(
+					best_result.prscissors,
+					prscissors_data.weight,
+					prscissors_data.min,
+					input_length,
+					true,
+				);
+				wscissors_data.score = calculateScore(
+					best_result.wide_scissors,
+					wscissors_data.weight,
+					wscissors_data.min,
+					input_length,
+					true,
+				);
+				latstr_data.score = calculateScore(
+					best_result.lat_str,
+					latstr_data.weight,
+					latstr_data.min,
+					input_length,
+					true,
+				);
+				sfs_data.score = calculateScore(
+					best_result.sfs,
+					sfs_data.weight,
+					sfs_data.min,
+					input_length,
+					true,
+				);
+				vowels_data.score =
+					(best_result.vowels - vowels_data.min) * vowels_data.weight;
+				hbalance_data.score =
+					(best_result.hand_balance - hbalance_data.min) *
+					hbalance_data.weight;
+				if (hbalance_data.score < 0) {
+					hbalance_data.score = 0;
 				}
-			}
-		}
 
-		for (let i = 0; i < editable_keys.length; i++) {
-			for (let j = 0; j < editable_keys.length; j++) {
-				if (j > i) {
-					const tmp_keys = _.cloneDeep(rcdata);
-					// swap keys
-					const p = editable_keys[i];
-					const q = editable_keys[j];
-					tmp = tmp_keys[p].char;
-					tmp_keys[p].char = tmp_keys[q].char;
-					tmp_keys[q].char = tmp;
-					const uid = create_uid(tmp_keys);
-					if (uid_set.has(uid)) {
-					} else {
-						messages_sent += 1;
-						myWorker.postMessage({
-							letter_freq: letter_freq,
-							bigrams: bigram_freq,
-							trigrams: trigram_freq,
-							config: tmp_keys,
-						});
-					}
-				}
-			}
-		}
-		// column swap
-		for (let c = 1; c <= 10; c++) {
-			for (let d = 1; d <= 10; d++) {
-				if (d > c) {
-					const tmp_keys = _.cloneDeep(rcdata);
-					for (let r = 0; r <= 2; r++) {
-						const p = getKey(r, c);
-						const q = getKey(r, d);
-						if (rcdata[p].enabled === 1 && rcdata[q].enabled === 1) {
-							tmp = tmp_keys[p].char;
-							tmp_keys[p].char = tmp_keys[q].char;
-							tmp_keys[q].char = tmp;
-						}
-					}
+				m_score =
+					sfb_data.score +
+					effort_data.score +
+					psfb_data.score +
+					rsfb_data.score +
+					scissors_data.score +
+					prscissors_data.score +
+					wscissors_data.score +
+					latstr_data.score +
+					sfs_data.score +
+					vowels_data.score +
+					hbalance_data.score;
 
-					const uid = create_uid(tmp_keys);
-					if (uid_set.has(uid)) {
-					} else {
-						messages_sent += 1;
-						myWorker.postMessage({
-							letter_freq: letter_freq,
-							bigrams: bigram_freq,
-							trigrams: trigram_freq,
-							config: tmp_keys,
-						});
-					}
-				}
-			}
-		}
+				generateLayout();
+				generateStats();
+				generateGraphs();
+				generateGraphs2();
 
-		// Listen for results coming back from the worker
-		myWorker.onmessage = (e) => {
-			const { result, config } = e.data;
-			uid = create_uid(config);
-			var score = 0;
-
-			sfb_data.score = calculateScore(
-				result.sfb,
-				sfb_data.weight,
-				sfb_data.min,
-				input_length,
-				true,
-			);
-			effort_data.score = calculateScore(
-				result.effort,
-				effort_data.weight,
-				effort_data.min,
-				input_length,
-				false,
-			);
-			psfb_data.score = calculateScore(
-				result.psfb,
-				psfb_data.weight,
-				psfb_data.min,
-				input_length,
-				true,
-			);
-			rsfb_data.score = calculateScore(
-				result.rsfb,
-				rsfb_data.weight,
-				rsfb_data.min,
-				input_length,
-				true,
-			);
-			scissors_data.score = calculateScore(
-				result.scissors,
-				scissors_data.weight,
-				scissors_data.min,
-				input_length,
-				true,
-			);
-			prscissors_data.score = calculateScore(
-				result.prscissors,
-				prscissors_data.weight,
-				prscissors_data.min,
-				input_length,
-				true,
-			);
-			wscissors_data.score = calculateScore(
-				result.wide_scissors,
-				wscissors_data.weight,
-				wscissors_data.min,
-				input_length,
-				true,
-			);
-			latstr_data.score = calculateScore(
-				result.lat_str,
-				latstr_data.weight,
-				latstr_data.min,
-				input_length,
-				true,
-			);
-			sfs_data.score = calculateScore(
-				result.sfs,
-				sfs_data.weight,
-				sfs_data.min,
-				input_length,
-				true,
-			);
-			vowels_data.score =
-				(result.vowels - vowels_data.min) * vowels_data.weight;
-			hbalance_data.score =
-				(result.hand_balance - hbalance_data.min) * hbalance_data.weight;
-			if (hbalance_data.score < 0) {
-				hbalance_data.score = 0;
-			}
-
-			score += sfb_data.score;
-			score += effort_data.score;
-			score += psfb_data.score;
-			score += rsfb_data.score;
-			score += scissors_data.score;
-			score += prscissors_data.score;
-			score += wscissors_data.score;
-			score += latstr_data.score;
-			score += sfs_data.score;
-			score += vowels_data.score;
-			score += hbalance_data.score;
-
-			results.push({
-				score: score,
-				config: config,
-				result: result,
-				iter: iter,
-			});
-			if (score < best_score) {
-				best_score = score;
-				found_new_result = true;
-			}
-			messages_received += 1;
-			// console.log("sent = "+messages_sent+"  received = "+messages_received);
-			if (messages_received === messages_sent) {
-				console.log(iter + " best result: " + best_score);
-				update_progress();
-				if (found_new_result) {
+				if (iter + 1 < times) {
+					// console.log("=== "+(times-iter)+" ===")
 					run();
 				} else {
-					time_to_shuffle = true;
-					best_score = 1000000;
-					for (let i = 0; i < results.length; i++) {
-						if (results[i].score < best_score) {
-							best_config = results[i].config;
-							best_score = results[i].score;
-							best_result = results[i].result;
-						}
-					}
-					rcdata = best_config;
-					const uid = create_uid(rcdata);
-					uid_set.add(uid);
-					best_results.push({
-						config: best_config,
-						score: best_score,
-						result: best_result,
-						iter: iter,
-					});
-					results = [];
-
-					const inv_input_lenght = 1.0 / input_length;
-					sfb_data.metric =
-						(100 * best_result.sfb * inv_input_lenght).toFixed(2) + "%";
-					effort_data.metric = (best_result.effort * inv_input_lenght).toFixed(
-						2,
-					);
-					psfb_data.metric =
-						(100 * best_result.psfb * inv_input_lenght).toFixed(2) + "%";
-					rsfb_data.metric =
-						(100 * best_result.rsfb * inv_input_lenght).toFixed(2) + "%";
-					scissors_data.metric =
-						(100 * best_result.scissors * inv_input_lenght).toFixed(2) + "%";
-					prscissors_data.metric =
-						(100 * best_result.prscissors * inv_input_lenght).toFixed(2) + "%";
-					wscissors_data.metric =
-						(100 * best_result.wide_scissors * inv_input_lenght).toFixed(2) +
-						"%";
-					latstr_data.metric =
-						(100 * best_result.lat_str * inv_input_lenght).toFixed(2) + "%";
-					sfs_data.metric =
-						(100 * best_result.sfs * inv_input_lenght).toFixed(2) + "%";
-					vowels_data.metric = best_result.vowels;
-					hbalance_data.metric = best_result.hand_balance.toFixed(2);
-
-					sfb_data.score = calculateScore(
-						best_result.sfb,
-						sfb_data.weight,
-						sfb_data.min,
-						input_length,
-						true,
-					);
-					effort_data.score = calculateScore(
-						best_result.effort,
-						effort_data.weight,
-						effort_data.min,
-						input_length,
-						false,
-					);
-					psfb_data.score = calculateScore(
-						best_result.psfb,
-						psfb_data.weight,
-						psfb_data.min,
-						input_length,
-						true,
-					);
-					rsfb_data.score = calculateScore(
-						best_result.rsfb,
-						rsfb_data.weight,
-						rsfb_data.min,
-						input_length,
-						true,
-					);
-					scissors_data.score = calculateScore(
-						best_result.scissors,
-						scissors_data.weight,
-						scissors_data.min,
-						input_length,
-						true,
-					);
-					prscissors_data.score = calculateScore(
-						best_result.prscissors,
-						prscissors_data.weight,
-						prscissors_data.min,
-						input_length,
-						true,
-					);
-					wscissors_data.score = calculateScore(
-						best_result.wide_scissors,
-						wscissors_data.weight,
-						wscissors_data.min,
-						input_length,
-						true,
-					);
-					latstr_data.score = calculateScore(
-						best_result.lat_str,
-						latstr_data.weight,
-						latstr_data.min,
-						input_length,
-						true,
-					);
-					sfs_data.score = calculateScore(
-						best_result.sfs,
-						sfs_data.weight,
-						sfs_data.min,
-						input_length,
-						true,
-					);
-					vowels_data.score =
-						(best_result.vowels - vowels_data.min) * vowels_data.weight;
-					hbalance_data.score =
-						(best_result.hand_balance - hbalance_data.min) *
-						hbalance_data.weight;
-					if (hbalance_data.score < 0) {
-						hbalance_data.score = 0;
-					}
-
-					m_score =
-						sfb_data.score +
-						effort_data.score +
-						psfb_data.score +
-						rsfb_data.score +
-						scissors_data.score +
-						prscissors_data.score +
-						wscissors_data.score +
-						latstr_data.score +
-						sfs_data.score +
-						vowels_data.score +
-						hbalance_data.score;
-
-					generateLayout();
-					generateStats();
-					generateGraphs();
-					generateGraphs2();
-
-					if (iter + 1 < times) {
-						// console.log("=== "+(times-iter)+" ===")
-						run();
-					} else {
-						running = false;
-					}
+					running = false;
 				}
 			}
-		};
+		}
+	};
 
-		myWorker.onerror = (error) => {
-			console.error("Main: There was an error with the worker.", error);
-		};
-	} else {
-		console.log("Your browser does not support Web Workers.");
-	}
+	myWorker.onerror = (error) => {
+		console.error("Main: There was an error with the worker.", error);
+	};
+	
 }
 
 loadAllData();

@@ -208,8 +208,8 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			} else if (col1 >= 6 && col2 >= 6) {
 				// RIGHT HAND
 				if (row1 <= 2 && row2 <= 2) {
-          const dist_row_R = Math.abs(row1 - row2);
-          const dist_col_R = Math.abs(col1 - col2);
+					const dist_row_R = Math.abs(row1 - row2);
+					const dist_col_R = Math.abs(col1 - col2);
 					if (dist_row_R === 2) {
 						if (dist_col_R === 1) {
 							scissors += count;
