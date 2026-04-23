@@ -156,6 +156,7 @@ var rcdata = [
 ];
 
 rcdata = loadEffortValuesFromCookie("rcdataEffort", rcdata);
+const rcdata_len = rcdata.length;
 
 var letter_position = [];
 
@@ -249,7 +250,7 @@ function getY(row, col) {
 	return 10 + row * w;
 }
 function getKey(row, col) {
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		if (rcdata[i].row === row && rcdata[i].col === col) {
 			return i;
 		}
@@ -296,7 +297,7 @@ const dragHandler = d3
 	.on("end", function (event, ele) {
 		dropi = -1;
 		closestdist = 9999;
-		for (let i = 0; i < rcdata.length; i++) {
+		for (let i = 0; i < rcdata_len; i++) {
 			d = dist(event.x - offsetx, event.y - offsety, rcdata[i].x, rcdata[i].y);
 			if (d < closestdist) {
 				closestdist = d;
@@ -307,7 +308,7 @@ const dragHandler = d3
 		d3.select(this).attr("transform", `translate(${startx}, ${starty})`);
 		if (closestdist < 12) {
 			if (dropi >= 0) {
-				for (let i = 0; i < rcdata.length; i++) {
+				for (let i = 0; i < rcdata_len; i++) {
 					if (startkey === "␣") {
 						if (rcdata[i].char === " ") {
 							rcdata[i].char = "";
@@ -864,7 +865,7 @@ function generateModeButtons() {
 }
 
 function generateLayout() {
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		x = getX(rcdata[i].row, rcdata[i].col);
 		y = getY(rcdata[i].row, rcdata[i].col);
 		rcdata[i].x = x;
@@ -999,7 +1000,7 @@ function generateCharacters() {
 function countCharsKeys() {
 	var key_count = 0;
 	var char_count = 0;
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		on = rcdata[i].enabled;
 		if (on === 1) {
 			key_count += 1;
@@ -1230,7 +1231,7 @@ function addStatLine(x, y, data) {
 }
 
 function getEffort(row, col) {
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		if (rcdata[i].row === row && rcdata[i].col === col) {
 			return rcdata[i].effort;
 		}
@@ -1238,7 +1239,7 @@ function getEffort(row, col) {
 	return 0;
 }
 function setEffort(row, col, value) {
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		if (rcdata[i].row === row && rcdata[i].col === col) {
 			rcdata[i].effort = value;
 		}
@@ -1521,7 +1522,7 @@ function shuffleData(data, reps) {
 
 function create_uid(rcdata) {
 	var arr = [];
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		if (rcdata[i].enabled === 1) {
 			if (rcdata[i].char === " ") {
 				arr.push("␣");
@@ -1547,7 +1548,7 @@ function start() {
 	// check the letters fixed on the keyboard are off in the character list
 	for (const m in letter_freq) {
 		if (letter_freq[m].enabled === 1) {
-			for (let i = 0; i < rcdata.length; i++) {
+			for (let i = 0; i < rcdata_len; i++) {
 				if (rcdata[i].char === m) {
 					error = true;
 				}
@@ -1558,7 +1559,7 @@ function start() {
 		return;
 	}
 
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		if (rcdata[i].enabled === 1) {
 			rcdata[i].char = list_of_chars.pop();
 		}
@@ -1568,7 +1569,7 @@ function start() {
 }
 
 function clearLetters() {
-	for (let i = 0; i < rcdata.length; i++) {
+	for (let i = 0; i < rcdata_len; i++) {
 		if (rcdata[i].char !== "" && rcdata[i].enabled === 1) {
 			rcdata[i].char = "";
 		}
@@ -1649,7 +1650,7 @@ function run() {
 
 		if (setup === false) {
 			start();
-			for (let i = 0; i < rcdata.length; i++) {
+			for (let i = 0; i < rcdata_len; i++) {
 				if (rcdata[i].enabled === 1) {
 					editable_keys.push(i);
 				}
