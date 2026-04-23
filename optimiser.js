@@ -1302,11 +1302,12 @@ function update_progress() {
 
 function calculateScore(value, weight, min, denom, perc) {
   let score = -1;
+  const inv_denom = 1.0 / denom;
   if (perc === true) {
-    value = (100*value)/denom
+    value = (100*value) * inv_denom
     score = (value - min) * weight
   } else {
-    value = value/denom
+    value = value * inv_denom
     score = (value - min) * weight
   }
   if (score.isNaN) {
@@ -1471,15 +1472,16 @@ function run() {
           best_results.push({config: best_config, score: best_score, result: best_result, iter: iter})
           results = [];
 
-          sfb_data.metric = ((100*best_result.sfb) / input_length).toFixed(2) + "%"
-          effort_data.metric = (best_result.effort / input_length).toFixed(2)
-          psfb_data.metric = (100*best_result.psfb / input_length).toFixed(2) + "%"
-          rsfb_data.metric = (100*best_result.rsfb / input_length).toFixed(2) + "%"
-          scissors_data.metric = (100*best_result.scissors / input_length).toFixed(2) + "%"
-          prscissors_data.metric = (100*best_result.prscissors / input_length).toFixed(2) + "%"
-          wscissors_data.metric = (100*best_result.wide_scissors / input_length).toFixed(2) + "%"
-          latstr_data.metric = (100*best_result.lat_str / input_length).toFixed(2) + "%"
-          sfs_data.metric = (100*best_result.sfs / input_length).toFixed(2) + "%"
+          const inv_input_lenght = 1.0 / input_length;
+          sfb_data.metric = ((100*best_result.sfb) * inv_input_lenght).toFixed(2) + "%"
+          effort_data.metric = (best_result.effort * inv_input_lenght).toFixed(2)
+          psfb_data.metric = (100*best_result.psfb * inv_input_lenght).toFixed(2) + "%"
+          rsfb_data.metric = (100*best_result.rsfb * inv_input_lenght).toFixed(2) + "%"
+          scissors_data.metric = (100*best_result.scissors * inv_input_lenght).toFixed(2) + "%"
+          prscissors_data.metric = (100*best_result.prscissors * inv_input_lenght).toFixed(2) + "%"
+          wscissors_data.metric = (100*best_result.wide_scissors * inv_input_lenght).toFixed(2) + "%"
+          latstr_data.metric = (100*best_result.lat_str * inv_input_lenght).toFixed(2) + "%"
+          sfs_data.metric = (100*best_result.sfs * inv_input_lenght).toFixed(2) + "%"
           vowels_data.metric = (best_result.vowels)
           hbalance_data.metric = (best_result.hand_balance).toFixed(2)
 
