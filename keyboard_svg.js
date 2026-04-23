@@ -2326,18 +2326,18 @@ function generatePlots() {
 	}
 	const inv_sum_row_usage = 1.0 / sum_row_usage;
 	for (const row in m_row_usage) {
-		var height = 200 * m_row_usage[row] * inv_sum_row_usage;
-		var tip = parseFloat(100 * m_row_usage[row] * inv_sum_row_usage).toFixed(2);
-		var red = Math.floor(190 * m_row_usage[row] * inv_sum_row_usage) + 128;
-		var green = 128;
+		const height = 200 * m_row_usage[row] * inv_sum_row_usage;
+		const tip = parseFloat(100 * m_row_usage[row] * inv_sum_row_usage).toFixed(2);
+		let red = Math.floor(190 * m_row_usage[row] * inv_sum_row_usage) + 128;
+		const green = 128;
 		if (red < 16) {
 			red = 16;
 		}
 		if (red > 255) {
 			red = 255;
 		}
-		var hex_red = red.toString(16);
-		var hex_bg = green.toString(16);
+		const hex_red = red.toString(16);
+		const hex_bg = green.toString(16);
 
 		stats
 			.append("rect")
@@ -2358,7 +2358,7 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "middle")
-			.text(parseInt(row) + 1); // lint/correctness/useParseIntRadix: Missing radix
+			.text(parseInt(row, 10) + 1);
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 	}
 	///////////////////////////////////////   F I N G E R   U S A G E   //////////////////////////////////////
@@ -2661,24 +2661,24 @@ function generatePlots() {
 			.attr("text-anchor", "left")
 			.text(`Same Finger Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 		for (const finger in m_same_finger2) {
-			var height = 30000 * m_same_finger2[finger] * inv_m_input_length;
+			let height = 30000 * m_same_finger2[finger] * inv_m_input_length;
 			if (height > 150) {
 				height = 150;
 			}
-			var tip = parseFloat(
+			const tip = parseFloat(
 				100 * m_same_finger2[finger] * inv_m_input_length,
 			).toFixed(2);
-			var red =
+			let red =
 				Math.floor(6000 * m_same_finger2[finger] * inv_m_input_length) + 128;
-			var green = 128;
+			const green = 128;
 			if (red < 16) {
 				red = 16;
 			}
 			if (red > 255) {
 				red = 255;
 			}
-			var hex_red = red.toString(16);
-			var hex_bg = green.toString(16);
+			const hex_red = red.toString(16);
+			const hex_bg = green.toString(16);
 			stats
 				.append("rect")
 				.attr("x", x + finger * 20)
@@ -2721,13 +2721,13 @@ function generatePlots() {
 		// stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
 
 		var i = 0;
-		var t = scroll_amount;
+		let t = scroll_amount;
 		for (const bigram in m_same_finger3) {
 			if (t > 0) {
 				t -= 1;
 				continue;
 			}
-			var width = 18000 * m_same_finger3[bigram] * inv_m_input_length;
+			let width = 18000 * m_same_finger3[bigram] * inv_m_input_length;
 			if (width > 200) {
 				width = 200;
 			}
@@ -2775,7 +2775,7 @@ function generatePlots() {
 	sum = 0;
 	var tmp;
 	if (skip_toggle) {
-		var keyValueArray = Object.entries(m_skip_bigram);
+		const keyValueArray = Object.entries(m_skip_bigram);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const bigram in tmp) {
@@ -2789,9 +2789,9 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Skip Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 	} else {
-		var keyValueArray = Object.entries(m_skip_bigram2);
+		const keyValueArray = Object.entries(m_skip_bigram2);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const bigram in tmp) {
@@ -2858,7 +2858,7 @@ function generatePlots() {
 			t -= 1;
 			continue;
 		}
-		var height = 36000 * tmp[bigram] * inv_m_input_length;
+		let height = 36000 * tmp[bigram] * inv_m_input_length;
 		if (height > 200) {
 			height = 200;
 		}
@@ -2986,7 +2986,7 @@ function generatePlots() {
 			t -= 1;
 			continue;
 		}
-		var height = 10000 * tmp[bigram] * inv_m_input_length;
+		let height = 10000 * tmp[bigram] * inv_m_input_length;
 		if (height > 200) {
 			height = 200;
 		}
@@ -3064,7 +3064,7 @@ function generatePlots() {
 			.attr("text-anchor", "left")
 			.text(`Scissors ${parseFloat(100 * sum).toFixed(2)}%`);
 	} else {
-		var keyValueArray = Object.entries(m_all_scissors);
+		const keyValueArray = Object.entries(m_all_scissors);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const bigram in tmp) {
@@ -3130,7 +3130,7 @@ function generatePlots() {
 			t -= 1;
 			continue;
 		}
-		var height = 36000 * tmp[bigram] * inv_m_input_length;
+		let height = 36000 * tmp[bigram] * inv_m_input_length;
 		if (height > 180) {
 			height = 180;
 		}
@@ -3170,7 +3170,8 @@ function generatePlots() {
 			break;
 		}
 	}
-	///////////////////////////////////  T R I G R A M   S T A T S   ///////////////////////////////
+	
+  ///////////////////////////////////  T R I G R A M   S T A T S   ///////////////////////////////
 	var x = 760;
 	var y = 390;
 	dx = 105;
@@ -3179,7 +3180,7 @@ function generatePlots() {
 	var trigram_title = "Trigram Stats";
 
 	if (trigram_toggle === 0) {
-		var keyValueArray = Object.entries(m_trigram_count);
+		const keyValueArray = Object.entries(m_trigram_count);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const cat in tmp) {
@@ -3189,7 +3190,7 @@ function generatePlots() {
 		scale = 1;
 		dx = 105;
 	} else if (trigram_toggle === 1) {
-		var keyValueArray = Object.entries(m_trigram_count_alt);
+		const keyValueArray = Object.entries(m_trigram_count_alt);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const cat in tmp) {
@@ -3199,7 +3200,7 @@ function generatePlots() {
 		scale = 3;
 		dx = 47;
 	} else if (trigram_toggle === 2) {
-		var keyValueArray = Object.entries(m_trigram_count_red);
+		const keyValueArray = Object.entries(m_trigram_count_red);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const cat in tmp) {
@@ -3209,7 +3210,7 @@ function generatePlots() {
 		scale = 3;
 		dx = 47;
 	} else if (trigram_toggle === 3) {
-		var keyValueArray = Object.entries(m_trigram_count_roll_in);
+		const keyValueArray = Object.entries(m_trigram_count_roll_in);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const cat in tmp) {
@@ -3219,7 +3220,7 @@ function generatePlots() {
 		scale = 3;
 		dx = 47;
 	} else if (trigram_toggle === 4) {
-		var keyValueArray = Object.entries(m_trigram_count_roll_out);
+		const keyValueArray = Object.entries(m_trigram_count_roll_out);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const cat in tmp) {
@@ -3319,8 +3320,8 @@ function generatePlots() {
 			t -= 1;
 			continue;
 		}
-		var tmp_cat_inv_sum = tmp[cat] * inv_sum;
-		var width = scale * 200 * tmp_cat_inv_sum;
+		const tmp_cat_inv_sum = tmp[cat] * inv_sum;
+		let width = scale * 200 * tmp_cat_inv_sum;
 		if (width > 200) {
 			width = 200;
 		}
@@ -3352,7 +3353,7 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
-			.text(`${parseFloat("" + 100 * tmp_cat_inv_sum).toFixed(2)}%`);
+			.text(`${parseFloat(`${100 * tmp_cat_inv_sum}`).toFixed(2)}%`);
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 		i += 1;
 		if (i > 10) {
@@ -3388,11 +3389,11 @@ function generatePlots() {
 			t -= 1;
 			continue;
 		}
-		var count = samehandstrings[word];
+		const count = samehandstrings[word];
 		// console.log(word + " " + count)
 		word_len = word.length;
-		var word_len_count = word_len * count;
-		var width = scale * word_len_count;
+		const word_len_count = word_len * count;
+		let width = scale * word_len_count;
 		if (width > 100) {
 			width = 100;
 		}
@@ -3451,8 +3452,8 @@ function generatePlots() {
 		.text("Same Hand Count");
 	var i = 0;
 	for (const len in samehandcount) {
-		var count = samehandcount[len];
-		var width = scale * count;
+		const count = samehandcount[len];
+		let width = scale * count;
 		if (width > 100) {
 			width = 100;
 		}
@@ -3515,7 +3516,7 @@ function generatePlots() {
 				t -= 1;
 				continue;
 			}
-			var height = (100 * word_effort[word]) / word_len;
+			const height = (100 * word_effort[word]) / word_len;
 			stats
 				.append("rect")
 				.attr("x", x + 80)
