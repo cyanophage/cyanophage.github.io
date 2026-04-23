@@ -1,6 +1,7 @@
 // worker.js
 
 var lookup = {};
+const vowel_set = new Set(["a", "e", "i", "o", "u"]);
 
 function makeLookup(config) {
 	for (let i = 0; i < config.length; i++) {
@@ -127,13 +128,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			if (row1 <= 2) {
 				left_hand += count;
 			}
-			if (
-				letter === "a" ||
-				letter === "e" ||
-				letter === "i" ||
-				letter === "o" ||
-				letter === "u"
-			) {
+			if (vowel_set.has(letter)) {
 				left_vowels += 1;
 			}
 		}
@@ -141,13 +136,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			if (row1 <= 2) {
 				right_hand += count;
 			}
-			if (
-				letter === "a" ||
-				letter === "e" ||
-				letter === "i" ||
-				letter === "o" ||
-				letter === "u"
-			) {
+			if (vowel_set.has(letter)) {
 				right_vowels += 1;
 			}
 		}
@@ -187,7 +176,6 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			// console.log("Can't find lookup info for "+b);
 			finger1 = -2;
 		}
-
 
 		if (finger1 === finger2 && a !== b) {
 			sfb += count;
