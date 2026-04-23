@@ -1687,18 +1687,19 @@ function run() {
 
 	for (let i = 0; i < editable_keys.length; i++) {
 		for (let j = i + 1; j < editable_keys.length; j++) {
+
+			const tmp_keys = _.cloneDeep(rcdata);
+
+			// swap keys
 			const p = editable_keys[i];
 			const q = editable_keys[j];
-
-			// shallow clone instead of deep clone if possible
-    		const tmp_keys = { ...rcdata };
 
 			tmp = tmp_keys[p].char;
 			tmp_keys[p].char = tmp_keys[q].char;
 			tmp_keys[q].char = tmp;
+
 			const uid = create_uid(tmp_keys);
-			if (uid_set.has(uid)) {
-			} else {
+			if (!uid_set.has(uid)) {
 				messages_sent += 1;
 				myWorker.postMessage({
 					letter_freq: letter_freq,
