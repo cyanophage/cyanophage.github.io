@@ -164,7 +164,7 @@ function selectLanguage(lan, event) {
 		.then((response) => response.json())
 		.then((data) => {
 			if (event?.ctrlKey) {
-				console.log("adding " + lan + " to words");
+				console.log(`adding ${lan} to words`);
 				for (const word in data) {
 					if (words[word]) {
 						words[word] += data[word];
@@ -312,7 +312,7 @@ var effort = [
 function openPopup() {
 	for (let row = 0; row < nb_row; row++) {
 		for (let col = 0; col < nb_columns; col++) {
-			const name = "textInput-" + row + "-" + col;
+			const name = `textInput-${row}-${col}`;
 			document.getElementById(name).value = effort[row][col];
 		}
 	}
@@ -338,13 +338,13 @@ function strCount(str, char) {
 function closeImportPopup() {
 	var importString = document.getElementById("importText").value;
 	importString = importString.replace(/\s+/g, "");
-	if (importString.length == 0) {
+	if (importString.length === 0) {
 		document.getElementById("importPopup").style.display = "none";
 		return;
 	}
-	if (importString.length == 30) {
+	if (importString.length === 30) {
 		// probably cmini
-		if (strCount(importString, "-") == 0 && strCount(importString, "'") == 0) {
+		if (strCount(importString, "-") === 0 && strCount(importString, "'") === 0) {
 			importString =
 				importString.slice(0, 10) +
 				"-" +
@@ -353,8 +353,7 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, "-") == 0 &&
-			strCount(importString, ";") == 0
+			strCount(importString, "-") === 0 && strCount(importString, ";") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -364,8 +363,7 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, "'") == 0 &&
-			strCount(importString, ";") == 0
+			strCount(importString, "'") === 0 && strCount(importString, ";") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -375,8 +373,7 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, "'") == 0 &&
-			strCount(importString, "/") == 0
+			strCount(importString, "'") === 0 && strCount(importString, "/") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -386,8 +383,7 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, ";") == 0 &&
-			strCount(importString, "/") == 0
+			strCount(importString, ";") === 0 && strCount(importString, "/") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -397,19 +393,7 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, ";") == 0 &&
-			strCount(importString, "'") == 0
-		) {
-			importString =
-				importString.slice(0, 10) +
-				";" +
-				importString.slice(10, 20) +
-				"'" +
-				importString.slice(20) +
-				"\\^";
-		} else if (
-			strCount(importString, "/") == 0 &&
-			strCount(importString, "-") == 0
+			strCount(importString, "/") === 0 && strCount(importString, "-") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -454,7 +438,7 @@ function closeImportPopup() {
 		document.getElementById("importMessage").innerText = message;
 		return;
 	} else {
-		if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
+		if ((mode === "iso" || mode === "ansi") && importString.length >= 33) {
 			document.getElementById("importMessage").innerText =
 				"You can't have layouts with thumb letters on ISO/ANSI";
 		} else if (importString.length <= 35) {
@@ -464,7 +448,7 @@ function closeImportPopup() {
 			queryParams.set("layout", exportLayout());
 			queryParams.set("mode", mode);
 			queryParams.set("lan", lang);
-			history.replaceState(null, null, "?" + queryParams.toString());
+			history.replaceState(null, null, `?${queryParams.toString()}`);
 			generateCoords();
 			measureDictionary();
 			measureWords();
@@ -488,7 +472,7 @@ function closeCorpusPopup() {
 	var massive_string = document.getElementById("corpusText").value;
 	massive_string = massive_string.toLowerCase().replace(/\s+/g, " ");
 	words = {};
-	if (massive_string.length == 0) {
+	if (massive_string.length === 0) {
 		document.getElementById("corpusPopup").style.display = "none";
 		return;
 	}
@@ -589,7 +573,7 @@ function pasteEffortGridFromClipboard() {
 		.then((text) => {
 			// console.log("Clipboard content:", text);
 			var numbersArray = text.split(",").map(Number);
-			if (numbersArray.length != 36) {
+			if (numbersArray.length !== 36) {
 				return;
 			}
 
@@ -677,18 +661,18 @@ function hideTooltip() {
 
 function setMode() {
 	if (
-		dataloaded == false ||
-		dictionaryloaded == false ||
-		effortloaded == false
+		dataloaded === false ||
+		dictionaryloaded === false ||
+		effortloaded === false
 	) {
 		return;
 	}
 	console.log("setMode to " + mode);
-	if (mode == "ergo") {
+	if (mode === "ergo") {
 		setErgo();
-	} else if (mode == "ansi") {
+	} else if (mode === "ansi") {
 		setAnsi();
-	} else if (mode == "iso") {
+	} else if (mode === "iso") {
 		setIso();
 	}
 	generateCoords();
@@ -706,9 +690,9 @@ function activateErgo() {
 
 function setErgo() {
 	if (
-		dataloaded == false ||
-		dictionaryloaded == false ||
-		effortloaded == false
+		dataloaded === false ||
+		dictionaryloaded === false ||
+		effortloaded === false
 	) {
 		return;
 	}
@@ -752,19 +736,19 @@ function activateIso(anglemod) {
 
 function setIso(anglemod) {
 	if (
-		dataloaded == false ||
-		dictionaryloaded == false ||
-		effortloaded == false
+		dataloaded === false ||
+		dictionaryloaded === false ||
+		effortloaded === false
 	) {
 		return;
 	}
 	hasshift = false;
 	for (let i = 0; i < 34; i++) {
-		if (rcdata[i][0] == "shift" || rcdata[i][0] == "^") {
+		if (rcdata[i][0] === "shift" || rcdata[i][0] === "^") {
 			hasshift = true;
 		}
 	}
-	if (hasshift == true) {
+	if (hasshift === true) {
 		rcdata[32][1] = 2;
 		rcdata[32][2] = 0;
 		rcdata[32][6] = 1;
@@ -792,7 +776,7 @@ function setIso(anglemod) {
 			];
 		}
 		mode = "iso";
-		var queryParams = new URLSearchParams(window.location.search);
+		const queryParams = new URLSearchParams(window.location.search);
 		queryParams.set("layout", exportLayout());
 		queryParams.set("mode", mode);
 		queryParams.set("lan", lang);
@@ -863,19 +847,19 @@ function setAnsi() {
 }
 
 function importLayout(layout) {
-	if (layout.length == 35) {
+	if (layout.length === 35) {
 		const decodedString = decodeURIComponent(layout);
 		console.log("importing: " + decodedString);
 		layout = decodedString;
 		// change shift to =
 		for (let i = 0; i < 34; i++) {
-			if (rcdata[i][0] == "^") {
+			if (rcdata[i][0] === "^") {
 				rcdata[i][0] = "*";
 			}
 		}
 		// change ctrl to *
 		for (let i = 0; i < 37; i++) {
-			if (rcdata[i][0] == "$") {
+			if (rcdata[i][0] === "$") {
 				rcdata[i][0] = "=";
 				console.log("setting " + i + " to *");
 			}
@@ -884,7 +868,7 @@ function importLayout(layout) {
 		for (let i = 0; i < 34; i++) {
 			// qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
 			for (let j = 0; j < 34; j++) {
-				if (layout.charAt(i) == rcdata[j][0]) {
+				if (layout.charAt(i) === rcdata[j][0]) {
 					// console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
 					// swap
 					indices = [0, 3, 7]; // letter, freq, keyname
@@ -901,12 +885,12 @@ function importLayout(layout) {
 		let swap1 = 0;
 		let swap2 = 0;
 		for (let i = 0; i < 36; i++) {
-			if (rcdata[i][7] == 35) {
+			if (rcdata[i][7] === 35) {
 				swap1 = i;
 			}
 		}
 		for (let i = 0; i < 36; i++) {
-			if (rcdata[i][0] == layout.charAt(34)) {
+			if (rcdata[i][0] === layout.charAt(34)) {
 				swap2 = i;
 			}
 		}
@@ -924,7 +908,7 @@ function importLayout(layout) {
 		for (let i = 0; i < 34; i++) {
 			// qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
 			for (let j = 0; j < 34; j++) {
-				if (layout.charAt(i) == rcdata[j][0]) {
+				if (layout.charAt(i) === rcdata[j][0]) {
 					// console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
 					// swap
 					indices = [0, 3, 7]; // letter, freq, keyname
@@ -938,8 +922,8 @@ function importLayout(layout) {
 			}
 		}
 		for (let i = 0; i < 34; i++) {
-			if (rcdata[i][0] == "^") {
-				if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
+			if (rcdata[i][0] === "^") {
+				if (rcdata[i][1] === 3 && rcdata[i][2] === 4) {
 					// cool
 				} else {
 					rcdata[i][0] = "=";
@@ -947,7 +931,7 @@ function importLayout(layout) {
 			}
 		}
 	}
-	if (thumb == "r") {
+	if (thumb === "r") {
 		indices = [0, 3, 7]; // letter, freq, keyname
 		for (let id = 0; id < indices.length; id++) {
 			const k = indices[id];
@@ -1007,7 +991,7 @@ function getX(name, row, col) {
 			} else {
 				if (name === "space") {
 					off = 0;
-				} else if (name == "rshift") {
+				} else if (name === "rshift") {
 					off = w * 0.25;
 				} else {
 					off = w * 1.25;
@@ -1029,7 +1013,7 @@ function getX(name, row, col) {
 				off = w * 0.75;
 			}
 		} else if (row >= 2) {
-			if (col == -1) {
+			if (col === -1) {
 				return dx;
 			} else {
 				if (name === "space") {
@@ -1040,7 +1024,7 @@ function getX(name, row, col) {
 			}
 		}
 		return dx + off + col * w;
-	} else if (mode == "ergo") {
+	} else if (mode === "ergo") {
 		if (col > 5) {
 			dx = dx + 40;
 		}
@@ -1073,7 +1057,7 @@ function getRow(letter) {
 function getChar(row, col) {
 	for (let i = 0; i < rcdata_len; i++) {
 		const key = rcdata[i];
-		if (key[1] == row && key[2] == col) {
+		if (key[1] === row && key[2] === col) {
 			return key[0];
 		}
 	}
@@ -1108,15 +1092,15 @@ function generateCoords() {
 
 function generateLayout() {
 	if (
-		dataloaded == false ||
-		dictionaryloaded == false ||
-		effortloaded == false
+		dataloaded === false ||
+		dictionaryloaded === false ||
+		effortloaded === false
 	) {
 		return;
 	}
 	console.log("generateLayout");
 	svg.selectAll("*").remove();
-	if (mode == "iso" || mode == "ansi") {
+	if (mode === "iso" || mode === "ansi") {
 		outlinewidth = 572;
 	} else {
 		outlinewidth = 510;
@@ -1135,7 +1119,7 @@ function generateLayout() {
 	for (let i = 0; i < rcdata_len; i++) {
 		dtx = 0;
 		letter = rcdata[i][0];
-		if (letter == "^") {
+		if (letter === "^") {
 			letter = "shift";
 		}
 		x = rcdata[i][5];
@@ -1153,13 +1137,13 @@ function generateLayout() {
 		hex_bg = green.toString(16);
 
 		fontsize = 16;
-		if (letter == "$") {
+		if (letter === "$") {
 			letter = "ctrl";
 		}
 		if (letter.length > 1) {
 			fontsize = 10;
 		}
-		if (letter.length > 4 && mode == "ergo") {
+		if (letter.length > 4 && mode === "ergo") {
 			fontsize = 9;
 		}
 
@@ -1175,7 +1159,7 @@ function generateLayout() {
 			.attr("stroke", "black")
 			.attr("stroke-width", "1")
 			.attr("class", "draggable");
-		if (letter.length > 1 && mode != "ergo") {
+		if (letter.length > 1 && mode !== "ergo") {
 			svg
 				.append("text")
 				.attr("x", x + 5)
@@ -1198,8 +1182,8 @@ function generateLayout() {
 		}
 	}
 	//
-	if (m_total_word_effort == 0) {
-		// console.log("m_total_word_effort == 0")
+	if (m_total_word_effort === 0) {
+		// console.log("m_total_word_effort === 0")
 		measureDictionary();
 		measureWords();
 	}
@@ -1404,9 +1388,9 @@ var samehandcount = {};
 
 function measureDictionary() {
 	if (
-		dataloaded == false ||
-		dictionaryloaded == false ||
-		effortloaded == false
+		dataloaded === false ||
+		dictionaryloaded === false ||
+		effortloaded === false
 	) {
 		return;
 	}
@@ -1443,7 +1427,7 @@ function measureDictionary() {
 				if (bigram_effort[col1][row1]) {
 					if (bigram_effort[col1][row1][col2]) {
 						if (bigram_effort[col1][row1][col2][row2]) {
-							var e = bigram_effort[col1][row1][col2][row2];
+							const e = bigram_effort[col1][row1][col2][row2];
 							total += e;
 						}
 					}
@@ -1460,7 +1444,7 @@ function measureDictionary() {
 			if (bigram_effort[col1][row1]) {
 				if (bigram_effort[col1][row1][col2]) {
 					if (bigram_effort[col1][row1][col2][row2]) {
-						var e = bigram_effort[col1][row1][col2][row2];
+						const e = bigram_effort[col1][row1][col2][row2];
 						total += e;
 					}
 				}
@@ -1478,7 +1462,7 @@ function measureDictionary() {
 				if (bigram_effort[col1][row1]) {
 					if (bigram_effort[col1][row1][col2]) {
 						if (bigram_effort[col1][row1][col2][row2]) {
-							var e = bigram_effort[col1][row1][col2][row2];
+							const e = bigram_effort[col1][row1][col2][row2];
 							total += 0.2 * e;
 						}
 					}
@@ -1495,15 +1479,14 @@ function measureDictionary() {
 			if (bigram_effort[col1][row1]) {
 				if (bigram_effort[col1][row1][col2]) {
 					if (bigram_effort[col1][row1][col2][row2]) {
-						var e = bigram_effort[col1][row1][col2][row2];
+						const e = bigram_effort[col1][row1][col2][row2];
 						total += 0.2 * e;
 					}
 				}
 			}
 		}
-		if (isNaN(total)) {
-			console.log(word + " gives NaN for effort");
-		}
+		if (total.isNan) console.log(word + " gives NaN for effort");
+		
 		word_effort[word] = 0.1 * total;
 	}
 }
@@ -1521,7 +1504,7 @@ function getDictionaryFromWords() {
 function getIndexOfKey(name) {
 	var x = -1;
 	for (let i = 0; i < 34; i++) {
-		if (rcdata[i][7] == name) {
+		if (rcdata[i][7] === name) {
 			x = i;
 		}
 	}
@@ -1535,7 +1518,7 @@ function updateRcData(lan) {
 		if (letters.length >= 32) {
 			break;
 		}
-		var wordLetters = word.split(""); // Split the word into individual letters
+		const wordLetters = word.split(""); // Split the word into individual letters
 		for (let i = 0; i < wordLetters.length; i++) {
 			if (letters.indexOf(wordLetters[i]) === -1) {
 				letters.push(wordLetters[i]); // Add letter to the list if not already present
@@ -1545,7 +1528,7 @@ function updateRcData(lan) {
 	// my new idea for fixing this issue still didn't work
 	// the problem is that the keys that I want to change when switching languages aren't in a consistent position in the grid, or at a consistent position in the array,
 	// or have a consistent letter on them. Even the index I added to try to make them consistent didn't work because of the way the import process works
-	if (lan == "german") {
+	if (lan === "german") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "ü";
@@ -1562,7 +1545,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "ß";
 		}
-	} else if (lan == "english") {
+	} else if (lan === "english") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "-";
@@ -1579,7 +1562,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "dutch") {
+	} else if (lan === "dutch") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "-";
@@ -1596,7 +1579,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "french") {
+	} else if (lan === "french") {
 		// letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "é";
@@ -1613,7 +1596,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "à";
 		}
-	} else if (lan == "italian") {
+	} else if (lan === "italian") {
 		// letters = ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'é', 'q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'è', '\'', 'w', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'ç', 'à']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "è";
@@ -1630,7 +1613,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "ì";
 		}
-	} else if (lan == "swedish") {
+	} else if (lan === "swedish") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x',  'c', 'v', 'b','n', 'm', '.', ',', '\'', '\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "å";
@@ -1647,7 +1630,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "spanish") {
+	} else if (lan === "spanish") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ñ', '\'', 'z','x', 'c', 'v',  'b', 'n', 'm',',', '.',  '/', '\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "-";
@@ -1664,7 +1647,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "portuguese") {
+	} else if (lan === "portuguese") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "-";
@@ -1681,7 +1664,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "norweigan") {
+	} else if (lan === "norweigan") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ø', 'æ', 'z', 'x','c','v', 'b', 'm', 'n', '.', ',',  '\'', '\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "å";
@@ -1698,7 +1681,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "finnish") {
+	} else if (lan === "finnish") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'å', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', '\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "å";
@@ -1715,7 +1698,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "estonian") {
+	} else if (lan === "estonian") {
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "ä";
 		}
@@ -1731,7 +1714,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "ö";
 		}
-	} else if (lan == "hungarian") {
+	} else if (lan === "hungarian") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/','\\']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "-";
@@ -1748,7 +1731,7 @@ function updateRcData(lan) {
 		if (getIndexOfKey(32) >= 0) {
 			rcdata[getIndexOfKey(32)][0] = "\\";
 		}
-	} else if (lan == "polish") {
+	} else if (lan === "polish") {
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "-";
 		}
@@ -1769,9 +1752,9 @@ function updateRcData(lan) {
 
 function measureWords() {
 	if (
-		dataloaded == false ||
-		dictionaryloaded == false ||
-		effortloaded == false
+		dataloaded === false ||
+		dictionaryloaded === false ||
+		effortloaded === false
 	) {
 		return;
 	}
@@ -1877,12 +1860,12 @@ function measureWords() {
 				m_column_usage[col] = 0;
 			}
 			if (
-				(row == 0 && col == 1) ||
-				(row == 2 && col == 1) ||
-				(row == 0 && col == 10) ||
-				(row == 2 && col == 10) ||
-				(row == 0 && col == 11) ||
-				(row == 1 && col == 11)
+				(row === 0 && col === 1) ||
+				(row === 2 && col === 1) ||
+				(row === 0 && col === 10) ||
+				(row === 2 && col === 10) ||
+				(row === 0 && col === 11) ||
+				(row === 1 && col === 11)
 			) {
 				m_pinky_off += count;
 			}
@@ -1902,7 +1885,7 @@ function measureWords() {
 
 			m_effort += count * getEffort(row, col);
 
-			var finger = getFinger(row, col);
+			const finger = getFinger(row, col);
 			if (!m_finger_usage[finger]) {
 				m_finger_usage[finger] = 0;
 			}
@@ -1941,7 +1924,7 @@ function measureWords() {
 			// bigram stuff
 			if (i > 0 && prevcol >= 0) {
 				bigram = prevchar + char;
-				if (finger == prevfinger && prevchar != char) {
+				if (finger === prevfinger && prevchar !== char) {
 					if (!m_same_finger[bigram]) {
 						m_same_finger[bigram] = 0;
 					}
@@ -1961,10 +1944,10 @@ function measureWords() {
 				}
 				// lsbs
 				if (
-					(prevcol == 3 && col == 5) ||
-					(prevcol == 8 && col == 6) ||
-					(prevcol == 5 && col == 3) ||
-					(prevcol == 6 && col == 8)
+					(prevcol === 3 && col === 5) ||
+					(prevcol === 8 && col === 6) ||
+					(prevcol === 5 && col === 3) ||
+					(prevcol === 6 && col === 8)
 				) {
 					if (!m_lat_stretch[bigram]) {
 						m_lat_stretch[bigram] = 0;
@@ -1972,10 +1955,10 @@ function measureWords() {
 					m_lat_stretch[bigram] += count;
 				}
 				if (
-					(prevcol == 2 && col == 5) ||
-					(prevcol == 9 && col == 6) ||
-					(prevcol == 5 && col == 2) ||
-					(prevcol == 6 && col == 9)
+					(prevcol === 2 && col === 5) ||
+					(prevcol === 9 && col === 6) ||
+					(prevcol === 5 && col === 2) ||
+					(prevcol === 6 && col === 9)
 				) {
 					if (!m_lat_stretch2[bigram]) {
 						m_lat_stretch2[bigram] = 0;
@@ -1984,10 +1967,10 @@ function measureWords() {
 				}
 				// scissors
 				if (
-					Math.abs(col - prevcol) == 1 &&
+					Math.abs(col - prevcol) === 1 &&
 					Math.abs(row - prevrow) >= 2 &&
-					((finger <= 4 && prevfinger <= 4 && finger != prevfinger) ||
-						(finger >= 7 && prevfinger >= 7 && finger != prevfinger))
+					((finger <= 4 && prevfinger <= 4 && finger !== prevfinger) ||
+						(finger >= 7 && prevfinger >= 7 && finger !== prevfinger))
 				) {
 					if (!m_scissors[bigram]) {
 						m_scissors[bigram] = 0;
@@ -2007,9 +1990,9 @@ function measureWords() {
 				}
 				// pinky/ring scissors
 				if (
-					Math.abs(col - prevcol) == 1 &&
+					Math.abs(col - prevcol) === 1 &&
 					Math.abs(row - prevrow) >= 1 &&
-					(finger == 1 || finger == 10 || prevfinger == 1 || prevfinger == 10)
+					(finger === 1 || finger === 10 || prevfinger === 1 || prevfinger === 10)
 				) {
 					if (!m_pinky_scissors[bigram]) {
 						m_pinky_scissors[bigram] = 0;
@@ -2017,7 +2000,7 @@ function measureWords() {
 					m_pinky_scissors[bigram] += count;
 				}
 				// same hand strings
-				if (prevhand == hand) {
+				if (prevhand === hand) {
 					samehand = samehand + char;
 				} else {
 					if (samehand.length >= 4) {
@@ -2039,7 +2022,7 @@ function measureWords() {
 				if (!m_finger_pairs[prevfinger][finger]) {
 					m_finger_pairs[prevfinger][finger] = 0;
 				}
-				if (char != prevchar) {
+				if (char !== prevchar) {
 					m_finger_pairs[prevfinger][finger] += count;
 				}
 			}
@@ -2047,7 +2030,7 @@ function measureWords() {
 			if (i > 1 && prevcol >= 0) {
 				skip = ppchar + "_" + char;
 				trigram = ppchar + prevchar + char;
-				if (finger == ppfinger && ppchar != char) {
+				if (finger === ppfinger && ppchar !== char) {
 					if (!m_skip_bigram[skip]) {
 						m_skip_bigram[skip] = 0;
 					}
@@ -2071,15 +2054,15 @@ function measureWords() {
 					} else if (
 						(ppfinger < prevfinger &&
 							finger < prevfinger &&
-							finger != ppfinger) ||
-						(ppfinger > prevfinger && finger > prevfinger && finger != ppfinger)
+							finger !== ppfinger) ||
+						(ppfinger > prevfinger && finger > prevfinger && finger !== ppfinger)
 					) {
 						cat = "redirect";
 						// if (!m_redirects[trigram]) {
 						//   m_redirects[trigram] = 0;
 						// }
 						// m_redirects[trigram] += count;
-						if (ppfinger == 4 || prevfinger == 4 || finger == 4) {
+						if (ppfinger === 4 || prevfinger === 4 || finger === 4) {
 						} else {
 							cat = "weak redirect";
 						}
@@ -2094,15 +2077,15 @@ function measureWords() {
 					} else if (
 						(ppfinger > prevfinger &&
 							finger > prevfinger &&
-							finger != ppfinger) ||
-						(ppfinger < prevfinger && finger < prevfinger && finger != ppfinger)
+							finger !== ppfinger) ||
+						(ppfinger < prevfinger && finger < prevfinger && finger !== ppfinger)
 					) {
 						cat = "redirect";
 						// if (!m_redirects[trigram]) {
 						//   m_redirects[trigram] = 0;
 						// }
 						// m_redirects[trigram] += count;
-						if (ppfinger == 7 || prevfinger == 7 || finger == 7) {
+						if (ppfinger === 7 || prevfinger === 7 || finger === 7) {
 						} else {
 							cat = "weak redirect";
 						}
@@ -2113,7 +2096,7 @@ function measureWords() {
 					(ppfinger >= 6 && prevfinger <= 5 && finger >= 6)
 				) {
 					cat = "alt";
-					if (ppfinger == finger && ppchar != char) {
+					if (ppfinger === finger && ppchar !== char) {
 						cat = "alt sfs";
 					}
 					//          1                  2                3
@@ -2186,7 +2169,7 @@ function measureWords() {
 					m_trigram_count[cat] = 0;
 				}
 				m_trigram_count[cat] += count;
-				if (cat == "alt") {
+				if (cat === "alt") {
 					if (!m_trigram_count_alt[trigram]) {
 						m_trigram_count_alt[trigram] = 0;
 					}
@@ -2195,7 +2178,7 @@ function measureWords() {
 					// }
 					// if (count > 10){ console.log(trigram + " "+ count);}
 				}
-				if (cat == "redirect" || cat == "weak redirect") {
+				if (cat === "redirect" || cat === "weak redirect") {
 					if (!m_trigram_count_red[trigram]) {
 						m_trigram_count_red[trigram] = 0;
 					}
@@ -2203,7 +2186,7 @@ function measureWords() {
 					m_trigram_count_red[trigram] += count;
 					// }
 				}
-				if (cat == "roll in" || cat == "bigram roll in") {
+				if (cat === "roll in" || cat === "bigram roll in") {
 					if (!m_trigram_count_roll_in[trigram]) {
 						m_trigram_count_roll_in[trigram] = 0;
 					}
@@ -2211,7 +2194,7 @@ function measureWords() {
 					m_trigram_count_roll_in[trigram] += count;
 					// }
 				}
-				if (cat == "roll out" || cat == "bigram roll out") {
+				if (cat === "roll out" || cat === "bigram roll out") {
 					if (!m_trigram_count_roll_out[trigram]) {
 						m_trigram_count_roll_out[trigram] = 0;
 					}
@@ -2251,7 +2234,7 @@ function measureWords() {
 	const hundred_inv_sum = 100.0 / sum;
 	for (const letter in m_letter_freq) {
 		for (let i = 0; i < rcdata_len; i++) {
-			if (rcdata[i][0] == letter) {
+			if (rcdata[i][0] === letter) {
 				rcdata[i][3] = hundred_inv_sum * m_letter_freq[letter];
 			}
 		}
@@ -2261,9 +2244,9 @@ function measureWords() {
 
 function generatePlots() {
 	if (
-		dataloaded == false ||
-		dictionaryloaded == false ||
-		effortloaded == false
+		dataloaded === false ||
+		dictionaryloaded === false ||
+		effortloaded === false
 	) {
 		return;
 	}
@@ -2597,8 +2580,8 @@ function generatePlots() {
 		.on("mouseout", function () {
 			d3.select(this).attr("fill", "#777777");
 		});
-	if (sfb_toggle == 0) {
-		var keyValueArray = Object.entries(m_same_finger);
+	if (sfb_toggle === 0) {
+		const keyValueArray = Object.entries(m_same_finger);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		m_same_finger = Object.fromEntries(keyValueArray);
 
@@ -2616,14 +2599,14 @@ function generatePlots() {
 			.text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%");
 		// stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
 
-		var i = 0;
-		var t = scroll_amount;
+		let i = 0;
+		let t = scroll_amount;
 		for (const bigram in m_same_finger) {
 			if (t > 0) {
 				t -= 1;
 				continue;
 			}
-			var width = 18000 * m_same_finger[bigram] * inv_m_input_length;
+			let width = 18000 * m_same_finger[bigram] * inv_m_input_length;
 			if (width > 200) {
 				width = 200;
 			}
@@ -2664,7 +2647,7 @@ function generatePlots() {
 				break;
 			}
 		}
-	} else if (sfb_toggle == 1) {
+	} else if (sfb_toggle === 1) {
 		for (const finger in m_same_finger2) {
 			sum += m_same_finger2[finger] * inv_m_input_length;
 		}
@@ -2719,7 +2702,7 @@ function generatePlots() {
 				.text(finger);
 		}
 	} else {
-		var keyValueArray = Object.entries(m_same_finger3);
+		const keyValueArray = Object.entries(m_same_finger3);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		m_same_finger3 = Object.fromEntries(keyValueArray);
 
@@ -2919,8 +2902,8 @@ function generatePlots() {
 	var x = 500;
 	var y = 180;
 	sum = 0;
-	if (lsb_toggle == 0) {
-		var keyValueArray = Object.entries(m_lat_stretch);
+	if (lsb_toggle === 0) {
+		const keyValueArray = Object.entries(m_lat_stretch);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const bigram in tmp) {
@@ -2936,7 +2919,7 @@ function generatePlots() {
 			.attr("text-anchor", "left")
 			.text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%");
 	} else {
-		var keyValueArray = Object.entries(m_lat_stretch2);
+		const keyValueArray = Object.entries(m_lat_stretch2);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const bigram in tmp) {
@@ -3048,8 +3031,8 @@ function generatePlots() {
 	var y = 180;
 	sum = 0;
 
-	if (scissors_toggle == 1) {
-		var keyValueArray = Object.entries(m_pinky_scissors);
+	if (scissors_toggle === 1) {
+		const keyValueArray = Object.entries(m_pinky_scissors);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const bigram in tmp) {
@@ -3761,10 +3744,10 @@ function makeDraggable(svg) {
 				}
 				// console.log("keyname = "+keyname);
 				if (
-					keyname == "mod" ||
-					keyname == "back" ||
-					keyname == "tab" ||
-					keyname == "enter"
+					keyname === "mod" ||
+					keyname === "back" ||
+					keyname === "tab" ||
+					keyname === "enter"
 				) {
 					selectedElement = null;
 					return;
@@ -3783,7 +3766,7 @@ function makeDraggable(svg) {
 		if (selectedElement) {
 			if (sibling) {
 				evt.preventDefault();
-				var coord = getMousePosition(evt);
+				const coord = getMousePosition(evt);
 				selectedElement.setAttributeNS(null, "x", coord.x - offset.x);
 				selectedElement.setAttributeNS(null, "y", coord.y - offset.y);
 				sibling.setAttributeNS(null, "x", coord.x - offset2.x);
@@ -3799,16 +3782,16 @@ function makeDraggable(svg) {
 			// console.log("drop at "+x+"  "+y);
 			// scan through rcdata to find out which key are we closest to
 			closestdist = 9999;
-			var keyname = "";
+			let keyname = "";
 			for (let i = 0; i < rcdata_len; i++) {
 				d = dist(x, y, rcdata[i][5], rcdata[i][4]);
 				keyname = rcdata[i][0];
 				if (d < closestdist) {
 					if (
-						keyname == "mod" ||
-						keyname == "back" ||
-						keyname == "tab" ||
-						keyname == "enter"
+						keyname === "mod" ||
+						keyname === "back" ||
+						keyname === "tab" ||
+						keyname === "enter"
 					) {
 					} else {
 						closestdist = d;
@@ -3816,7 +3799,7 @@ function makeDraggable(svg) {
 					}
 				}
 			}
-			if (dropi == starti) {
+			if (dropi === starti) {
 				selectedElement.setAttributeNS(null, "x", startx);
 				selectedElement.setAttributeNS(null, "y", starty);
 				sibling.setAttributeNS(null, "x", parseInt(startx) + 15);
@@ -3825,7 +3808,7 @@ function makeDraggable(svg) {
 				sibling = false;
 				return;
 			}
-			if (rcdata[starti][0] == "space") {
+			if (rcdata[starti][0] === "space") {
 				if (rcdata[dropi][1] < 3) {
 					selectedElement.setAttributeNS(null, "x", startx);
 					selectedElement.setAttributeNS(null, "y", starty);
@@ -3836,7 +3819,7 @@ function makeDraggable(svg) {
 					return;
 				}
 			}
-			if (rcdata[dropi][0] == "space") {
+			if (rcdata[dropi][0] === "space") {
 				if (rcdata[starti][1] < 3) {
 					selectedElement.setAttributeNS(null, "x", startx);
 					selectedElement.setAttributeNS(null, "y", starty);
@@ -3862,32 +3845,32 @@ function makeDraggable(svg) {
 			// indices = [1,2,4,5,6]
 			indices = [0, 3, 7];
 			for (let i = 0; i < indices.length; i++) {
-				var k = indices[i];
+				const k = indices[i];
 				tmp = rcdata[starti][k];
 				rcdata[starti][k] = rcdata[dropi][k];
 				rcdata[dropi][k] = tmp;
 			}
 			if (
-				rcdata[33][0] == "space" &&
-				rcdata[33][1] == 3 &&
-				rcdata[33][2] == 4
+				rcdata[33][0] === "space" &&
+				rcdata[33][1] === 3 &&
+				rcdata[33][2] === 4
 			) {
 				thumb = "r";
 			}
 			if (
-				rcdata[39][0] == "space" &&
-				rcdata[39][1] == 3 &&
-				rcdata[39][2] == 7
+				rcdata[39][0] === "space" &&
+				rcdata[39][1] === 3 &&
+				rcdata[39][2] === 7
 			) {
 				thumb = "l";
 			}
 
-			var queryParams = new URLSearchParams(window.location.search);
+			const queryParams = new URLSearchParams(window.location.search);
 			queryParams.set("layout", exportLayout());
 			queryParams.set("mode", mode);
 			queryParams.set("lan", lang);
 			queryParams.set("thumb", thumb);
-			history.replaceState(null, null, "?" + queryParams.toString());
+			history.replaceState(null, null, `?${queryParams.toString()}`);
 
 			d3.select(svg).selectAll("*").remove();
 			needs_update = true;
@@ -3905,7 +3888,7 @@ if (url_layout) {
 loadAllData();
 if (params.lan) {
 	lang = params.lan;
-	if (lang != "english") {
+	if (lang !== "english") {
 		selectLanguage(lang);
 	}
 }
