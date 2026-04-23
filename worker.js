@@ -180,12 +180,12 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			if (col1 <= 5 && col2 <= 5) {
 				// LEFT HAND
 				if (row1 <= 2 && row2 <= 2) {
-					const dist_row = Math.abs(row1 - row2);
-					const dist_col = Math.abs(col1 - col2);
-					if (dist_row === 2) {
-						if (dist_col === 1) {
+					const dist_row_L = Math.abs(row1 - row2);
+					const dist_col_L = Math.abs(col1 - col2);
+					if (dist_row_L === 2) {
+						if (dist_col_L === 1) {
 							scissors += count;
-						} else if (dist_col > 1) {
+						} else if (dist_col_L > 1) {
 							wide_scissors += count;
 							// console.log(item + " " + count)
 						}
@@ -208,10 +208,12 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			} else if (col1 >= 6 && col2 >= 6) {
 				// RIGHT HAND
 				if (row1 <= 2 && row2 <= 2) {
-					if (Math.abs(row1 - row2) === 2) {
-						if (Math.abs(col1 - col2) === 1) {
+          const dist_row_R = Math.abs(row1 - row2);
+          const dist_col_R = Math.abs(col1 - col2);
+					if (dist_row_R === 2) {
+						if (dist_col_R === 1) {
 							scissors += count;
-						} else if (Math.abs(col1 - col2) > 1) {
+						} else if (dist_col_R > 1) {
 							wide_scissors += count;
 							// console.log(item + " " + count)
 						}
@@ -220,7 +222,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						(finger1 === 9 && finger2 === 10) ||
 						(finger1 === 10 && finger2 === 9)
 					) {
-						if (Math.abs(row1 - row2) >= 1) {
+						if (dist_row_R >= 1) {
 							prscissors += count;
 						}
 					}
