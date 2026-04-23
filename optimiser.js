@@ -106,7 +106,7 @@ function getCharacters() {
   var count = 0;
   var wordt;
   for (var word in words) {
-    wordt = " "+word+" "
+    wordt = `" ${word} "`
     count = words[word];
     for (let i = 0; i < wordt.length; i++) {
       char = wordt.charAt(i);
@@ -136,7 +136,7 @@ function getCharacters() {
   for(var tmp in bigram_freq) {
     bigram_count += 1
   }
-  console.log("there are "+bigram_count+ " bigrams")
+  console.log(`"there are ${bigram_count} bigrams"`)
 
   for(var tmp in trigram_freq) {
     if (trigram_freq[tmp] <= 30) {
@@ -147,10 +147,10 @@ function getCharacters() {
   for(var tmp in trigram_freq) {
     trigram_count += 1
   }
-  console.log("there are "+trigram_count+ " trigrams")
+  console.log(`"there are ${trigram_count} trigrams"`)
 
   letter_freq[" "].count = letter_freq[" "].count / 2;
-  console.log("input_length: "+input_length);
+  console.log(`"input_length: ${input_length}`);
 
   sortLetterFreq();
 }
@@ -232,7 +232,7 @@ const dragHandler = d3.drag()
       generateLayout();
       generateCharacters();
     } else {
-      console.log("can't drop here "+dropi)
+      console.log(`"can't drop here ${dropi}"`)
     }
   } else {
     // console.log("closest end",closestdist)
@@ -642,7 +642,7 @@ function setMode(thing){
     mult = 100;
   }
   yLabel = thing
-  console.log("setting mode to "+mode);
+  console.log(`"setting mode to ${mode}"`);
   generateGraphs2();
 }
 
@@ -810,11 +810,11 @@ function countCharsKeys() {
   var diff = 0
   if (key_count > char_count) {
     diff = key_count - char_count
-    error_text = "Too many keys ("+diff+"); Select more characters or deselect some keys";
+    error_text = `"Too many keys (${diff}); Select more characters or deselect some keys"`;
     error = true;
   } else if(char_count > key_count) {
     diff = char_count - key_count
-    error_text = "Too many chars ("+diff+"); Select fewer characters or select some more keys";
+    error_text = `"Too many chars (${diff}); Select fewer characters or select some more keys"`;
     error = true;
   }
 }
@@ -955,7 +955,7 @@ function setEffort(row, col,value) {
 function openEffortPopup() {
   for (var row = 0; row < 3; row++) {
     for (var col = 0; col < 12; col++) {
-      var name = "textInput-" + row + "-" + col
+      var name = `"textInput-${row}-${col}`
       document.getElementById(name).value = getEffort(row,col)
     }
   }
@@ -967,7 +967,7 @@ function loadEffortValuesFromCookie(cookieName, data) {
   const ca = document.cookie.split(';');
   for(let i=0;i < ca.length;i++) {
     let c = ca[i];
-    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+    while (c.charAt(0) === ' ') c = c.substring(1,c.length);
     if (c.indexOf(nameEQ) === 0) {
       const effortValuesString = c.substring(nameEQ.length,c.length);
       if (effortValuesString) {
@@ -1003,7 +1003,7 @@ function saveEffortValuesToCookie(cookieName, data, daysToExpire) {
 function closeEffortPopup() {
   for (var row = 0; row < 3; row++) {
     for (var col = 0; col < 12; col++) {
-      var name = "textInput-" + row + "-" + col
+      var name = `"textInput-${row}-${col}"`
       setEffort(row, col, document.getElementById(name).value);
     }
   }
@@ -1052,7 +1052,7 @@ function copyEffortGridToClipboard() {
   values = []
   for (var row = 0; row < 3; row++) {
     for (var col = 0; col < 12; col++) {
-      var name = "textInput-" + row + "-" + col
+      var name = `"textInput-${row}-${col}`
       values.push(document.getElementById(name).value);
     }
   }
@@ -1089,7 +1089,7 @@ function pasteEffortGridFromClipboard() {
 
     for (var row = 0; row < 3; row++) {
       for (var col = 0; col < 12; col++) {
-        var name = "textInput-" + row + "-" + col
+        var name = `"textInput-${row}-${col}`
         document.getElementById(name).value = numbersArray[row * 12 + col]
       }
     }
@@ -1101,13 +1101,13 @@ function pasteEffortGridFromClipboard() {
 
 
 function selectLanguage(lan, event) {
-  var word_list = 'words-'+lan+'.json';
-  console.log("============ "+lan.toUpperCase()+" ============")
+  var word_list = `'words-${lan}.json'`;
+  console.log(`"============ ${lan.toUpperCase()} ============"`)
   fetch(word_list)
   .then(response => response.json())
   .then(data => {
       if (event.ctrlKey){
-        console.log("adding "+lan+" to words")
+        console.log(`"adding ${lan} to words"`)
         for (var word in data) {
           if (words[word]){
             words[word] += data[word]
@@ -1132,7 +1132,7 @@ function dist(x1, y1, x2, y2) {
 }
 
 function toggleKeyOnOff(d) {
-  console.log("toggleKeyOnOff "+d);
+  console.log(`"toggleKeyOnOff ${d}`);
   if (d.enabled === 1){
     d.enabled = 0
   } else {
