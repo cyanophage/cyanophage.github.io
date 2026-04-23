@@ -1636,6 +1636,15 @@ function calculateScore(value, weight, min, denom, perc) {
 	return score;
 }
 
+let myWorker = null;
+function getWorker() {
+  if (!myWorker) {
+    console.log("Creating worker once");
+    myWorker = new Worker("worker.js");
+  }
+  return myWorker;
+}
+
 function run() {
 	if (error === true) {
 		console.log("sort errors first");
@@ -1655,7 +1664,7 @@ function run() {
 		return;
 	}
 
-	const myWorker = new Worker("worker.js");
+	const myWorker = getWorker();
 
 	if (setup === false) {
 		start();
@@ -1685,18 +1694,21 @@ function run() {
 		}
 	}
 
-	for (let i = 0; i < editable_keys.length; i++) {
-		for (let j = i + 1; j < editable_keys.length; j++) {
+	const editable_keys_len = editable_keys.length;
+	for (let i = 0; i < editable_keys_len; i++) {
+		for (let j = i + 1; j < editable_keys_len; j++) {
 
-			const tmp_keys = _.cloneDeep(rcdata);
-
-			// swap keys
 			const p = editable_keys[i];
-			const q = editable_keys[j];
+    		const q = editable_keys[j];
 
-			tmp = tmp_keys[p].char;
-			tmp_keys[p].char = tmp_keys[q].char;
-			tmp_keys[q].char = tmp;
+		    const tmp_keys = [...rcdata];
+		    tmp_keys[p] = { ...tmp_keys[p] };
+		    tmp_keys[q] = { ...tmp_keys[q] };
+
+		    // swap keys
+		    const tmp = tmp_keys[p].char;
+		    tmp_keys[p].char = tmp_keys[q].char;
+		    tmp_keys[q].char = tmp;
 
 			const uid = create_uid(tmp_keys);
 			if (!uid_set.has(uid)) {
@@ -1713,30 +1725,34 @@ function run() {
 
 	// column swap
 	for (let c = 1; c <= 10; c++) {
-		for (let d = 1; d <= 10; d++) {
-			if (d > c) {
-				const tmp_keys = _.cloneDeep(rcdata);
-				for (let r = 0; r <= 2; r++) {
-					const p = getKey(r, c);
-					const q = getKey(r, d);
-					if (rcdata[p].enabled === 1 && rcdata[q].enabled === 1) {
-						tmp = tmp_keys[p].char;
-						tmp_keys[p].char = tmp_keys[q].char;
-						tmp_keys[q].char = tmp;
-					}
-				}
+		for (let d = c + 1; d <= 10; d++) {
 
-				const uid = create_uid(tmp_keys);
-				if (uid_set.has(uid)) {
-				} else {
-					messages_sent += 1;
-					myWorker.postMessage({
-						letter_freq: letter_freq,
-						bigrams: bigram_freq,
-						trigrams: trigram_freq,
-						config: tmp_keys,
-					});
+			const tmp_keys = [...rcdata];
+
+			for (let r = 0; r <= 2; r++) {
+				const p = getKey(r, c);
+				const q = getKey(r, d);
+
+				if (rcdata[p].enabled === 1 && rcdata[q].enabled === 1) {
+					// clone only when needed
+				    tmp_keys[p] = { ...tmp_keys[p] };
+				    tmp_keys[q] = { ...tmp_keys[q] };
+
+				    const tmp = tmp_keys[p].char;
+				    tmp_keys[p].char = tmp_keys[q].char;
+				    tmp_keys[q].char = tmp;
 				}
+			}
+
+			const uid = create_uid(tmp_keys);
+			if (!uid_set.has(uid)) {
+				messages_sent += 1;
+				myWorker.postMessage({
+					letter_freq: letter_freq,
+					bigrams: bigram_freq,
+					trigrams: trigram_freq,
+					config: tmp_keys,
+				});
 			}
 		}
 	}
