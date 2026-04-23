@@ -124,11 +124,11 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 					left_hand += count;
 				}
 				if (
-					letter == "a" ||
-					letter == "e" ||
-					letter == "i" ||
-					letter == "o" ||
-					letter == "u"
+					letter === "a" ||
+					letter === "e" ||
+					letter === "i" ||
+					letter === "o" ||
+					letter === "u"
 				) {
 					left_vowels += 1;
 				}
@@ -138,11 +138,11 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 					right_hand += count;
 				}
 				if (
-					letter == "a" ||
-					letter == "e" ||
-					letter == "i" ||
-					letter == "o" ||
-					letter == "u"
+					letter === "a" ||
+					letter === "e" ||
+					letter === "i" ||
+					letter === "o" ||
+					letter === "u"
 				) {
 					right_vowels += 1;
 				}
@@ -183,26 +183,26 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			// console.log("Can't find lookup info for "+b);
 			finger1 = -2;
 		}
-		if (finger1 == finger2 && a != b) {
+		if (finger1 === finger2 && a !== b) {
 			sfb += count;
-			if (finger1 == 1 || finger1 == 10) {
+			if (finger1 === 1 || finger1 === 10) {
 				psfb += count;
 			}
-			if (finger1 == 2 || finger1 == 9) {
+			if (finger1 === 2 || finger1 === 9) {
 				rsfb += count;
 			}
-			if (finger1 == 3 || finger1 == 8) {
+			if (finger1 === 3 || finger1 === 8) {
 				msfb += count;
 			}
-			if (finger1 == 4 || finger1 == 7) {
+			if (finger1 === 4 || finger1 === 7) {
 				isfb += count;
 			}
 		} else {
 			if (col1 <= 5 && col2 <= 5) {
 				// LEFT HAND
 				if (row1 <= 2 && row2 <= 2) {
-					if (Math.abs(row1 - row2) == 2) {
-						if (Math.abs(col1 - col2) == 1) {
+					if (Math.abs(row1 - row2) === 2) {
+						if (Math.abs(col1 - col2) === 1) {
 							scissors += count;
 						} else if (Math.abs(col1 - col2) > 1) {
 							wide_scissors += count;
@@ -210,17 +210,17 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						}
 					}
 					if (
-						(finger1 == 1 && finger2 == 2) ||
-						(finger1 == 2 && finger2 == 1)
+						(finger1 === 1 && finger2 === 2) ||
+						(finger1 === 2 && finger2 === 1)
 					) {
 						if (Math.abs(row1 - row2) >= 1) {
 							prscissors += count;
 						}
 					}
-					if ((col1 == 5 && col2 == 3) || (col1 == 3 && col2 == 5)) {
+					if ((col1 === 5 && col2 === 3) || (col1 === 3 && col2 === 5)) {
 						lat_str += count;
 					}
-					if ((col1 == 5 && col2 == 2) || (col1 == 2 && col2 == 5)) {
+					if ((col1 === 5 && col2 === 2) || (col1 === 2 && col2 === 5)) {
 						lat_str += count / 2;
 						// console.log(item + " " + count)
 					}
@@ -228,8 +228,8 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			} else if (col1 >= 6 && col2 >= 6) {
 				// RIGHT HAND
 				if (row1 <= 2 && row2 <= 2) {
-					if (Math.abs(row1 - row2) == 2) {
-						if (Math.abs(col1 - col2) == 1) {
+					if (Math.abs(row1 - row2) === 2) {
+						if (Math.abs(col1 - col2) === 1) {
 							scissors += count;
 						} else if (Math.abs(col1 - col2) > 1) {
 							wide_scissors += count;
@@ -237,17 +237,17 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						}
 					}
 					if (
-						(finger1 == 9 && finger2 == 10) ||
-						(finger1 == 10 && finger2 == 9)
+						(finger1 === 9 && finger2 === 10) ||
+						(finger1 === 10 && finger2 === 9)
 					) {
 						if (Math.abs(row1 - row2) >= 1) {
 							prscissors += count;
 						}
 					}
-					if ((col1 == 6 && col2 == 8) || (col1 == 8 && col2 == 6)) {
+					if ((col1 === 6 && col2 === 8) || (col1 === 8 && col2 === 6)) {
 						lat_str += count;
 					}
-					if ((col1 == 6 && col2 == 9) || (col1 == 9 && col2 == 6)) {
+					if ((col1 === 6 && col2 === 9) || (col1 === 9 && col2 === 6)) {
 						lat_str += count / 2;
 					}
 				}
@@ -289,8 +289,8 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 		}
 
 		if (
-			finger1 == finger3 &&
-			finger2 != finger1 &&
+			finger1 === finger3 &&
+			finger2 !== finger1 &&
 			Math.abs(row1 - row3) >= 1
 		) {
 			if (row1 <= 2 && row3 <= 2) {
