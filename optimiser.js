@@ -112,7 +112,7 @@ function getCharacters() {
       char = wordt.charAt(i);
       if (!letter_freq[char]) {
         letter_freq[char] = { count: 0, enabled: 1 }
-        if (char == ' ') { letter_freq[char].enabled = 0 }
+        if (char === ' ') { letter_freq[char].enabled = 0 }
       }
       letter_freq[char].count += count;
       if (i > 0) {
@@ -167,7 +167,7 @@ function getY(row, col) {
 }
 function getKey(row, col) {
   for (let i = 0; i < rcdata.length; i++) {
-    if(rcdata[i].row == row && rcdata[i].col == col) {
+    if(rcdata[i].row === row && rcdata[i].col === col) {
       return i
     }
   }
@@ -216,12 +216,12 @@ const dragHandler = d3.drag()
   if (closestdist < 12){
     if (dropi >= 0){
       for (let i = 0; i < rcdata.length; i++) {
-        if (startkey == "␣") {
-          if (rcdata[i].char == " ") {
+        if (startkey === "␣") {
+          if (rcdata[i].char === " ") {
             rcdata[i].char = ""
           }
         } else {
-          if (rcdata[i].char == startkey) {
+          if (rcdata[i].char === startkey) {
             rcdata[i].char = ""
           }
         }
@@ -625,19 +625,19 @@ function generateGraphs2() {
 }
 
 function setMode(thing){
-  if (thing == 'SFB'){
+  if (thing === 'SFB'){
     mode = 'sfb';
     mult = 100;
-  } else if (thing == 'Effort') {
+  } else if (thing === 'Effort') {
     mode = 'effort';
     mult = 1;
-  } else if (thing == "Scissors") {
+  } else if (thing === "Scissors") {
     mode = 'scissors';
     mult = 100;
-  } else if (thing == "LSB") {
+  } else if (thing === "LSB") {
     mode = 'lat_str';
     mult = 100;
-  } else if (thing == "SFS") {
+  } else if (thing === "SFS") {
     mode = 'sfs';
     mult = 100;
   }
@@ -723,7 +723,7 @@ function generateLayout() {
     .attr("stroke", d => d.enabled === 1 ? "#00dd00" : "#dd0000");
 
   mergedGroups.select("text")
-    .text(d => d.char == " " ? "␣" : d.char);
+    .text(d => d.char === " " ? "␣" : d.char);
 }
 
 function sortLetterFreq(){
@@ -786,9 +786,9 @@ function generateCharacters() {
 
   mergedGroups.attr("transform", d => `translate(${d.x}, ${d.y})`);
 
-  mergedGroups.select("rect").attr("stroke", d => letter_freq[d.letter].enabled == 1 ? "#00ff00" : "#ff0000");
+  mergedGroups.select("rect").attr("stroke", d => letter_freq[d.letter].enabled === 1 ? "#00ff00" : "#ff0000");
 
-  mergedGroups.select("text").text(d => d.letter == " " ? "␣" : d.letter); // Use a special character for space
+  mergedGroups.select("text").text(d => d.letter === " " ? "␣" : d.letter); // Use a special character for space
 }
 
 function countCharsKeys() {
@@ -796,12 +796,12 @@ function countCharsKeys() {
   var char_count = 0;
   for (let i = 0; i < rcdata.length; i++) {
     on = rcdata[i].enabled;
-    if (on == 1) {
+    if (on === 1) {
       key_count += 1;
     }
   }
   for (var m in letter_freq) {
-    if (letter_freq[m].enabled == 1) {
+    if (letter_freq[m].enabled === 1) {
       char_count += 1;
     }
   }
@@ -938,7 +938,7 @@ function addStatLine(x, y, data) {
 
 function getEffort(row, col) {
   for (let i = 0; i < rcdata.length; i++) {
-    if (rcdata[i].row == row && rcdata[i].col == col) {
+    if (rcdata[i].row === row && rcdata[i].col === col) {
       return rcdata[i].effort
     }
   }
@@ -946,7 +946,7 @@ function getEffort(row, col) {
 }
 function setEffort(row, col,value) {
   for (let i = 0; i < rcdata.length; i++) {
-    if (rcdata[i].row == row && rcdata[i].col == col) {
+    if (rcdata[i].row === row && rcdata[i].col === col) {
       rcdata[i].effort = value
     }
   }
@@ -968,7 +968,7 @@ function loadEffortValuesFromCookie(cookieName, data) {
   for(let i=0;i < ca.length;i++) {
     let c = ca[i];
     while (c.charAt(0)==' ') c = c.substring(1,c.length);
-    if (c.indexOf(nameEQ) == 0) {
+    if (c.indexOf(nameEQ) === 0) {
       const effortValuesString = c.substring(nameEQ.length,c.length);
       if (effortValuesString) {
         const effortValues = JSON.parse(effortValuesString);
@@ -1018,7 +1018,7 @@ function openCorpusPopup() {
 function closeCorpusPopup() {
   var massive_string = document.getElementById('corpusText').value;
   massive_string = massive_string.toLowerCase().replace(/\s+/g, ' ');
-  if (massive_string.length == 0) {
+  if (massive_string.length === 0) {
     document.getElementById('corpusPopup').style.display = 'none';
     return;
   }
@@ -1083,7 +1083,7 @@ function pasteEffortGridFromClipboard() {
   .then(text => {
     // console.log("Clipboard content:", text);
     var numbersArray = text.split(",").map(Number);
-    if (numbersArray.length != 36) {
+    if (numbersArray.length !== 36) {
       return
     }
 
@@ -1133,12 +1133,12 @@ function dist(x1, y1, x2, y2) {
 
 function toggleKeyOnOff(d) {
   console.log("toggleKeyOnOff "+d);
-  if (d.enabled == 1){
+  if (d.enabled === 1){
     d.enabled = 0
   } else {
     d.enabled = 1;
     for (var m in letter_freq) {
-      if (m == d.char) {
+      if (m === d.char) {
         letter_freq[m].enabled = 1;
       }
     }
@@ -1153,8 +1153,8 @@ function toggleKeyOnOff(d) {
 
 function toggleCharOnOff(char) {
   for (var m in letter_freq) {
-    if (m == char) {
-      if (letter_freq[m].enabled == 0) {
+    if (m === char) {
+      if (letter_freq[m].enabled === 0) {
         letter_freq[m].enabled = 1;
       } else {
         letter_freq[m].enabled = 0;
@@ -1181,7 +1181,7 @@ function hideTooltip() {
 
 function shuffle(array) { // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   let currentIndex = array.length;
-  while (currentIndex != 0) {
+  while (currentIndex !== 0) {
     let randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
     var tmp = array[currentIndex];
@@ -1196,7 +1196,7 @@ function shuffleData(data, reps) {
   var tmp_keys = _.cloneDeep(data)
   var editable_keys = [];
   for (let i = 0; i < tmp_keys.length; i++) {
-    if (tmp_keys[i].enabled == 1) {
+    if (tmp_keys[i].enabled === 1) {
       editable_keys.push(i);
     }
   }
@@ -1204,7 +1204,7 @@ function shuffleData(data, reps) {
     // pick a random key
     var key1 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
     var key2 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
-    while(key1 == key2) {
+    while(key1 === key2) {
       key2 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
     }
     tmp = tmp_keys[key1].char
@@ -1217,8 +1217,8 @@ function shuffleData(data, reps) {
 function create_uid(rcdata) {
   var arr = [];
   for (let i = 0; i < rcdata.length; i++) {
-    if (rcdata[i].enabled == 1) {
-      if (rcdata[i].char == " ") {
+    if (rcdata[i].enabled === 1) {
+      if (rcdata[i].char === " ") {
         arr.push("␣");
       } else {
         arr.push(rcdata[i].char);
@@ -1233,7 +1233,7 @@ function start() {
   console.log("construct list of chars");
   var list_of_chars = [];
   for (var m in letter_freq) {
-    if (letter_freq[m].enabled == 1) {
+    if (letter_freq[m].enabled === 1) {
       list_of_chars.push(m);
     }
   }
@@ -1241,9 +1241,9 @@ function start() {
 
   // check the letters fixed on the keyboard are off in the character list
   for (var m in letter_freq) {
-    if (letter_freq[m].enabled == 1) {
+    if (letter_freq[m].enabled === 1) {
       for (let i = 0; i < rcdata.length; i++) {
-        if (rcdata[i].char == m) {
+        if (rcdata[i].char === m) {
           error = true
         }
       }
@@ -1252,7 +1252,7 @@ function start() {
   if (error) { return; }
 
   for (let i = 0; i < rcdata.length; i++) {
-    if (rcdata[i].enabled == 1) {
+    if (rcdata[i].enabled === 1) {
       rcdata[i].char = list_of_chars.pop();
     }
   }
@@ -1262,7 +1262,7 @@ function start() {
 
 function clearLetters() {
   for (let i = 0; i < rcdata.length; i++) {
-    if (rcdata[i].char != "" && rcdata[i].enabled == 1) {
+    if (rcdata[i].char !== "" && rcdata[i].enabled === 1) {
       rcdata[i].char = ""
     }
   }
@@ -1317,7 +1317,7 @@ function calculateScore(value, weight, min, denom, perc) {
 }
 
 function run() {
-  if (error == true) {console.log("sort errors first");return;}
+  if (error === true) {console.log("sort errors first");return;}
   runs += 1;
   best_score = 1000000;
   var messages_sent = 0;
@@ -1327,10 +1327,10 @@ function run() {
   if (window.Worker) {
     const myWorker = new Worker("worker.js");
 
-    if (setup == false) {
+    if (setup === false) {
       start();
       for (let i = 0; i < rcdata.length; i++) {
-        if (rcdata[i].enabled == 1) {
+        if (rcdata[i].enabled === 1) {
           editable_keys.push(i);
         }
       }
@@ -1387,7 +1387,7 @@ function run() {
           for(let r = 0; r <= 2; r++ ) {
             var p = getKey(r, c)
             var q = getKey(r, d)
-            if (rcdata[p].enabled == 1 && rcdata[q].enabled == 1) {
+            if (rcdata[p].enabled === 1 && rcdata[q].enabled === 1) {
               tmp = tmp_keys[p].char
               tmp_keys[p].char = tmp_keys[q].char
               tmp_keys[q].char = tmp
@@ -1447,7 +1447,7 @@ function run() {
       }
       messages_received += 1;
       // console.log("sent = "+messages_sent+"  received = "+messages_received);
-      if (messages_received == messages_sent) {
+      if (messages_received === messages_sent) {
         console.log(iter + " best result: "+best_score);
         update_progress();
         if (found_new_result) {
