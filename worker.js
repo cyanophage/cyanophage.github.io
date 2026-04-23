@@ -115,30 +115,22 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 	var right_vowels = 0;
 
 	for (var letter in letter_freq) {
-    if (!lookup[letter]) {
-      // console.log("couldn't find "+letter+" "+typeof(letter)+ " in lookup")
-      break;
-    }
+		if (!lookup[letter]) {
+			// console.log("couldn't find "+letter+" "+typeof(letter)+ " in lookup")
+			break;
+		}
 
 		count = letter_freq[letter].count;
 		effort += lookup[letter].effort * count;
 		col1 = lookup[letter].col;
 		row1 = lookup[letter].row;
+
 		if (col1 <= 5) {
-			if (row1 <= 2) {
-				left_hand += count;
-			}
-			if (vowel_set.has(letter)) {
-				left_vowels += 1;
-			}
-		}
-		if (col1 >= 6) {
-			if (row1 <= 2) {
-				right_hand += count;
-			}
-			if (vowel_set.has(letter)) {
-				right_vowels += 1;
-			}
+			if (row1 <= 2) left_hand += count;
+			if (vowel_set.has(letter)) left_vowels += 1;
+		} else {
+			if (row1 <= 2) right_hand += count;
+			if (vowel_set.has(letter)) right_vowels += 1;
 		}
 	}
 
@@ -146,15 +138,14 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 	const right_hand_p = 100 * (right_hand / (left_hand + right_hand));
 	hand_balance = Math.abs(left_hand_p - right_hand_p);
 	// console.log(left_hand, right_hand, left_hand_p, right_hand_p, hand_balance)
-	
-  if (left_vowels > right_vowels) {
+
+	vowels = left_vowels;
+	if (left_vowels > right_vowels) {
 		vowels = right_vowels;
-	} else {
-		vowels = left_vowels;
 	}
 	// console.log("left: "+left_hand_p+"  right: "+right_hand_p+"  balance:"+hand_balance)
-	
-  for (const item in bigrams) {
+
+	for (const item in bigrams) {
 		// console.log(item+"   "+data[item]);
 		a = item.charAt(0);
 		b = item.charAt(1);
@@ -193,10 +184,10 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			}
 		} else {
 			if (col1 <= 5 && col2 <= 5) {
-        // LEFT HAND
+				// LEFT HAND
 				if (row1 <= 2 && row2 <= 2) {
-          const dist_row = Math.abs(row1 - row2)
-          const dist_col = Math.abs(col1 - col2)
+					const dist_row = Math.abs(row1 - row2);
+					const dist_col = Math.abs(col1 - col2);
 					if (dist_row === 2) {
 						if (dist_col === 1) {
 							scissors += count;
@@ -221,7 +212,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						// console.log(item + " " + count)
 					}
 				}
-        // END LEFT HAND
+				// END LEFT HAND
 			} else if (col1 >= 6 && col2 >= 6) {
 				// RIGHT HAND
 				if (row1 <= 2 && row2 <= 2) {
@@ -248,7 +239,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						lat_str += count / 2;
 					}
 				}
-        // END RIGHT HAND
+				// END RIGHT HAND
 			}
 		}
 	}
