@@ -156,7 +156,7 @@ function selectLanguage(lan, event) {
 	lang = lan;
 	var queryParams = new URLSearchParams(window.location.search);
 	queryParams.set("lan", lang);
-	history.replaceState(null, null, "?" + queryParams.toString());
+	history.replaceState(null, null, `?${queryParams.toString()}`);
 
 	var word_list = `words-${lan}.json`;
 	console.log(`============ ${lan.toUpperCase()} ============`);
@@ -173,7 +173,7 @@ function selectLanguage(lan, event) {
 					}
 				}
 				document.getElementById("langDropDown").innerHTML +=
-					"+" + lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
+					`+${lan.charAt(0).toUpperCase()}${lan.substr(1).toLowerCase()}`;
 			} else {
 				words = data; // Assign data to the global variable
 				document.getElementById("langDropDown").innerHTML =
@@ -428,11 +428,11 @@ function closeImportPopup() {
 	var message = "";
 	if (missing.length > 0) {
 		message =
-			message + "These letters are missing: " + missing.join(" ") + "\n";
+			`${message}These letters are duplicated: ${duplicates.join(" ")}\n`;
 	}
 	if (duplicates.length > 0) {
 		message =
-			message + "These letters are duplicated: " + duplicates.join(" ") + "\n";
+			`${message}These letters are duplicated: ${duplicates.join(" ")}\n`;
 	}
 	if (message.length > 0) {
 		document.getElementById("importMessage").innerText = message;
@@ -459,7 +459,7 @@ function closeImportPopup() {
 			document.getElementById("importMessage").innerText =
 				"Input string contains too many characters";
 			console.log(
-				"input string is length " + importString.length + "  " + importString,
+				`input string is length ${importString.length}  ${importString}`,
 			);
 			return;
 		}
@@ -527,7 +527,7 @@ function closeCorpusPopup() {
 function closePopup() {
 	for (let row = 0; row < nb_row; row++) {
 		for (let col = 0; col < nb_columns; col++) {
-			const name = "textInput-" + row + "-" + col;
+			const name = `textInput-${row}-${col}`;
 			effort[row][col] = document.getElementById(name).value;
 		}
 	}
@@ -541,7 +541,7 @@ function copyEffortGridToClipboard() {
 	values = [];
 	for (let row = 0; row < 3; row++) {
 		for (let col = 0; col < 12; col++) {
-			const name = "textInput-" + row + "-" + col;
+			const name = `textInput-${row}-${col}`;
 			values.push(document.getElementById(name).value);
 		}
 	}
@@ -579,7 +579,7 @@ function pasteEffortGridFromClipboard() {
 
 			for (let row = 0; row < 3; row++) {
 				for (let col = 0; col < 12; col++) {
-					const name = "textInput-" + row + "-" + col;
+					const name = `textInput-${row}-${col}`;
 					document.getElementById(name).value = numbersArray[row * 12 + col];
 				}
 			}
@@ -650,8 +650,8 @@ function showTooltip(evt, text) {
 	const tooltip = document.getElementById("tooltip");
 	tooltip.innerHTML = text;
 	tooltip.style.display = "block";
-	tooltip.style.left = evt.pageX + 10 + "px";
-	tooltip.style.top = evt.pageY + 10 + "px";
+	tooltip.style.left = `${evt.pageX + 10}px`;
+	tooltip.style.top = `${evt.pageY + 10}px`;
 }
 
 function hideTooltip() {
@@ -667,7 +667,7 @@ function setMode() {
 	) {
 		return;
 	}
-	console.log("setMode to " + mode);
+	console.log(`setMode to ${mode}`);
 	if (mode === "ergo") {
 		setErgo();
 	} else if (mode === "ansi") {
@@ -721,7 +721,7 @@ function setErgo() {
 	queryParams.set("mode", mode);
 	queryParams.set("lan", lang);
 	queryParams.set("thumb", thumb);
-	history.replaceState(null, null, "?" + queryParams.toString());
+	history.replaceState(null, null, `?${queryParams.toString()}`);
 }
 
 function activateIso(anglemod) {
@@ -780,7 +780,7 @@ function setIso(anglemod) {
 		queryParams.set("layout", exportLayout());
 		queryParams.set("mode", mode);
 		queryParams.set("lan", lang);
-		history.replaceState(null, null, "?" + queryParams.toString());
+		history.replaceState(null, null, `?${queryParams.toString()}`);
 	} else {
 		console.log("You can't have layouts with thumb letters on ISO/ANSI");
 	}
@@ -840,7 +840,7 @@ function setAnsi() {
 		queryParams.set("layout", exportLayout());
 		queryParams.set("mode", mode);
 		queryParams.set("lan", lang);
-		history.replaceState(null, null, "?" + queryParams.toString());
+		history.replaceState(null, null, `?${queryParams.toString()}`);
 	} else {
 		console.log("You can't have layouts with thumb letters on ISO/ANSI");
 	}
@@ -849,7 +849,7 @@ function setAnsi() {
 function importLayout(layout) {
 	if (layout.length === 35) {
 		const decodedString = decodeURIComponent(layout);
-		console.log("importing: " + decodedString);
+		console.log(`importing: ${decodedString}`);
 		layout = decodedString;
 		// change shift to =
 		for (let i = 0; i < 34; i++) {
@@ -861,7 +861,7 @@ function importLayout(layout) {
 		for (let i = 0; i < 37; i++) {
 			if (rcdata[i][0] === "$") {
 				rcdata[i][0] = "=";
-				console.log("setting " + i + " to *");
+				console.log(`setting ${i} to *`);
 			}
 		}
 		//
@@ -903,7 +903,7 @@ function importLayout(layout) {
 		}
 	} else {
 		const decodedString = decodeURIComponent(layout);
-		console.log("importing: " + decodedString);
+		console.log(`importing: ${decodedString}`);
 		layout = decodedString;
 		for (let i = 0; i < 34; i++) {
 			// qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
@@ -945,7 +945,7 @@ function importLayout(layout) {
 	queryParams.set("mode", mode);
 	queryParams.set("lan", lang);
 	queryParams.set("thumb", thumb);
-	history.replaceState(null, null, "?" + queryParams.toString());
+	history.replaceState(null, null, `?${queryParams.toString()}`);
 }
 
 function exportLayout() {
@@ -1155,7 +1155,7 @@ function generateLayout() {
 			.attr("height", w - gap)
 			.attr("rx", 4)
 			.attr("ry", 4)
-			.attr("fill", "#" + hex_red + hex_bg + hex_bg)
+			.attr("fill", `#${hex_red}${hex_bg}${hex_bg}`)
 			.attr("stroke", "black")
 			.attr("stroke-width", "1")
 			.attr("class", "draggable");
@@ -1195,7 +1195,7 @@ function generateLayout() {
 		.attr("font-family", "Sans,Arial")
 		.attr("fill", "#dfe2eb")
 		.attr("text-anchor", "left")
-		.text("Total Word Effort " + (m_total_word_effort / 100.0).toFixed(1));
+		.text(`Total Word Effort ${(0.01 * m_total_word_effort).toFixed(1)}`);
 	// effort text
 	svg
 		.append("text")
@@ -1205,7 +1205,7 @@ function generateLayout() {
 		.attr("font-family", "Sans,Arial")
 		.attr("fill", "#dfe2eb")
 		.attr("text-anchor", "left")
-		.text("Effort " + (577 * m_effort * inv_m_input_length).toFixed(2));
+		.text(`Effort ${(577 * m_effort * inv_m_input_length).toFixed(2)}`);
 	// edit button
 	svg
 		.append("rect")
@@ -1485,7 +1485,7 @@ function measureDictionary() {
 				}
 			}
 		}
-		if (total.isNan) console.log(word + " gives NaN for effort");
+		if (total.isNan) console.log(`${word} gives NaN for effort`);
 		
 		word_effort[word] = 0.1 * total;
 	}
@@ -2028,7 +2028,7 @@ function measureWords() {
 			}
 			// trigram stuff
 			if (i > 1 && prevcol >= 0) {
-				skip = ppchar + "_" + char;
+				skip = `${ppchar}_${char}`;
 				trigram = ppchar + prevchar + char;
 				if (finger === ppfinger && ppchar !== char) {
 					if (!m_skip_bigram[skip]) {
@@ -2270,20 +2270,20 @@ function generatePlots() {
 	}
 	const inv_sum_col_usage = 1.0 / sum_col_usage;
 	for (const col in m_column_usage) {
-		var height = 300 * m_column_usage[col] * inv_sum_col_usage;
-		var tip = parseFloat(100 * m_column_usage[col] * inv_sum_col_usage).toFixed(
+		const height = 300 * m_column_usage[col] * inv_sum_col_usage;
+		const tip = parseFloat(100 * m_column_usage[col] * inv_sum_col_usage).toFixed(
 			2,
 		);
-		var red = Math.floor(275 * m_column_usage[col] * inv_sum_col_usage) + 128;
-		var green = 128;
+		let red = Math.floor(275 * m_column_usage[col] * inv_sum_col_usage) + 128;
+		const green = 128;
 		if (red < 16) {
 			red = 16;
 		}
 		if (red > 255) {
 			red = 255;
 		}
-		var hex_red = red.toString(16);
-		var hex_bg = green.toString(16);
+		const hex_red = red.toString(16);
+		const hex_bg = green.toString(16);
 
 		stats
 			.append("rect")
@@ -2291,10 +2291,10 @@ function generatePlots() {
 			.attr("y", 100 - height)
 			.attr("width", 15)
 			.attr("height", height)
-			.attr("fill", "#" + hex_red + hex_bg + hex_bg)
+			.attr("fill", `#${hex_red}${hex_bg}${hex_bg}`)
 			.attr("stroke", "#453033")
 			.attr("stroke-width", 1)
-			.attr("onmouseover", "showTooltip(evt,'" + tip + "%')")
+			.attr("onmouseover", `showTooltip(evt,'${tip}%')`)
 			.attr("onmouseout", "hideTooltip()");
 		stats
 			.append("text")
@@ -2345,10 +2345,10 @@ function generatePlots() {
 			.attr("y", y + 40 + row * 20)
 			.attr("width", height)
 			.attr("height", 14)
-			.attr("fill", "#" + hex_red + hex_bg + hex_bg)
+			.attr("fill", `#${hex_red}${hex_bg}${hex_bg}`)
 			.attr("stroke", "#453033")
 			.attr("stroke-width", 1)
-			.attr("onmouseover", "showTooltip(evt,'" + tip + "%')")
+			.attr("onmouseover", `showTooltip(evt,'${tip}%')`)
 			.attr("onmouseout", "hideTooltip()");
 		stats
 			.append("text")
@@ -2358,7 +2358,7 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "middle")
-			.text(parseInt(row) + 1);
+			.text(parseInt(row) + 1); // lint/correctness/useParseIntRadix: Missing radix
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 	}
 	///////////////////////////////////////   F I N G E R   U S A G E   //////////////////////////////////////
@@ -2387,29 +2387,29 @@ function generatePlots() {
 	}
 	var inv_sum = 1.0 / sum;
 	for (const finger in m_finger_usage) {
-		var norm_finger_usage = m_finger_usage[finger] * inv_sum;
-		var height = 300 * norm_finger_usage;
-		var tip = parseFloat(100 * norm_finger_usage).toFixed(2);
-		var red = Math.floor(275 * norm_finger_usage) + 128;
-		var green = 128;
+		const norm_finger_usage = m_finger_usage[finger] * inv_sum;
+		const height = 300 * norm_finger_usage;
+		const tip = parseFloat(100 * norm_finger_usage).toFixed(2);
+		let red = Math.floor(275 * norm_finger_usage) + 128;
+		const green = 128;
 		if (red < 16) {
 			red = 16;
 		}
 		if (red > 255) {
 			red = 255;
 		}
-		var hex_red = red.toString(16);
-		var hex_bg = green.toString(16);
+		const hex_red = red.toString(16);
+		const hex_bg = green.toString(16);
 		stats
 			.append("rect")
 			.attr("x", x + finger * 20)
 			.attr("y", 100 - height)
 			.attr("width", 15)
 			.attr("height", height)
-			.attr("fill", "#" + hex_red + hex_bg + hex_bg)
+			.attr("fill", `#${hex_red}${hex_bg}${hex_bg}`)
 			.attr("stroke", "#453033")
 			.attr("stroke-width", 1)
-			.attr("onmouseover", "showTooltip(evt,'" + tip + "%')")
+			.attr("onmouseover", `showTooltip(evt,'${tip}%')`)
 			.attr("onmouseout", "hideTooltip()");
 		stats
 			.append("text")
@@ -2429,7 +2429,7 @@ function generatePlots() {
 		.attr("font-size", 11)
 		.attr("font-family", "Sans,Arial")
 		.attr("text-anchor", "middle")
-		.text(parseFloat(100 * left * inv_sum).toFixed(2) + "%");
+		.text(`${parseFloat(100 * left * inv_sum).toFixed(2)}%`);
 	stats
 		.append("text")
 		.attr("x", x + 177)
@@ -2438,7 +2438,7 @@ function generatePlots() {
 		.attr("font-size", 11)
 		.attr("font-family", "Sans,Arial")
 		.attr("text-anchor", "middle")
-		.text(parseFloat(100 * right * inv_sum).toFixed(2) + "%");
+		.text(`${parseFloat(100 * right * inv_sum).toFixed(2)}%`);
 	///////////////////////////////////////   F I N G E R   D I S T A N C E   //////////////////////////////////
 	var x = 250;
 	var y = 0;
@@ -2468,29 +2468,29 @@ function generatePlots() {
 		.text("Finger Distance");
 	for (const finger in m_finger_distance) {
 		if (m_finger_distance[finger] > 0) {
-			var norm_finger_distance = m_finger_distance[finger] * inv_max;
-			var height = 75 * norm_finger_distance;
-			var tip = parseFloat(100 * norm_finger_distance).toFixed(2);
-			var red = Math.floor(128 * norm_finger_distance) + 128;
-			var green = 128;
+			const norm_finger_distance = m_finger_distance[finger] * inv_max;
+			const height = 75 * norm_finger_distance;
+			const tip = parseFloat(100 * norm_finger_distance).toFixed(2);
+			let red = Math.floor(128 * norm_finger_distance) + 128;
+			const green = 128;
 			if (red < 16) {
 				red = 16;
 			}
 			if (red > 255) {
 				red = 255;
 			}
-			var hex_red = red.toString(16);
-			var hex_bg = green.toString(16);
+			const hex_red = red.toString(16);
+			const hex_bg = green.toString(16);
 			stats
 				.append("rect")
 				.attr("x", x + finger * 20)
 				.attr("y", 100 - height)
 				.attr("width", 15)
 				.attr("height", height)
-				.attr("fill", "#" + hex_red + hex_bg + hex_bg)
+				.attr("fill", `#${hex_red}${hex_bg}${hex_bg}`)
 				.attr("stroke", "#453033")
 				.attr("stroke-width", 1)
-				.attr("onmouseover", "showTooltip(evt,'" + tip + "')")
+				.attr("onmouseover", `showTooltip(evt,'${tip}')`)
 				.attr("onmouseout", "hideTooltip()");
 			stats
 				.append("text")
@@ -2512,7 +2512,7 @@ function generatePlots() {
 		.attr("font-size", 11)
 		.attr("font-family", "Sans,Arial")
 		.attr("text-anchor", "middle")
-		.text(parseFloat(100 * left * inv_sum).toFixed(2) + "%");
+		.text(`${parseFloat(100 * left * inv_sum).toFixed(2)}%`);
 	stats
 		.append("text")
 		.attr("x", x + 177)
@@ -2521,7 +2521,7 @@ function generatePlots() {
 		.attr("font-size", 11)
 		.attr("font-family", "Sans,Arial")
 		.attr("text-anchor", "middle")
-		.text(parseFloat(100 * right * inv_sum).toFixed(2) + "%");
+		.text(`${parseFloat(100 * right * inv_sum).toFixed(2)}%`);
 	stats
 		.append("text")
 		.attr("x", x + 117)
@@ -2596,7 +2596,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Same Finger Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 		// stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
 
 		let i = 0;
@@ -2637,9 +2637,9 @@ function generatePlots() {
 				.attr("font-family", "Sans,Arial")
 				.attr("text-anchor", "left")
 				.text(
-					parseFloat(
-						"" + 100 * m_same_finger[bigram] * inv_m_input_length,
-					).toFixed(2) + "%",
+					`${parseFloat(
+						`${100 * m_same_finger[bigram] * inv_m_input_length}`,
+					).toFixed(2)}%`,
 				);
 			//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 			i += 1;
@@ -2659,7 +2659,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Same Finger Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 		for (const finger in m_same_finger2) {
 			var height = 30000 * m_same_finger2[finger] * inv_m_input_length;
 			if (height > 150) {
@@ -2685,10 +2685,10 @@ function generatePlots() {
 				.attr("y", y + 155 - height)
 				.attr("width", 15)
 				.attr("height", height)
-				.attr("fill", "#" + hex_red + hex_bg + hex_bg)
+				.attr("fill", `#${hex_red}${hex_bg}${hex_bg}`)
 				.attr("stroke", "#453033")
 				.attr("stroke-width", 1)
-				.attr("onmouseover", "showTooltip(evt,'" + tip + "%')")
+				.attr("onmouseover", `showTooltip(evt,'${tip}%')`)
 				.attr("onmouseout", "hideTooltip()");
 
 			stats
@@ -2717,7 +2717,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("2u Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`2u Same Finger Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 		// stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
 
 		var i = 0;
@@ -2758,9 +2758,9 @@ function generatePlots() {
 				.attr("font-family", "Sans,Arial")
 				.attr("text-anchor", "left")
 				.text(
-					parseFloat(
-						"" + 100 * m_same_finger3[bigram] * inv_m_input_length,
-					).toFixed(2) + "%",
+					`${parseFloat(
+						`${100 * m_same_finger3[bigram] * inv_m_input_length}`,
+					).toFixed(2)}%`,
 				);
 			//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 			i += 1;
@@ -2805,7 +2805,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Skip Bigrams (2u) " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Skip Bigrams (2u) ${parseFloat(100 * sum).toFixed(2)}%`);
 	}
 
 	stats
@@ -2889,7 +2889,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
 			.text(
-				parseFloat("" + 100 * tmp[bigram] * inv_m_input_length).toFixed(2) +
+				parseFloat(`${100 * tmp[bigram] * inv_m_input_length}`).toFixed(2) +
 					"%",
 			);
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
@@ -2917,7 +2917,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Lat Stretch Bigrams " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Lat Stretch Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 	} else {
 		const keyValueArray = Object.entries(m_lat_stretch2);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -2933,7 +2933,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Ring LSBs " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Ring LSBs ${parseFloat(100 * sum).toFixed(2)}%`);
 	}
 
 	stats
@@ -3017,7 +3017,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
 			.text(
-				parseFloat("" + 100 * tmp[bigram] * inv_m_input_length).toFixed(2) +
+				parseFloat(`${100 * tmp[bigram] * inv_m_input_length}`).toFixed(2) +
 					"%",
 			);
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
@@ -3046,9 +3046,9 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Pinky/Ring Scissors " + parseFloat(100 * sum).toFixed(2) + "%");
-	} else if (scissors_toggle == 0) {
-		var keyValueArray = Object.entries(m_scissors);
+			.text(`Pinky/Ring Scissors ${parseFloat(100 * sum).toFixed(2)}%`);
+	} else if (scissors_toggle === 0) {
+		const keyValueArray = Object.entries(m_scissors);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
 		for (const bigram in tmp) {
@@ -3062,7 +3062,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Scissors " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Scissors ${parseFloat(100 * sum).toFixed(2)}%`);
 	} else {
 		var keyValueArray = Object.entries(m_all_scissors);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
@@ -3078,7 +3078,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("fill", "#dfe2eb")
 			.attr("text-anchor", "left")
-			.text("Wide Scissors " + parseFloat(100 * sum).toFixed(2) + "%");
+			.text(`Wide Scissors ${parseFloat(100 * sum).toFixed(2)}%`);
 	}
 	stats
 		.append("path")
@@ -3161,7 +3161,7 @@ function generatePlots() {
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
 			.text(
-				parseFloat("" + 100 * tmp[bigram] * inv_m_input_length).toFixed(2) +
+				parseFloat(`${100 * tmp[bigram] * inv_m_input_length}`).toFixed(2) +
 					"%",
 			);
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
@@ -3178,7 +3178,7 @@ function generatePlots() {
 	scale = 1;
 	var trigram_title = "Trigram Stats";
 
-	if (trigram_toggle == 0) {
+	if (trigram_toggle === 0) {
 		var keyValueArray = Object.entries(m_trigram_count);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
@@ -3188,7 +3188,7 @@ function generatePlots() {
 		trigram_title = "Trigram Stats";
 		scale = 1;
 		dx = 105;
-	} else if (trigram_toggle == 1) {
+	} else if (trigram_toggle === 1) {
 		var keyValueArray = Object.entries(m_trigram_count_alt);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
@@ -3198,7 +3198,7 @@ function generatePlots() {
 		trigram_title = "Trigram Stats (alts)";
 		scale = 3;
 		dx = 47;
-	} else if (trigram_toggle == 2) {
+	} else if (trigram_toggle === 2) {
 		var keyValueArray = Object.entries(m_trigram_count_red);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
@@ -3208,7 +3208,7 @@ function generatePlots() {
 		trigram_title = "Trigram Stats (redirects)";
 		scale = 3;
 		dx = 47;
-	} else if (trigram_toggle == 3) {
+	} else if (trigram_toggle === 3) {
 		var keyValueArray = Object.entries(m_trigram_count_roll_in);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
@@ -3218,7 +3218,7 @@ function generatePlots() {
 		trigram_title = "Trigram Stats (roll in)";
 		scale = 3;
 		dx = 47;
-	} else if (trigram_toggle == 4) {
+	} else if (trigram_toggle === 4) {
 		var keyValueArray = Object.entries(m_trigram_count_roll_out);
 		keyValueArray.sort((a, b) => b[1] - a[1]);
 		tmp = Object.fromEntries(keyValueArray);
@@ -3333,7 +3333,7 @@ function generatePlots() {
 			.attr("fill", "#7777bb")
 			.attr("stroke", "#9898d6")
 			.attr("stroke-width", 1)
-			.attr("onmouseover", "showTooltip(evt,'" + trigram_desc[cat] + "')")
+			.attr("onmouseover", `showTooltip(evt,'${trigram_desc[cat]}')`)
 			.attr("onmouseout", "hideTooltip()");
 		stats
 			.append("text")
@@ -3352,7 +3352,7 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
-			.text(parseFloat("" + 100 * tmp_cat_inv_sum).toFixed(2) + "%");
+			.text(`${parseFloat("" + 100 * tmp_cat_inv_sum).toFixed(2)}%`);
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 		i += 1;
 		if (i > 10) {
@@ -3422,7 +3422,7 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
-			.text(parseFloat("" + word_len_count).toFixed(0)); //
+			.text(parseFloat(`${word_len_count}`).toFixed(0)); //
 		i += 1;
 		if (i > 10) {
 			break;
@@ -3542,7 +3542,7 @@ function generatePlots() {
 				.attr("font-size", 10)
 				.attr("font-family", "Sans,Arial")
 				.attr("text-anchor", "left")
-				.text(parseFloat("" + word_effort[word]).toFixed(2));
+				.text(parseFloat(`${word_effort[word]}`).toFixed(2));
 			i += 1;
 			if (i > 10) {
 				break;
@@ -3624,8 +3624,8 @@ function generatePlots() {
 			if (j > 4) {
 				finger2 += 2;
 			}
-			if (i == 0 && j == 0) {
-			} else if (i == 0 && j > 0) {
+			if (i === 0 && j === 0) {
+			} else if (i === 0 && j > 0) {
 				stats
 					.append("text")
 					.attr("x", x + box_x * j + 14)
@@ -3635,7 +3635,7 @@ function generatePlots() {
 					.attr("fill", "#dfe2eb")
 					.attr("text-anchor", "middle")
 					.text(finger2);
-			} else if (i > 0 && j == 0) {
+			} else if (i > 0 && j === 0) {
 				stats
 					.append("text")
 					.attr("x", x + box_x * j + 14)
@@ -3667,7 +3667,7 @@ function generatePlots() {
 							.attr("y", y + box_y * i)
 							.attr("width", box_x)
 							.attr("height", box_y)
-							.attr("fill", "#" + hex_red + hex_bg + hex_bg)
+							.attr("fill", `#${hex_red}${hex_bg}${hex_bg}`)
 							.attr("stroke", "black")
 							.attr("stroke-width", "0.5");
 						stats
@@ -3678,7 +3678,7 @@ function generatePlots() {
 							.attr("font-family", "Sans,Arial")
 							.attr("fill", "black")
 							.attr("text-anchor", "middle")
-							.text(per + "%");
+							.text(`${per}%`);
 					}
 				}
 			}
@@ -3802,8 +3802,8 @@ function makeDraggable(svg) {
 			if (dropi === starti) {
 				selectedElement.setAttributeNS(null, "x", startx);
 				selectedElement.setAttributeNS(null, "y", starty);
-				sibling.setAttributeNS(null, "x", parseInt(startx) + 15);
-				sibling.setAttributeNS(null, "y", parseInt(starty) + 19);
+				sibling.setAttributeNS(null, "x", parseInt(startx, 10) + 15);
+				sibling.setAttributeNS(null, "y", parseInt(starty, 10) + 19);
 				selectedElement = false;
 				sibling = false;
 				return;
@@ -3812,8 +3812,8 @@ function makeDraggable(svg) {
 				if (rcdata[dropi][1] < 3) {
 					selectedElement.setAttributeNS(null, "x", startx);
 					selectedElement.setAttributeNS(null, "y", starty);
-					sibling.setAttributeNS(null, "x", parseInt(startx) + 15);
-					sibling.setAttributeNS(null, "y", parseInt(starty) + 19);
+					sibling.setAttributeNS(null, "x", parseInt(startx, 10) + 15);
+					sibling.setAttributeNS(null, "y", parseInt(starty, 10) + 19);
 					selectedElement = false;
 					sibling = false;
 					return;
@@ -3823,8 +3823,8 @@ function makeDraggable(svg) {
 				if (rcdata[starti][1] < 3) {
 					selectedElement.setAttributeNS(null, "x", startx);
 					selectedElement.setAttributeNS(null, "y", starty);
-					sibling.setAttributeNS(null, "x", parseInt(startx) + 15);
-					sibling.setAttributeNS(null, "y", parseInt(starty) + 19);
+					sibling.setAttributeNS(null, "x", parseInt(startx, 10) + 15);
+					sibling.setAttributeNS(null, "y", parseInt(starty, 10) + 19);
 					selectedElement = false;
 					sibling = false;
 					return;
@@ -3833,8 +3833,8 @@ function makeDraggable(svg) {
 			if (closestdist > 0.8) {
 				selectedElement.setAttributeNS(null, "x", startx);
 				selectedElement.setAttributeNS(null, "y", starty);
-				sibling.setAttributeNS(null, "x", parseInt(startx) + 15);
-				sibling.setAttributeNS(null, "y", parseInt(starty) + 19);
+				sibling.setAttributeNS(null, "x", parseInt(startx, 10) + 15);
+				sibling.setAttributeNS(null, "y", parseInt(starty, 10) + 19);
 				selectedElement = false;
 				sibling = false;
 				return;
