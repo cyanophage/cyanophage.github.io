@@ -194,7 +194,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						(finger1 === 1 && finger2 === 2) ||
 						(finger1 === 2 && finger2 === 1)
 					) {
-						if (dist_row >= 1) prscissors += count;
+						if (dist_row_L >= 1) prscissors += count;
 					}
 					if ((col1 === 5 && col2 === 3) || (col1 === 3 && col2 === 5)) {
 						lat_str += count;
@@ -230,13 +230,14 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						lat_str += count;
 					}
 					if ((col1 === 6 && col2 === 9) || (col1 === 9 && col2 === 6)) {
-						lat_str += count / 2;
+						lat_str += 0.5 * count;
 					}
 				}
 				// END RIGHT HAND
 			}
 		}
 	}
+
 	for (const item in trigrams) {
 		a = item.charAt(0);
 		b = item.charAt(1);
