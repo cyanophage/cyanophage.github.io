@@ -38,7 +38,6 @@ var needs_update = true;
 
 function scroll(event) {
 	event.preventDefault();
-	//
 	const svgRect = el.getBoundingClientRect();
 	const mouseX = event.clientX - svgRect.left;
 	const mouseY = event.clientY - svgRect.top;
@@ -98,19 +97,20 @@ function fetchData() {
 	fetch(word_list_url)
 		.then((response) => response.json())
 		.then((data) => {
-			words = data; // Assign data to the global variable
+			words = data; // (cyanophage) Assign data to the global variable
 			console.log("fetchData");
 			dataloaded = true;
 			needs_update = true;
 		})
 		.catch((error) => console.error("Error loading JSON file:", error));
 }
+
 function fetchDictionary() {
 	fetch(dictionary_url)
 		.then((response) => response.json())
 		.then((data) => {
 			if (data.dictionary) {
-				dictionary = data.dictionary; // Assign data to the global variable
+				dictionary = data.dictionary; // (cyanophage) Assign data to the global variable
 			} else {
 				console.log("something went wrong with loading the dictionary");
 			}
@@ -131,7 +131,7 @@ async function loadAllData() {
 			fetch(effort_url).then((response) => response.json()),
 		]);
 
-		// Assign the data to the global variables
+		// (cyanophage) Assign the data to the global variables
 		words = wordsData;
 		dictionary = dictionaryData.dictionary || [];
 		bigram_effort = effortData;
@@ -175,7 +175,7 @@ function selectLanguage(lan, event) {
 				document.getElementById("langDropDown").innerHTML +=
 					`+${lan.charAt(0).toUpperCase()}${lan.substr(1).toLowerCase()}`;
 			} else {
-				words = data; // Assign data to the global variable
+				words = data; // (cyanophage) Assign data to the global variable
 				document.getElementById("langDropDown").innerHTML =
 					lan.charAt(0).toUpperCase() + lan.substr(1).toLowerCase();
 			}
@@ -247,7 +247,7 @@ var rcdata = [
 	["back", 3, 6, 0, 0, 0, 1, 38],
 	["space", 3, 7, 0, 0, 0, 1, 39],
 ];
-const rcdata_len = rcdata.length; // Compute once
+const rcdata_len = rcdata.length;
 
 var effort = [
 	[
@@ -343,8 +343,11 @@ function closeImportPopup() {
 		return;
 	}
 	if (importString.length === 30) {
-		// probably cmini
-		if (strCount(importString, "-") === 0 && strCount(importString, "'") === 0) {
+		// (cyanophage) probably cmini
+		if (
+			strCount(importString, "-") === 0 &&
+			strCount(importString, "'") === 0
+		) {
 			importString =
 				importString.slice(0, 10) +
 				"-" +
@@ -353,7 +356,8 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, "-") === 0 && strCount(importString, ";") === 0
+			strCount(importString, "-") === 0 &&
+			strCount(importString, ";") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -363,7 +367,8 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, "'") === 0 && strCount(importString, ";") === 0
+			strCount(importString, "'") === 0 &&
+			strCount(importString, ";") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -373,7 +378,8 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, "'") === 0 && strCount(importString, "/") === 0
+			strCount(importString, "'") === 0 &&
+			strCount(importString, "/") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -383,7 +389,8 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, ";") === 0 && strCount(importString, "/") === 0
+			strCount(importString, ";") === 0 &&
+			strCount(importString, "/") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -393,7 +400,8 @@ function closeImportPopup() {
 				importString.slice(20) +
 				"\\^";
 		} else if (
-			strCount(importString, "/") === 0 && strCount(importString, "-") === 0
+			strCount(importString, "/") === 0 &&
+			strCount(importString, "-") === 0
 		) {
 			importString =
 				importString.slice(0, 10) +
@@ -413,7 +421,7 @@ function closeImportPopup() {
 		}
 	}
 	const letters = importString.toUpperCase().match(/[A-Z.,/\-';]/g) || [];
-	// Count occurrences of each letter
+	// (cyanophage) Count occurrences of each letter
 	const letterCount = {};
 	letters.forEach((letter) => {
 		letterCount[letter] = (letterCount[letter] || 0) + 1;
@@ -427,12 +435,10 @@ function closeImportPopup() {
 	);
 	var message = "";
 	if (missing.length > 0) {
-		message =
-			`${message}These letters are duplicated: ${duplicates.join(" ")}\n`;
+		message = `${message}These letters are duplicated: ${duplicates.join(" ")}\n`;
 	}
 	if (duplicates.length > 0) {
-		message =
-			`${message}These letters are duplicated: ${duplicates.join(" ")}\n`;
+		message = `${message}These letters are duplicated: ${duplicates.join(" ")}\n`;
 	}
 	if (message.length > 0) {
 		document.getElementById("importMessage").innerText = message;
@@ -484,7 +490,7 @@ function closeCorpusPopup() {
 	list = massive_string.split(" ");
 	var regex = /\d/;
 	list.forEach((element) => {
-		// i don't know what to do with these at the moment. just replacing them for now
+		// (cyanophage) i don't know what to do with these at the moment. just replacing them for now
 		element = element.replace("ä", "a");
 		element = element.replace("å", "a");
 		element = element.replace("á", "a");
@@ -567,7 +573,7 @@ function pasteEffortGridFromClipboard() {
 		console.error("Clipboard API not supported");
 		return;
 	}
-	// Retrieve clipboard content
+	// (cyanophage) Retrieve clipboard content
 	navigator.clipboard
 		.readText()
 		.then((text) => {
@@ -763,7 +769,7 @@ function setIso(anglemod) {
 		rcdata[39] = ["space", 3, 3, 0, 0, 0, 6.5, 39];
 		if (anglemod) {
 			fingerAssignment = [
-				// angle mod
+				// (cyanophage) angle mod
 				[1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
 				[1, 1, 2, 3, 4, 4, 7, 7, 8, 9, 10, 10, 10],
 				[1, 2, 3, 4, 4, 4, 7, 7, 8, 9, 10, 10, 10],
@@ -851,12 +857,14 @@ function importLayout(layout) {
 		const decodedString = decodeURIComponent(layout);
 		console.log(`importing: ${decodedString}`);
 		layout = decodedString;
+
 		// change shift to =
 		for (let i = 0; i < 34; i++) {
 			if (rcdata[i][0] === "^") {
 				rcdata[i][0] = "*";
 			}
 		}
+
 		// change ctrl to *
 		for (let i = 0; i < 37; i++) {
 			if (rcdata[i][0] === "$") {
@@ -864,7 +872,7 @@ function importLayout(layout) {
 				console.log(`setting ${i} to *`);
 			}
 		}
-		//
+		
 		for (let i = 0; i < 34; i++) {
 			// qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
 			for (let j = 0; j < 34; j++) {
@@ -924,7 +932,7 @@ function importLayout(layout) {
 		for (let i = 0; i < 34; i++) {
 			if (rcdata[i][0] === "^") {
 				if (rcdata[i][1] === 3 && rcdata[i][2] === 4) {
-					// cool
+					// (cyanophage) cool
 				} else {
 					rcdata[i][0] = "=";
 				}
@@ -1079,7 +1087,7 @@ function getFinger(row, col) {
 function dist(x1, y1, x2, y2) {
 	dx = x1 - x2;
 	dy = y1 - y2;
-	return inv_w * Math.sqrt(dx * dx + dy * dy); // pow is slow
+	return inv_w * Math.sqrt(dx * dx + dy * dy); // (narglab) pow is slow
 }
 
 function generateCoords() {
@@ -1181,7 +1189,7 @@ function generateLayout() {
 				.text(letter);
 		}
 	}
-	//
+	
 	if (m_total_word_effort === 0) {
 		// console.log("m_total_word_effort === 0")
 		measureDictionary();
@@ -1196,6 +1204,7 @@ function generateLayout() {
 		.attr("fill", "#dfe2eb")
 		.attr("text-anchor", "left")
 		.text(`Total Word Effort ${(0.01 * m_total_word_effort).toFixed(1)}`);
+
 	// effort text
 	svg
 		.append("text")
@@ -1206,6 +1215,7 @@ function generateLayout() {
 		.attr("fill", "#dfe2eb")
 		.attr("text-anchor", "left")
 		.text(`Effort ${(577 * m_effort * inv_m_input_length).toFixed(2)}`);
+
 	// edit button
 	svg
 		.append("rect")
@@ -1248,6 +1258,7 @@ function generateLayout() {
 		.attr("onclick", "activateErgo()")
 		.attr("onmouseover", "showTooltip(evt,'Switch layout to Ergo')")
 		.attr("onmouseout", "hideTooltip()");
+
 	svg
 		.append("text")
 		.attr("x", 640 + 23)
@@ -1258,6 +1269,7 @@ function generateLayout() {
 		.attr("text-anchor", "middle")
 		.attr("pointer-events", "none")
 		.text("Ergo");
+
 	// iso button
 	svg
 		.append("rect")
@@ -1344,7 +1356,7 @@ var m_column_usage = {};
 var m_finger_usage = {};
 var m_finger_distance = {};
 var m_finger_pairs = {};
-var m_same_finger = {}; // per bigram
+var m_same_finger = {};  // per bigram
 var m_same_finger2 = {}; // per finger
 var m_same_finger3 = {}; // per bigram 2u
 var m_skip_bigram = {};
@@ -1413,7 +1425,7 @@ function measureDictionary() {
 		count += 1;
 		total = 0.0;
 		word = dictionary[wordi];
-		word_len = word.length; // Compute once
+		word_len = word.length;
 		char1 = word.charAt(0);
 		samehand = `${char1}`;
 		for (let i = 1; i < word_len; i++) {
@@ -1486,7 +1498,7 @@ function measureDictionary() {
 			}
 		}
 		if (total.isNan) console.log(`${word} gives NaN for effort`);
-		
+
 		word_effort[word] = 0.1 * total;
 	}
 }
@@ -1502,33 +1514,35 @@ function getDictionaryFromWords() {
 }
 
 function getIndexOfKey(name) {
-	var x = -1;
+	let x_key = -1;
 	for (let i = 0; i < 34; i++) {
 		if (rcdata[i][7] === name) {
-			x = i;
+			x_key = i;
 		}
 	}
-	return x;
+	return x_key;
 }
 
 function updateRcData(lan) {
-	// what are the 33 letters ?
+	// (cyanophage) what are the 33 letters ?
 	var letters = [];
 	for (const word in words) {
 		if (letters.length >= 32) {
 			break;
 		}
-		const wordLetters = word.split(""); // Split the word into individual letters
+		const wordLetters = word.split(""); // (cyanophage) Split the word into individual letters
 		for (let i = 0; i < wordLetters.length; i++) {
 			if (letters.indexOf(wordLetters[i]) === -1) {
-				letters.push(wordLetters[i]); // Add letter to the list if not already present
+				letters.push(wordLetters[i]); // (cyanophage) Add letter to the list if not already present
 			}
 		}
 	}
-	// my new idea for fixing this issue still didn't work
-	// the problem is that the keys that I want to change when switching languages aren't in a consistent position in the grid, or at a consistent position in the array,
-	// or have a consistent letter on them. Even the index I added to try to make them consistent didn't work because of the way the import process works
-	if (lan === "german") {
+	/* (cyanophage)
+  * my new idea for fixing this issue still didn't work
+	* the problem is that the keys that I want to change when switching languages aren't in a consistent position in the grid, or at a consistent position in the array,
+	* or have a consistent letter on them. Even the index I added to try to make them consistent didn't work because of the way the import process works
+	*/
+  if (lan === "german") {
 		// letters = ['q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', 'y','x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', 'ß']
 		if (getIndexOfKey(10) >= 0) {
 			rcdata[getIndexOfKey(10)][0] = "ü";
@@ -1822,7 +1836,7 @@ function measureWords() {
 			[1, 10],
 		];
 		const count = words[word];
-		word_len = word.length; // Compute once
+		word_len = word.length;
 		m_input_length += count * (word_len + 1);
 
 		if (word_effort[word]) {
@@ -1855,7 +1869,7 @@ function measureWords() {
 			}
 			if (col < 0) {
 				continue;
-			} // this is the part that just skips numbers and other characters
+			} // (cyanophage) this is the part that just skips numbers and other characters
 			if (!m_column_usage[col]) {
 				m_column_usage[col] = 0;
 			}
@@ -1992,7 +2006,10 @@ function measureWords() {
 				if (
 					Math.abs(col - prevcol) === 1 &&
 					Math.abs(row - prevrow) >= 1 &&
-					(finger === 1 || finger === 10 || prevfinger === 1 || prevfinger === 10)
+					(finger === 1 ||
+						finger === 10 ||
+						prevfinger === 1 ||
+						prevfinger === 10)
 				) {
 					if (!m_pinky_scissors[bigram]) {
 						m_pinky_scissors[bigram] = 0;
@@ -2055,7 +2072,9 @@ function measureWords() {
 						(ppfinger < prevfinger &&
 							finger < prevfinger &&
 							finger !== ppfinger) ||
-						(ppfinger > prevfinger && finger > prevfinger && finger !== ppfinger)
+						(ppfinger > prevfinger &&
+							finger > prevfinger &&
+							finger !== ppfinger)
 					) {
 						cat = "redirect";
 						// if (!m_redirects[trigram]) {
@@ -2078,7 +2097,9 @@ function measureWords() {
 						(ppfinger > prevfinger &&
 							finger > prevfinger &&
 							finger !== ppfinger) ||
-						(ppfinger < prevfinger && finger < prevfinger && finger !== ppfinger)
+						(ppfinger < prevfinger &&
+							finger < prevfinger &&
+							finger !== ppfinger)
 					) {
 						cat = "redirect";
 						// if (!m_redirects[trigram]) {
@@ -2252,7 +2273,8 @@ function generatePlots() {
 	}
 	console.log("generatePlots");
 	stats.selectAll("*").remove();
-	///////////////////////////////////////  C O L U M N   U S A G E  ////////////////////////////////////////////
+
+	// ================================  C O L U M N   U S A G E  ================================
 	let x = 500;
 	let y = 0;
 	stats
@@ -2272,9 +2294,9 @@ function generatePlots() {
 	const inv_sum_col_usage = 1.0 / sum_col_usage;
 	for (const col in m_column_usage) {
 		const height = 300 * m_column_usage[col] * inv_sum_col_usage;
-		const tip = parseFloat(100 * m_column_usage[col] * inv_sum_col_usage).toFixed(
-			2,
-		);
+		const tip = parseFloat(
+			100 * m_column_usage[col] * inv_sum_col_usage,
+		).toFixed(2);
 		let red = Math.floor(275 * m_column_usage[col] * inv_sum_col_usage) + 128;
 		const green = 128;
 		if (red < 16) {
@@ -2309,7 +2331,7 @@ function generatePlots() {
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 	}
 
-	///////////////////////////////////////  R O W   U S A G E  ////////////////////////////////////////////
+	// ================================  R O W   U S A G E  ================================
 	x = 770;
 	y = 0;
 	stats
@@ -2321,8 +2343,8 @@ function generatePlots() {
 		.attr("fill", "#dfe2eb")
 		.attr("text-anchor", "left")
 		.text("Row Usage");
-	
-  var sum_row_usage = 0;
+
+	var sum_row_usage = 0;
 	for (const row in m_row_usage) {
 		sum_row_usage += m_row_usage[row];
 	}
@@ -2330,7 +2352,9 @@ function generatePlots() {
 
 	for (const row in m_row_usage) {
 		const height = 200 * m_row_usage[row] * inv_sum_row_usage;
-		const tip = parseFloat(100 * m_row_usage[row] * inv_sum_row_usage).toFixed(2);
+		const tip = parseFloat(100 * m_row_usage[row] * inv_sum_row_usage).toFixed(
+			2,
+		);
 		let red = Math.floor(190 * m_row_usage[row] * inv_sum_row_usage) + 128;
 		const green = 128;
 		if (red < 16) {
@@ -2364,7 +2388,7 @@ function generatePlots() {
 			.text(parseInt(row, 10) + 1);
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 	}
-	///////////////////////////////////////   F I N G E R   U S A G E   //////////////////////////////////////
+	// ================================  F I N G E R   U S A G E  ================================
 	x = 0;
 	y = 0;
 	stats
@@ -2442,10 +2466,10 @@ function generatePlots() {
 		.attr("font-family", "Sans,Arial")
 		.attr("text-anchor", "middle")
 		.text(`${parseFloat(100 * right * inv_sum).toFixed(2)}%`);
-	///////////////////////////////////////   F I N G E R   D I S T A N C E   //////////////////////////////////
+	// ================================  F I N G E R   D I S T A N C E  ================================
 	x = 250;
 	y = 0;
-	var max = m_input_length / 5.110882176; // this might be shadowing 'max' above
+	var max = m_input_length / 5.110882176; // (narglab) this might be shadowing 'max' above
 	sum = 0;
 	left = 0;
 	right = 0;
@@ -2535,7 +2559,7 @@ function generatePlots() {
 		.attr("text-anchor", "middle")
 		.text(parseFloat(100 * sum * inv_max).toFixed(1));
 	// (100*sum/max).toFixed(1)
-	///////////////////////////////////   S A M E   F I N G E R   B I G R A M S    ///////////////////////////////
+	// ================================  S A M E   F I N G E R   B I G R A M S  ================================
 	x = 0;
 	y = 180;
 	sum = 0;
@@ -2772,7 +2796,7 @@ function generatePlots() {
 			}
 		}
 	}
-	///////////////////////////////////   S K I P   F I N G E R   B I G R A M S    ///////////////////////////////
+	// ================================  S K I P   F I N G E R   B I G R A M S  ================================
 	x = 250;
 	y = 180;
 	sum = 0;
@@ -2901,7 +2925,7 @@ function generatePlots() {
 			break;
 		}
 	}
-	////////////////////////////   L A T E R A L   S T R E T C H   B I G R A M S   ///////////////////////////////
+	// ================================  L A T E R A L   S T R E T C H   B I G R A M S  ================================
 	x = 500;
 	y = 180;
 	sum = 0;
@@ -3029,7 +3053,7 @@ function generatePlots() {
 			break;
 		}
 	}
-	////////////////////////////  S C I S S O R S  ///////////////////////////////
+	// ================================  S C I S S O R S  ================================
 	x = 760;
 	y = 180;
 	sum = 0;
@@ -3173,8 +3197,8 @@ function generatePlots() {
 			break;
 		}
 	}
-	
-  ///////////////////////////////////  T R I G R A M   S T A T S   ///////////////////////////////
+
+	// ================================  T R I G R A M   S T A T S  ================================
 	x = 760;
 	y = 390;
 	dx = 105;
@@ -3364,7 +3388,7 @@ function generatePlots() {
 		}
 	}
 
-	///////////////////////////////////  S A M E   H A N D   S T R I N G S  ///////////////////////////////
+	// ================================  S A M E   H A N D   S T R I N G S  ================================
 	x = 250;
 	y = 390;
 	sum = 0;
@@ -3426,14 +3450,14 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
-			.text(parseFloat(`${word_len_count}`).toFixed(0)); //
+			.text(parseFloat(`${word_len_count}`).toFixed(0));
 		i += 1;
 		if (i > 10) {
 			break;
 		}
 	}
 
-	///////////////////////////////////  S A M E   H A N D   C O U N T S  ///////////////////////////////
+	// ================================  S A M E   H A N D   C O U N T S  ================================
 	x = 415;
 	y = 390;
 	sum = 0;
@@ -3486,7 +3510,7 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
-			.text((scale * 7.142857142857143 * count).toFixed(1)); // was 7.14285714285714285714285, lint/correctness/noPrecisionLoss
+			.text((scale * 7.142857142857143 * count).toFixed(1)); // (narglab) was 7.14285714285714285714285, lint/correctness/noPrecisionLoss
 		// stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(count);
 		i += 1;
 		if (i > 10) {
@@ -3494,7 +3518,7 @@ function generatePlots() {
 		}
 	}
 
-	///////////////////////////////////  H A R D   W O R D S   ///////////////////////////////
+	// ================================  H A R D   W O R D S  ================================
 	x = 580;
 	y = 390;
 	sum = 0;
@@ -3553,28 +3577,30 @@ function generatePlots() {
 			}
 		}
 	}
-	///////////////////////////////////  E A S Y   W O R D S   ///////////////////////////////
-	// var x = 610;
-	// var y = 390;
-	// sum = 0;
-	// var keyValueArray = Object.entries(word_effort);
-	// keyValueArray.sort((a, b) => a[1] - b[1]);
-	// word_effort = Object.fromEntries(keyValueArray);
-	// stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Easy Words ")
-	// var i = 0
-	// for (var word in word_effort) {
-	//   var height = 10*word_effort[word];
-	//   if (word.length > 3){
-	//     stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
-	//       .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-	//     stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
-	//     stats.append("text").attr("x", x + 125).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
-	//     i += 1;
-	//     if (i > 10) { break; }
-	//   }
-	// }
+	// ================================  E A S Y   W O R D S  ================================
+  /*
+	var x = 610;
+	var y = 390;
+	sum = 0;
+	var keyValueArray = Object.entries(word_effort);
+	keyValueArray.sort((a, b) => a[1] - b[1]);
+	word_effort = Object.fromEntries(keyValueArray);
+	stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Easy Words ")
+	var i = 0
+	for (var word in word_effort) {
+	  var height = 10*word_effort[word];
+	  if (word.length > 3){
+	    stats.append("rect").attr("x", x + 80).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+	      .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+	    stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "right").text(word);
+	    stats.append("text").attr("x", x + 125).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (word_effort[word])).toFixed(2));
+	    i += 1;
+	    if (i > 10) { break; }
+	  }
+	}
+  */
 
-	///////////////////////////////////  F I N G E R   P A I R S   ///////////////////////////////
+	// ================================  F I N G E R   P A I R S  ================================
 	x = 10;
 	y = 370;
 	var box_x = 26;
@@ -3723,10 +3749,10 @@ function makeDraggable(svg) {
 				selectedElement = selectedElement.previousElementSibling;
 				sibling = evt.target;
 			} else {
-				sibling = selectedElement.nextElementSibling; // dude this is super useful!
+				sibling = selectedElement.nextElementSibling; // (cyanophage) dude this is super useful!
 			}
 			if (selectedElement) {
-				// move to the end so they appear on top while dragging
+				// (cyanophage) move to the end so they appear on top while dragging
 				svg.insertBefore(selectedElement, svg.lastChild);
 				svg.insertBefore(sibling, svg.lastChild);
 
@@ -3734,7 +3760,7 @@ function makeDraggable(svg) {
 				y = selectedElement.getAttributeNS(null, "y");
 				startx = x;
 				starty = y;
-				// scan through rcdata to find out which key are we closest to
+				// (cyanophage) scan through rcdata to find out which key are we closest to
 				closestdist = 9999;
 				starti = -1;
 				var keyname = "";
@@ -3784,7 +3810,7 @@ function makeDraggable(svg) {
 			x = selectedElement.getAttributeNS(null, "x");
 			y = selectedElement.getAttributeNS(null, "y");
 			// console.log("drop at "+x+"  "+y);
-			// scan through rcdata to find out which key are we closest to
+			// (cyanophage) scan through rcdata to find out which key are we closest to
 			closestdist = 9999;
 			let keyname = "";
 			for (let i = 0; i < rcdata_len; i++) {
