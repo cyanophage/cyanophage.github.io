@@ -162,7 +162,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 		vowels = left_vowels;
 	}
 	// console.log("left: "+left_hand_p+"  right: "+right_hand_p+"  balance:"+hand_balance)
-	for (var item in bigrams) {
+	for (const item in bigrams) {
 		// console.log(item+"   "+data[item]);
 		a = item.charAt(0);
 		b = item.charAt(1);
@@ -254,7 +254,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			}
 		}
 	}
-	for (var item in trigrams) {
+	for (const item in trigrams) {
 		a = item.charAt(0);
 		b = item.charAt(1);
 		c = item.charAt(2);
@@ -315,7 +315,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 }
 
 // Listen for the 'message' event
-self.onmessage = function (e) {
+self.onmessage = (e) => {
 	// Destructure the data and config from the event object
 	// const { bigrams, trigrams, config } = e.data;
 	const { letter_freq, bigrams, trigrams, config } = e.data;
