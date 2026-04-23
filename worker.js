@@ -114,59 +114,63 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 	var right_vowels = 0;
 
 	for (var letter in letter_freq) {
-		if (lookup[letter]) {
-			count = letter_freq[letter].count;
-			effort += lookup[letter].effort * count;
-			col1 = lookup[letter].col;
-			row1 = lookup[letter].row;
-			if (col1 <= 5) {
-				if (row1 <= 2) {
-					left_hand += count;
-				}
-				if (
-					letter === "a" ||
-					letter === "e" ||
-					letter === "i" ||
-					letter === "o" ||
-					letter === "u"
-				) {
-					left_vowels += 1;
-				}
+    if (!lookup[letter]) {
+      // console.log("couldn't find "+letter+" "+typeof(letter)+ " in lookup")
+      break;
+    }
+
+		count = letter_freq[letter].count;
+		effort += lookup[letter].effort * count;
+		col1 = lookup[letter].col;
+		row1 = lookup[letter].row;
+		if (col1 <= 5) {
+			if (row1 <= 2) {
+				left_hand += count;
 			}
-			if (col1 >= 6) {
-				if (row1 <= 2) {
-					right_hand += count;
-				}
-				if (
-					letter === "a" ||
-					letter === "e" ||
-					letter === "i" ||
-					letter === "o" ||
-					letter === "u"
-				) {
-					right_vowels += 1;
-				}
+			if (
+				letter === "a" ||
+				letter === "e" ||
+				letter === "i" ||
+				letter === "o" ||
+				letter === "u"
+			) {
+				left_vowels += 1;
 			}
-		} else {
-			// console.log("couldn't find "+letter+" "+typeof(letter)+ " in lookup")
+		}
+		if (col1 >= 6) {
+			if (row1 <= 2) {
+				right_hand += count;
+			}
+			if (
+				letter === "a" ||
+				letter === "e" ||
+				letter === "i" ||
+				letter === "o" ||
+				letter === "u"
+			) {
+				right_vowels += 1;
+			}
 		}
 	}
-	var left_hand_p = 100 * (left_hand / (left_hand + right_hand));
-	var right_hand_p = 100 * (right_hand / (left_hand + right_hand));
 
+	const left_hand_p = 100 * (left_hand / (left_hand + right_hand));
+	const right_hand_p = 100 * (right_hand / (left_hand + right_hand));
 	hand_balance = Math.abs(left_hand_p - right_hand_p);
 	// console.log(left_hand, right_hand, left_hand_p, right_hand_p, hand_balance)
-	if (left_vowels > right_vowels) {
+	
+  if (left_vowels > right_vowels) {
 		vowels = right_vowels;
 	} else {
 		vowels = left_vowels;
 	}
 	// console.log("left: "+left_hand_p+"  right: "+right_hand_p+"  balance:"+hand_balance)
-	for (const item in bigrams) {
+	
+  for (const item in bigrams) {
 		// console.log(item+"   "+data[item]);
 		a = item.charAt(0);
 		b = item.charAt(1);
 		count = bigrams[item];
+
 		if (lookup[a]) {
 			row1 = lookup[a].row;
 			col1 = lookup[a].col;
@@ -183,6 +187,8 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			// console.log("Can't find lookup info for "+b);
 			finger1 = -2;
 		}
+
+
 		if (finger1 === finger2 && a !== b) {
 			sfb += count;
 			if (finger1 === 1 || finger1 === 10) {
@@ -199,12 +205,14 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			}
 		} else {
 			if (col1 <= 5 && col2 <= 5) {
-				// LEFT HAND
+        // LEFT HAND
 				if (row1 <= 2 && row2 <= 2) {
-					if (Math.abs(row1 - row2) === 2) {
-						if (Math.abs(col1 - col2) === 1) {
+          const dist_row = Math.abs(row1 - row2)
+          const dist_col = Math.abs(col1 - col2)
+					if (dist_row === 2) {
+						if (dist_col === 1) {
 							scissors += count;
-						} else if (Math.abs(col1 - col2) > 1) {
+						} else if (dist_col > 1) {
 							wide_scissors += count;
 							// console.log(item + " " + count)
 						}
@@ -213,7 +221,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						(finger1 === 1 && finger2 === 2) ||
 						(finger1 === 2 && finger2 === 1)
 					) {
-						if (Math.abs(row1 - row2) >= 1) {
+						if (dist_row >= 1) {
 							prscissors += count;
 						}
 					}
@@ -221,10 +229,11 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						lat_str += count;
 					}
 					if ((col1 === 5 && col2 === 2) || (col1 === 2 && col2 === 5)) {
-						lat_str += count / 2;
+						lat_str += 0.5 * count;
 						// console.log(item + " " + count)
 					}
 				}
+        // END LEFT HAND
 			} else if (col1 >= 6 && col2 >= 6) {
 				// RIGHT HAND
 				if (row1 <= 2 && row2 <= 2) {
@@ -251,6 +260,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						lat_str += count / 2;
 					}
 				}
+        // END RIGHT HAND
 			}
 		}
 	}
