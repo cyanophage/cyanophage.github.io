@@ -692,7 +692,7 @@ function generateLayout() {
   const keyGroupsEnter = keyGroups.enter()
       .append("g")
       .attr("class", "key-group")
-      .on("click", function(event, d) {
+      .on("click", (event, d) => {
         toggleKeyOnOff(d);
       });
 
@@ -758,7 +758,7 @@ function generateCharacters() {
       .attr("class", "letter-group")
       // The drag handler and click listener are applied only once on creation.
       .call(dragHandler)
-      .on("click", function(event, d) {
+      .on("click", (event, d) => {
         // This function would be defined elsewhere in your code
         toggleCharOnOff(d.letter);
       });
@@ -1413,7 +1413,7 @@ function run() {
     }
 
     // Listen for results coming back from the worker
-    myWorker.onmessage = function(e) {
+    myWorker.onmessage = (e) => {
       const { result, config } = e.data;
       uid = create_uid(config)
       var score = 0;
@@ -1523,7 +1523,7 @@ function run() {
       }
     };
 
-    myWorker.onerror = function(error) {
+    myWorker.onerror = (error) => {
       console.error('Main: There was an error with the worker.', error);
     };
   } else {
