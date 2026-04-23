@@ -1925,7 +1925,7 @@ function measureWords() {
 				finger_pos[finger][1],
 			);
 			y2 = getY(
-				finger_pos[finger][0],
+				finger_pos[finger][0]
 			);
 			d = dist(x1, y1, x2, y2);
 			if (!m_finger_distance[finger]) {
@@ -2624,9 +2624,9 @@ function generatePlots() {
 			d3.select(this).attr("fill", "#777777");
 		});
 	if (sfb_toggle === 0) {
-		const keyValueArray = Object.entries(m_same_finger);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		m_same_finger = Object.fromEntries(keyValueArray);
+		const keyValueArray_same_finger = Object.entries(m_same_finger);
+		keyValueArray_same_finger.sort((a, b) => b[1] - a[1]);
+		m_same_finger = Object.fromEntries(keyValueArray_same_finger);
 
 		for (const bigram in m_same_finger) {
 			sum_sfb += m_same_finger[bigram] * inv_m_input_length;
@@ -2748,9 +2748,9 @@ function generatePlots() {
 				.text(finger);
 		}
 	} else {
-		const keyValueArray = Object.entries(m_same_finger3);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		m_same_finger3 = Object.fromEntries(keyValueArray);
+		const keyValueArray_same_finger3 = Object.entries(m_same_finger3);
+		keyValueArray_same_finger3.sort((a, b) => b[1] - a[1]);
+		m_same_finger3 = Object.fromEntries(keyValueArray_same_finger3);
 
 		for (const bigram in m_same_finger3) {
 			sum_sfb += m_same_finger3[bigram] * inv_m_input_length;
@@ -2821,9 +2821,9 @@ function generatePlots() {
 	let sum_skip_fb = 0;
 	var tmp;
 	if (skip_toggle) {
-		const keyValueArray = Object.entries(m_skip_bigram);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_skip_bigram = Object.entries(m_skip_bigram);
+		keyValueArray_skip_bigram.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_skip_bigram);
 		for (const bigram in tmp) {
 			sum_skip_fb += tmp[bigram] * inv_m_input_length;
 		}
@@ -2837,9 +2837,9 @@ function generatePlots() {
 			.attr("text-anchor", "left")
 			.text(`Skip Bigrams ${parseFloat(100 * sum_skip_fb).toFixed(2)}%`);
 	} else {
-		const keyValueArray = Object.entries(m_skip_bigram2);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_skip_bigram2 = Object.entries(m_skip_bigram2);
+		keyValueArray_skip_bigram2.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_skip_bigram2);
 		for (const bigram in tmp) {
 			sum_skip_fb += tmp[bigram] * inv_m_input_length;
 		}
@@ -2951,9 +2951,9 @@ function generatePlots() {
 	const y_lat_sb = 180;
 	sum = 0;
 	if (lsb_toggle === 0) {
-		const keyValueArray = Object.entries(m_lat_stretch);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_lat_stretch = Object.entries(m_lat_stretch);
+		keyValueArray_lat_stretch.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_lat_stretch);
 		for (const bigram in tmp) {
 			sum += tmp[bigram] * inv_m_input_length;
 		}
@@ -2967,9 +2967,9 @@ function generatePlots() {
 			.attr("text-anchor", "left")
 			.text(`Lat Stretch Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 	} else {
-		const keyValueArray = Object.entries(m_lat_stretch2);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_lat_stretch2 = Object.entries(m_lat_stretch2);
+		keyValueArray_lat_stretch2.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_lat_stretch2);
 		for (const bigram in tmp) {
 			sum += tmp[bigram] * inv_m_input_length;
 		}
@@ -3082,9 +3082,9 @@ function generatePlots() {
 	sum = 0;
 
 	if (scissors_toggle === 1) {
-		const keyValueArray = Object.entries(m_pinky_scissors);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_pinky_scissors = Object.entries(m_pinky_scissors);
+		keyValueArray_pinky_scissors.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_pinky_scissors);
 		for (const bigram in tmp) {
 			sum += tmp[bigram] * inv_m_input_length;
 		}
@@ -3098,9 +3098,9 @@ function generatePlots() {
 			.attr("text-anchor", "left")
 			.text(`Pinky/Ring Scissors ${parseFloat(100 * sum).toFixed(2)}%`);
 	} else if (scissors_toggle === 0) {
-		const keyValueArray = Object.entries(m_scissors);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_scissors = Object.entries(m_scissors);
+		keyValueArray_scissors.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_scissors);
 		for (const bigram in tmp) {
 			sum += tmp[bigram] * inv_m_input_length;
 		}
@@ -3114,9 +3114,9 @@ function generatePlots() {
 			.attr("text-anchor", "left")
 			.text(`Scissors ${parseFloat(100 * sum).toFixed(2)}%`);
 	} else {
-		const keyValueArray = Object.entries(m_all_scissors);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_all_scissors = Object.entries(m_all_scissors);
+		keyValueArray_all_scissors.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_all_scissors);
 		for (const bigram in tmp) {
 			sum += tmp[bigram] * inv_m_input_length;
 		}
@@ -3231,9 +3231,9 @@ function generatePlots() {
 	var trigram_title = "Trigram Stats";
 
 	if (trigram_toggle === 0) {
-		const keyValueArray = Object.entries(m_trigram_count);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_trigram_count = Object.entries(m_trigram_count);
+		keyValueArray_trigram_count.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_trigram_count);
 		for (const cat in tmp) {
 			sum += tmp[cat];
 		}
@@ -3241,9 +3241,9 @@ function generatePlots() {
 		scale = 1;
 		dx = 105;
 	} else if (trigram_toggle === 1) {
-		const keyValueArray = Object.entries(m_trigram_count_alt);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_trigram_count_alt = Object.entries(m_trigram_count_alt);
+		keyValueArray_trigram_count_alt.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_trigram_count_alt);
 		for (const cat in tmp) {
 			sum += tmp[cat];
 		}
@@ -3251,9 +3251,9 @@ function generatePlots() {
 		scale = 3;
 		dx = 47;
 	} else if (trigram_toggle === 2) {
-		const keyValueArray = Object.entries(m_trigram_count_red);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_trigram_count_red = Object.entries(m_trigram_count_red);
+		keyValueArray_trigram_count_red.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_trigram_count_red);
 		for (const cat in tmp) {
 			sum += tmp[cat];
 		}
@@ -3261,9 +3261,9 @@ function generatePlots() {
 		scale = 3;
 		dx = 47;
 	} else if (trigram_toggle === 3) {
-		const keyValueArray = Object.entries(m_trigram_count_roll_in);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_trigram_count_roll_in = Object.entries(m_trigram_count_roll_in);
+		keyValueArray_trigram_count_roll_in.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_trigram_count_roll_in);
 		for (const cat in tmp) {
 			sum += tmp[cat];
 		}
@@ -3271,9 +3271,9 @@ function generatePlots() {
 		scale = 3;
 		dx = 47;
 	} else if (trigram_toggle === 4) {
-		const keyValueArray = Object.entries(m_trigram_count_roll_out);
-		keyValueArray.sort((a, b) => b[1] - a[1]);
-		tmp = Object.fromEntries(keyValueArray);
+		const keyValueArray_trigram_count_roll_out = Object.entries(m_trigram_count_roll_out);
+		keyValueArray_trigram_count_roll_out.sort((a, b) => b[1] - a[1]);
+		tmp = Object.fromEntries(keyValueArray_trigram_count_roll_out);
 		for (const cat in tmp) {
 			sum += tmp[cat];
 		}
@@ -3418,9 +3418,9 @@ function generatePlots() {
 	const y_same_hand_strings = 390;
 	sum = 0;
 
-	var keyValueArray = Object.entries(samehandstrings);
-	keyValueArray.sort((a, b) => b[1] * b[0].length - a[1] * a[0].length);
-	samehandstrings = Object.fromEntries(keyValueArray);
+	const keyValueArray_same_hand_strings = Object.entries(samehandstrings);
+	keyValueArray_same_hand_strings.sort((a, b) => b[1] * b[0].length - a[1] * a[0].length);
+	samehandstrings = Object.fromEntries(keyValueArray_same_hand_strings);
 
 	scale = 30191.79 * inv_m_input_length;
 	// console.log("input length: "+m_input_length)
@@ -3549,9 +3549,9 @@ function generatePlots() {
 	const y_hard_words = 390;
 	sum = 0;
 
-	var keyValueArray = Object.entries(word_effort);
-	keyValueArray.sort((a, b) => b[1] / b[0].length - a[1] / a[0].length);
-	word_effort = Object.fromEntries(keyValueArray);
+	const keyValueArray_hard_words = Object.entries(word_effort);
+	keyValueArray_hard_words.sort((a, b) => b[1] / b[0].length - a[1] / a[0].length);
+	word_effort = Object.fromEntries(keyValueArray_hard_words);
 	stats
 		.append("text")
 		.attr("x", x + 40)
