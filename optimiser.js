@@ -188,7 +188,7 @@ function getCharacters() {
 	var count = 0;
 	var wordt;
 	for (var word in words) {
-		wordt = `" ${word} "`;
+		wordt = ` ${word} `;
 		count = words[word];
 		for (let i = 0; i < wordt.length; i++) {
 			char = wordt.charAt(i);
@@ -220,7 +220,7 @@ function getCharacters() {
 	for (const _tmp in bigram_freq) {
 		bigram_count += 1;
 	}
-	console.log(`"there are ${bigram_count} bigrams"`);
+	console.log(`there are ${bigram_count} bigrams`);
 
 	for (var tmp in trigram_freq) {
 		if (trigram_freq[tmp] <= 30) {
@@ -231,10 +231,10 @@ function getCharacters() {
 	for (const _tmp in trigram_freq) {
 		trigram_count += 1;
 	}
-	console.log(`"there are ${trigram_count} trigrams"`);
+	console.log(`there are ${trigram_count} trigrams`);
 
 	letter_freq[" "].count *= 0.5;
-	console.log(`"input_length: ${input_length}`);
+	console.log(`input_length: ${input_length}`);
 
 	sortLetterFreq();
 }
@@ -327,7 +327,7 @@ const dragHandler = d3
 				generateLayout();
 				generateCharacters();
 			} else {
-				console.log(`"can't drop here ${dropi}"`);
+				console.log(`can't drop here ${dropi}`);
 			}
 		} else {
 			// console.log("closest end",closestdist)
@@ -831,7 +831,7 @@ function setMode(thing) {
 		mult = 100;
 	}
 	yLabel = thing;
-	console.log(`"setting mode to ${mode}"`);
+	console.log(`setting mode to ${mode}`);
 	generateGraphs2();
 }
 
@@ -1018,11 +1018,11 @@ function countCharsKeys() {
 	var diff = 0;
 	if (key_count > char_count) {
 		diff = key_count - char_count;
-		error_text = `"Too many keys (${diff}); Select more characters or deselect some keys"`;
+		error_text = `Too many keys (${diff}); Select more characters or deselect some keys`;
 		error = true;
 	} else if (char_count > key_count) {
 		diff = char_count - key_count;
-		error_text = `"Too many chars (${diff}); Select fewer characters or select some more keys"`;
+		error_text = `Too many chars (${diff}); Select fewer characters or select some more keys`;
 		error = true;
 	}
 }
@@ -1251,7 +1251,7 @@ function setEffort(row, col, value) {
 function openEffortPopup() {
 	for (let row = 0; row < 3; row++) {
 		for (let col = 0; col < 12; col++) {
-			const name = `"textInput-${row}-${col}`;
+			const name = `textInput-${row}-${col}`;
 			document.getElementById(name).value = getEffort(row, col);
 		}
 	}
@@ -1303,7 +1303,7 @@ function saveEffortValuesToCookie(cookieName, data, daysToExpire) {
 function closeEffortPopup() {
 	for (let row = 0; row < 3; row++) {
 		for (let col = 0; col < 12; col++) {
-			const name = `"textInput-${row}-${col}"`;
+			const name = `textInput-${row}-${col}`;
 			setEffort(row, col, document.getElementById(name).value);
 		}
 	}
@@ -1352,7 +1352,7 @@ function copyEffortGridToClipboard() {
 	values = [];
 	for (let row = 0; row < 3; row++) {
 		for (let col = 0; col < 12; col++) {
-			const name = `"textInput-${row}-${col}`;
+			const name = `textInput-${row}-${col}`;
 			values.push(document.getElementById(name).value);
 		}
 	}
@@ -1390,7 +1390,7 @@ function pasteEffortGridFromClipboard() {
 
 			for (let row = 0; row < 3; row++) {
 				for (let col = 0; col < 12; col++) {
-					const name = `"textInput-${row}-${col}`;
+					const name = `textInput-${row}-${col}`;
 					document.getElementById(name).value = numbersArray[row * 12 + col];
 				}
 			}
@@ -1402,12 +1402,12 @@ function pasteEffortGridFromClipboard() {
 
 function selectLanguage(lan, event) {
 	var word_list = `'words-${lan}.json'`;
-	console.log(`"============ ${lan.toUpperCase()} ============"`);
+	console.log(`============ ${lan.toUpperCase()} ============`);
 	fetch(word_list)
 		.then((response) => response.json())
 		.then((data) => {
 			if (event.ctrlKey) {
-				console.log(`"adding ${lan} to words"`);
+				console.log(`adding ${lan} to words`);
 				for (var word in data) {
 					if (words[word]) {
 						words[word] += data[word];
@@ -1436,7 +1436,7 @@ function dist(x1, y1, x2, y2) {
 }
 
 function toggleKeyOnOff(d) {
-	console.log(`"toggleKeyOnOff ${d}`);
+	console.log(`toggleKeyOnOff ${d}`);
 	if (d.enabled === 1) {
 		d.enabled = 0;
 	} else {
@@ -1641,8 +1641,10 @@ function run() {
 		console.log("sort errors first");
 		return;
 	}
+
 	runs += 1;
 	best_score = 1000000;
+
 	var messages_sent = 0;
 	var messages_received = 0;
 	var found_new_result = false;
@@ -1684,26 +1686,26 @@ function run() {
 	}
 
 	for (let i = 0; i < editable_keys.length; i++) {
-		for (let j = 0; j < editable_keys.length; j++) {
-			if (j > i) {
-				const tmp_keys = _.cloneDeep(rcdata);
-				// swap keys
-				const p = editable_keys[i];
-				const q = editable_keys[j];
-				tmp = tmp_keys[p].char;
-				tmp_keys[p].char = tmp_keys[q].char;
-				tmp_keys[q].char = tmp;
-				const uid = create_uid(tmp_keys);
-				if (uid_set.has(uid)) {
-				} else {
-					messages_sent += 1;
-					myWorker.postMessage({
-						letter_freq: letter_freq,
-						bigrams: bigram_freq,
-						trigrams: trigram_freq,
-						config: tmp_keys,
-					});
-				}
+		for (let j = i + 1; j < editable_keys.length; j++) {
+			const p = editable_keys[i];
+			const q = editable_keys[j];
+
+			// shallow clone instead of deep clone if possible
+    		const tmp_keys = { ...rcdata };
+
+			tmp = tmp_keys[p].char;
+			tmp_keys[p].char = tmp_keys[q].char;
+			tmp_keys[q].char = tmp;
+			const uid = create_uid(tmp_keys);
+			if (uid_set.has(uid)) {
+			} else {
+				messages_sent += 1;
+				myWorker.postMessage({
+					letter_freq: letter_freq,
+					bigrams: bigram_freq,
+					trigrams: trigram_freq,
+					config: tmp_keys,
+				});
 			}
 		}
 	}
@@ -1992,7 +1994,7 @@ function run() {
 	myWorker.onerror = (error) => {
 		console.error("Main: There was an error with the worker.", error);
 	};
-	
+
 }
 
 loadAllData();
