@@ -134,8 +134,9 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 		}
 	}
 
-	const left_hand_p = 100 * (left_hand / (left_hand + right_hand));
-	const right_hand_p = 100 * (right_hand / (left_hand + right_hand));
+	const ratio_inv_sum_hands = 100.0 / (left_hand + right_hand);
+	const left_hand_p = left_hand * ratio_inv_sum_hands;
+	const right_hand_p = right_hand * ratio_inv_sum_hands;
 	hand_balance = Math.abs(left_hand_p - right_hand_p);
 	// console.log(left_hand, right_hand, left_hand_p, right_hand_p, hand_balance)
 
@@ -159,6 +160,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 			// console.log("Can't find lookup info for "+a);
 			finger1 = -1;
 		}
+
 		if (lookup[b]) {
 			row2 = lookup[b].row;
 			col2 = lookup[b].col;
@@ -170,18 +172,10 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 
 		if (finger1 === finger2 && a !== b) {
 			sfb += count;
-			if (finger1 === 1 || finger1 === 10) {
-				psfb += count;
-			}
-			if (finger1 === 2 || finger1 === 9) {
-				rsfb += count;
-			}
-			if (finger1 === 3 || finger1 === 8) {
-				msfb += count;
-			}
-			if (finger1 === 4 || finger1 === 7) {
-				isfb += count;
-			}
+			if ([1, 10].includes(finger1)) psfb += count;
+			if ([2, 9].includes(finger1)) rsfb += count;
+			if ([3, 8].includes(finger1)) msfb += count;
+			if ([4, 7].includes(finger1)) isfb += count;
 		} else {
 			if (col1 <= 5 && col2 <= 5) {
 				// LEFT HAND
@@ -200,9 +194,7 @@ function calculateMetrics(letter_freq, bigrams, trigrams, config) {
 						(finger1 === 1 && finger2 === 2) ||
 						(finger1 === 2 && finger2 === 1)
 					) {
-						if (dist_row >= 1) {
-							prscissors += count;
-						}
+						if (dist_row >= 1) prscissors += count;
 					}
 					if ((col1 === 5 && col2 === 3) || (col1 === 3 && col2 === 5)) {
 						lat_str += count;
