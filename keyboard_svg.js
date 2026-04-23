@@ -1040,7 +1040,7 @@ function getX(name, row, col) {
 	}
 }
 
-function getY(name, row, col) {
+function getY(row) {
 	return 10 + row * w;
 }
 
@@ -1094,7 +1094,7 @@ function dist(x1, y1, x2, y2) {
 function generateCoords() {
 	console.log("generateCoords");
 	for (let i = 0; i < rcdata_len; i++) {
-		rcdata[i][4] = getY(rcdata[i][0], rcdata[i][1], rcdata[i][2]); // Y
+		rcdata[i][4] = getY(rcdata[i][1]); // Y
 		rcdata[i][5] = getX(rcdata[i][0], rcdata[i][1], rcdata[i][2]); // X
 	}
 }
@@ -1918,16 +1918,14 @@ function measureWords() {
 			}
 			// d = dist(col, row, finger_pos[finger][1], finger_pos[finger][0]);
 			x1 = getX(char, row, col);
-			y1 = getY(char, row, col);
+			y1 = getY(row);
 			x2 = getX(
 				getChar(finger_pos[finger][0], finger_pos[finger][1]),
 				finger_pos[finger][0],
 				finger_pos[finger][1],
 			);
 			y2 = getY(
-				getChar(finger_pos[finger][0], finger_pos[finger][1]),
 				finger_pos[finger][0],
-				finger_pos[finger][1],
 			);
 			d = dist(x1, y1, x2, y2);
 			if (!m_finger_distance[finger]) {
@@ -3667,10 +3665,11 @@ function generatePlots() {
 		.text("Second Finger");
 
 	plot_i = 0;
+  var j = 1;
 
 	for (let i = 0; i <= 8; i++) {
 		sum_finger_pairs = 0;
-		for (var j = 1; j <= 8; j++) {
+		for (j = 1; j <= 8; j++) {
 			finger1 = i;
 			finger2 = j;
 			if (i > 4) {
@@ -3685,7 +3684,7 @@ function generatePlots() {
 				}
 			}
 		}
-		for (var j = 0; j <= 8; j++) {
+		for (j = 0; j <= 8; j++) {
 			finger1 = i;
 			finger2 = j;
 			if (i > 4) {
@@ -3803,7 +3802,7 @@ function makeDraggable(svg) {
 				// (cyanophage) scan through rcdata to find out which key are we closest to
 				closestdist = 9999;
 				starti = -1;
-				var keyname = "";
+				let keyname = "";
 				for (let i = 0; i < rcdata_len; i++) {
 					d = dist(x, y, rcdata[i][5], rcdata[i][4]);
 					if (d < closestdist) {
