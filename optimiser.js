@@ -308,7 +308,7 @@ function generateButtons() {
       d3.select(this).property("value", "1");
       times = 1;
     } else {
-      times = parseInt(value);
+      times = parseInt(value, 10);
     }
     generateGraphs();
     generateGraphs2();
@@ -844,7 +844,7 @@ function generateStats() {
   y = 30
   var weight_x = 136
   var min_x = 196
-  var score_x = 255
+  let score_x = 255
 
   // headers
   infoPanel.append("text").attr("x", x+weight_x).attr("y", y).attr("fill", "#aaaaaa")
@@ -856,7 +856,7 @@ function generateStats() {
 
   // sfb
 
-  var score_x = 255;
+  score_x = 255;
   y += 35
   addStatLine(x,y,sfb_data)
   y += 35
@@ -1128,7 +1128,9 @@ function selectLanguage(lan, event) {
 }
 
 function dist(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+  dx = x1 - x2;
+  dy = y1 - y2;
+  return Math.sqrt(dx*dx + dy*dy);
 }
 
 function toggleKeyOnOff(d) {
@@ -1307,7 +1309,7 @@ function calculateScore(value, weight, min, denom, perc) {
     value = value/denom
     score = (value - min) * weight
   }
-  if (isNaN(score)) {
+  if (score.isNaN) {
     console.log("score is NaN. ",value,weight,min,denom,perc)
     return 0
   }
