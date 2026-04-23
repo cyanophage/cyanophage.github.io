@@ -2253,8 +2253,8 @@ function generatePlots() {
 	console.log("generatePlots");
 	stats.selectAll("*").remove();
 	///////////////////////////////////////  C O L U M N   U S A G E  ////////////////////////////////////////////
-	var x = 500;
-	var y = 0;
+	let x = 500;
+	let y = 0;
 	stats
 		.append("text")
 		.attr("x", x + 40)
@@ -2264,7 +2264,8 @@ function generatePlots() {
 		.attr("fill", "#dfe2eb")
 		.attr("text-anchor", "left")
 		.text("Column Usage");
-	var sum_col_usage = 0;
+
+	let sum_col_usage = 0;
 	for (const col in m_column_usage) {
 		sum_col_usage += m_column_usage[col];
 	}
@@ -2309,8 +2310,8 @@ function generatePlots() {
 	}
 
 	///////////////////////////////////////  R O W   U S A G E  ////////////////////////////////////////////
-	var x = 770;
-	var y = 0;
+	x = 770;
+	y = 0;
 	stats
 		.append("text")
 		.attr("x", x + 40)
@@ -2320,11 +2321,13 @@ function generatePlots() {
 		.attr("fill", "#dfe2eb")
 		.attr("text-anchor", "left")
 		.text("Row Usage");
-	var sum_row_usage = 0;
+	
+  var sum_row_usage = 0;
 	for (const row in m_row_usage) {
 		sum_row_usage += m_row_usage[row];
 	}
 	const inv_sum_row_usage = 1.0 / sum_row_usage;
+
 	for (const row in m_row_usage) {
 		const height = 200 * m_row_usage[row] * inv_sum_row_usage;
 		const tip = parseFloat(100 * m_row_usage[row] * inv_sum_row_usage).toFixed(2);
@@ -2362,8 +2365,8 @@ function generatePlots() {
 		//<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
 	}
 	///////////////////////////////////////   F I N G E R   U S A G E   //////////////////////////////////////
-	var x = 0;
-	var y = 0;
+	x = 0;
+	y = 0;
 	stats
 		.append("text")
 		.attr("x", x + 40)
@@ -2440,8 +2443,8 @@ function generatePlots() {
 		.attr("text-anchor", "middle")
 		.text(`${parseFloat(100 * right * inv_sum).toFixed(2)}%`);
 	///////////////////////////////////////   F I N G E R   D I S T A N C E   //////////////////////////////////
-	var x = 250;
-	var y = 0;
+	x = 250;
+	y = 0;
 	var max = m_input_length / 5.110882176; // this might be shadowing 'max' above
 	sum = 0;
 	left = 0;
@@ -2533,8 +2536,8 @@ function generatePlots() {
 		.text(parseFloat(100 * sum * inv_max).toFixed(1));
 	// (100*sum/max).toFixed(1)
 	///////////////////////////////////   S A M E   F I N G E R   B I G R A M S    ///////////////////////////////
-	var x = 0;
-	var y = 180;
+	x = 0;
+	y = 180;
 	sum = 0;
 	// toggle button
 	stats
@@ -2720,7 +2723,7 @@ function generatePlots() {
 			.text(`2u Same Finger Bigrams ${parseFloat(100 * sum).toFixed(2)}%`);
 		// stats.append("text").attr("x",x+40).attr("y",y+200).attr("font-size",16).attr("font-family","Sans,Arial").attr("fill","#dfe2eb").attr("text-anchor","left").text("Input Length "+m_input_length);
 
-		var i = 0;
+		let i = 0;
 		let t = scroll_amount;
 		for (const bigram in m_same_finger3) {
 			if (t > 0) {
@@ -2770,8 +2773,8 @@ function generatePlots() {
 		}
 	}
 	///////////////////////////////////   S K I P   F I N G E R   B I G R A M S    ///////////////////////////////
-	var x = 250;
-	var y = 180;
+	x = 250;
+	y = 180;
 	sum = 0;
 	var tmp;
 	if (skip_toggle) {
@@ -2899,8 +2902,8 @@ function generatePlots() {
 		}
 	}
 	////////////////////////////   L A T E R A L   S T R E T C H   B I G R A M S   ///////////////////////////////
-	var x = 500;
-	var y = 180;
+	x = 500;
+	y = 180;
 	sum = 0;
 	if (lsb_toggle === 0) {
 		const keyValueArray = Object.entries(m_lat_stretch);
@@ -3027,8 +3030,8 @@ function generatePlots() {
 		}
 	}
 	////////////////////////////  S C I S S O R S  ///////////////////////////////
-	var x = 760;
-	var y = 180;
+	x = 760;
+	y = 180;
 	sum = 0;
 
 	if (scissors_toggle === 1) {
@@ -3172,8 +3175,8 @@ function generatePlots() {
 	}
 	
   ///////////////////////////////////  T R I G R A M   S T A T S   ///////////////////////////////
-	var x = 760;
-	var y = 390;
+	x = 760;
+	y = 390;
 	dx = 105;
 	sum = 0;
 	scale = 1;
@@ -3362,8 +3365,8 @@ function generatePlots() {
 	}
 
 	///////////////////////////////////  S A M E   H A N D   S T R I N G S  ///////////////////////////////
-	var x = 250;
-	var y = 390;
+	x = 250;
+	y = 390;
 	sum = 0;
 
 	var keyValueArray = Object.entries(samehandstrings);
@@ -3431,8 +3434,8 @@ function generatePlots() {
 	}
 
 	///////////////////////////////////  S A M E   H A N D   C O U N T S  ///////////////////////////////
-	var x = 415;
-	var y = 390;
+	x = 415;
+	y = 390;
 	sum = 0;
 
 	// var keyValueArray = Object.entries(samehandcount);
@@ -3483,7 +3486,7 @@ function generatePlots() {
 			.attr("font-size", 10)
 			.attr("font-family", "Sans,Arial")
 			.attr("text-anchor", "left")
-			.text((scale * 7.14285714285714285714285 * count).toFixed(1));
+			.text((scale * 7.142857142857143 * count).toFixed(1)); // was 7.14285714285714285714285, lint/correctness/noPrecisionLoss
 		// stats.append("text").attr("x", x + 135).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(count);
 		i += 1;
 		if (i > 10) {
@@ -3492,8 +3495,8 @@ function generatePlots() {
 	}
 
 	///////////////////////////////////  H A R D   W O R D S   ///////////////////////////////
-	var x = 580;
-	var y = 390;
+	x = 580;
+	y = 390;
 	sum = 0;
 	var keyValueArray = Object.entries(word_effort);
 	keyValueArray.sort((a, b) => b[1] / b[0].length - a[1] / a[0].length);
@@ -3572,8 +3575,8 @@ function generatePlots() {
 	// }
 
 	///////////////////////////////////  F I N G E R   P A I R S   ///////////////////////////////
-	var x = 10;
-	var y = 370;
+	x = 10;
+	y = 370;
 	var box_x = 26;
 	var box_y = 20;
 	var per = 0;
