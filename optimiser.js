@@ -133,7 +133,7 @@ function getCharacters() {
     input_length += (word.length + 1) * count;
   }
   var bigram_count = 0
-  for(var tmp in bigram_freq) {
+  for(const _tmp in bigram_freq) {
     bigram_count += 1
   }
   console.log(`"there are ${bigram_count} bigrams"`)
@@ -144,7 +144,7 @@ function getCharacters() {
     }
   }
   var trigram_count = 0
-  for(var tmp in trigram_freq) {
+  for(const _tmp in trigram_freq) {
     trigram_count += 1
   }
   console.log(`"there are ${trigram_count} trigrams"`)
@@ -183,8 +183,8 @@ const dragHandler = d3.drag()
   // console.log("start:",event.x,event.y);
   closestdist = 9999;
   startkey = "$"
-  for(var i = 0; i < letter_position.length; i++) {
-    var d2 = dist(event.x, event.y, letter_position[i].x+15, letter_position[i].y+15); // distance to centre of key
+  for(let i = 0; i < letter_position.length; i++) {
+    const d2 = dist(event.x, event.y, letter_position[i].x+15, letter_position[i].y+15); // distance to centre of key
     if (d2 < closestdist) {
       closestdist = d2;
       startkey = letter_position[i].letter
@@ -393,7 +393,7 @@ function generateGraphs() {
       max_score = best_results[i].score;
     }
   }
-  if (max_score==0){
+  if (max_score === 0){
     max_score = 10;
   }
   // Remove and redraw y-axis ticks when scale changes
@@ -421,11 +421,11 @@ function generateGraphs() {
     .text("Score");
 
   for (let i = 0; i <= tickCount; i++) {
-    var tickValue = (i * tickInterval).toString()
+    let tickValue = (i * tickInterval).toString()
     if (max_score < 1000 && tickValue.length > 3){
       tickValue = tickValue.substring(0,3)
     }
-    var yPos = yBase - i*tickInterval*scale;
+    const yPos = yBase - i*tickInterval*scale;
 
     // Tick mark
     svg.append("line")
@@ -538,7 +538,7 @@ function generateGraphs2() {
       max_score = percentage;
     }
   }
-  if (max_score==0){
+  if (max_score === 0){
     max_score = 1;
   }
   // Remove and redraw y-axis ticks when scale changes
@@ -566,11 +566,11 @@ function generateGraphs2() {
     .text(yLabel);
 
   for (let i = 0; i <= tickCount; i++) {
-    var tickValue = (i * tickInterval).toString()
+    let tickValue = (i * tickInterval).toString()
     if (max_score < 1000 && tickValue.length > 3){
       tickValue = tickValue.substring(0,3)
     }
-    var yPos = yBase - i*tickInterval*scale;
+    const yPos = yBase - i*tickInterval*scale;
 
     // Tick mark
     svg.append("line")
@@ -652,7 +652,7 @@ function generateModeButtons() {
   var buttons = ["SFB","Effort","Scissors","LSB","SFS"]
   if (svg.select(".mode-button").empty()) {
 
-    for(var i = 0; i < buttons.length; i++){
+    for(let i = 0; i < buttons.length; i++){
       svg.append("rect") // x axis
         .attr("class", "mode-button")
         .attr("x", xLeft+(i*100))
@@ -953,9 +953,9 @@ function setEffort(row, col,value) {
 }
 
 function openEffortPopup() {
-  for (var row = 0; row < 3; row++) {
-    for (var col = 0; col < 12; col++) {
-      var name = `"textInput-${row}-${col}`
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 12; col++) {
+      const name = `"textInput-${row}-${col}`
       document.getElementById(name).value = getEffort(row,col)
     }
   }
@@ -1001,9 +1001,9 @@ function saveEffortValuesToCookie(cookieName, data, daysToExpire) {
 }
 
 function closeEffortPopup() {
-  for (var row = 0; row < 3; row++) {
-    for (var col = 0; col < 12; col++) {
-      var name = `"textInput-${row}-${col}"`
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 12; col++) {
+      const name = `"textInput-${row}-${col}"`
       setEffort(row, col, document.getElementById(name).value);
     }
   }
@@ -1050,13 +1050,13 @@ function closeCorpusPopup() {
 
 function copyEffortGridToClipboard() {
   values = []
-  for (var row = 0; row < 3; row++) {
-    for (var col = 0; col < 12; col++) {
-      var name = `"textInput-${row}-${col}`
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 12; col++) {
+      const name = `"textInput-${row}-${col}`
       values.push(document.getElementById(name).value);
     }
   }
-  var str = values.join(",");
+  const str = values.join(",");
 
   if (!navigator.clipboard) {
     console.error("Clipboard API not supported");
@@ -1087,9 +1087,9 @@ function pasteEffortGridFromClipboard() {
       return
     }
 
-    for (var row = 0; row < 3; row++) {
-      for (var col = 0; col < 12; col++) {
-        var name = `"textInput-${row}-${col}`
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 12; col++) {
+        const name = `"textInput-${row}-${col}`
         document.getElementById(name).value = numbersArray[row * 12 + col]
       }
     }
@@ -1167,7 +1167,7 @@ function toggleCharOnOff(char) {
 }
 
 function showTooltip(evt, text) {
-  let tooltip = document.getElementById("tooltip");
+  const tooltip = document.getElementById("tooltip");
   tooltip.innerHTML = text;
   tooltip.style.display = "block";
   tooltip.style.left = evt.pageX + 10 + 'px';
@@ -1175,16 +1175,16 @@ function showTooltip(evt, text) {
 }
 
 function hideTooltip() {
-  var tooltip = document.getElementById("tooltip");
+  const tooltip = document.getElementById("tooltip");
   tooltip.style.display = "none";
 }
 
 function shuffle(array) { // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   let currentIndex = array.length;
   while (currentIndex !== 0) {
-    let randomIndex = Math.floor(Math.random() * currentIndex);
+    const randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    var tmp = array[currentIndex];
+    const tmp = array[currentIndex];
     array[currentIndex] = array[randomIndex];
     array[randomIndex] = tmp;
   }
@@ -1202,8 +1202,8 @@ function shuffleData(data, reps) {
   }
   for (let i = 0; i < reps; i++) {
     // pick a random key
-    var key1 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
-    var key2 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
+    const key1 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
+    let key2 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
     while(key1 === key2) {
       key2 = editable_keys[Math.floor(Math.random()*editable_keys.length)];
     }
@@ -1240,7 +1240,7 @@ function start() {
   list_of_chars = shuffle(list_of_chars);
 
   // check the letters fixed on the keyboard are off in the character list
-  for (var m in letter_freq) {
+  for (const m in letter_freq) {
     if (letter_freq[m].enabled === 1) {
       for (let i = 0; i < rcdata.length; i++) {
         if (rcdata[i].char === m) {
@@ -1283,8 +1283,8 @@ var editable_keys;
 function update_progress() {
   svg.selectAll(".progress").remove();
   if (running) {
-    var x = 1060;
-    for(var r = 0; r < 360; r += 60){
+    const x = 1060;
+    for(let r = 0; r < 360; r += 60){
     svg.append("rect")
       .attr("class", "progress")
       .attr("x", x).attr("y", 562)
@@ -1299,12 +1299,13 @@ function update_progress() {
 }
 
 function calculateScore(value, weight, min, denom, perc) {
-  if (perc==true) {
+  let score = -1;
+  if (perc === true) {
     value = (100*value)/denom
-    var score = (value - min) * weight
+    score = (value - min) * weight
   } else {
     value = value/denom
-    var score = (value - min) * weight
+    score = (value - min) * weight
   }
   if (isNaN(score)) {
     console.log("score is NaN. ",value,weight,min,denom,perc)
@@ -1358,14 +1359,14 @@ function run() {
     for (let i = 0; i < editable_keys.length; i++) {
       for (let j = 0; j < editable_keys.length; j++) {
         if (j > i) {
-          var tmp_keys = _.cloneDeep(rcdata)
+          const tmp_keys = _.cloneDeep(rcdata)
           // swap keys
-          var p = editable_keys[i]
-          var q = editable_keys[j]
+          const p = editable_keys[i]
+          const q = editable_keys[j]
           tmp = tmp_keys[p].char
           tmp_keys[p].char = tmp_keys[q].char
           tmp_keys[q].char = tmp
-          var uid = create_uid(tmp_keys)
+          const uid = create_uid(tmp_keys)
           if (uid_set.has(uid)) {
           } else {
             messages_sent += 1;
@@ -1383,10 +1384,10 @@ function run() {
     for (let c = 1; c <= 10; c++) {
       for (let d = 1; d <= 10; d++) {
         if (d > c) {
-          var tmp_keys = _.cloneDeep(rcdata)
+          const tmp_keys = _.cloneDeep(rcdata)
           for(let r = 0; r <= 2; r++ ) {
-            var p = getKey(r, c)
-            var q = getKey(r, d)
+            const p = getKey(r, c)
+            const q = getKey(r, d)
             if (rcdata[p].enabled === 1 && rcdata[q].enabled === 1) {
               tmp = tmp_keys[p].char
               tmp_keys[p].char = tmp_keys[q].char
@@ -1394,7 +1395,7 @@ function run() {
             }
           }
 
-          var uid = create_uid(tmp_keys)
+          const uid = create_uid(tmp_keys)
           if (uid_set.has(uid)) {
           } else {
             messages_sent += 1;
@@ -1463,7 +1464,7 @@ function run() {
             }
           }
           rcdata = best_config
-          var uid = create_uid(rcdata)
+          const uid = create_uid(rcdata)
           uid_set.add(uid)
           best_results.push({config: best_config, score: best_score, result: best_result, iter: iter})
           results = [];
