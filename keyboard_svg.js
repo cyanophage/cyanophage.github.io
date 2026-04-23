@@ -3637,6 +3637,8 @@ function generatePlots() {
 	var box_y = 20;
 	var per = 0;
 
+  var j = 1;
+
 	let finger1 = plot_i;
 	let finger2 = j;
 
@@ -3665,7 +3667,6 @@ function generatePlots() {
 		.text("Second Finger");
 
 	plot_i = 0;
-  var j = 1;
 
 	for (let i = 0; i <= 8; i++) {
 		sum_finger_pairs = 0;
