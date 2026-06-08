@@ -140,7 +140,7 @@ function selectLanguage(lan, event) {
   fetch(word_list)
   .then(response => response.json())
   .then(data => {
-      if (event && event.ctrlKey){
+      if (event && (event.ctrlKey||event.metaKey)){
         console.log("adding "+lan+" to words")
         for (let word in data) {
           if (words[word]){
@@ -1487,7 +1487,7 @@ function measureWords() {
           }
           m_scissors[bigram] += count;
         }
-        // all 2u scissors wide scissors
+        // all 2u scissors - rowskips
         if (Math.abs(row-prevrow) >= 2 && Math.abs(col-prevcol)>=1 && ((finger <= 4 && prevfinger <= 4)||(finger >=7 && prevfinger>=7))) {
           if (!m_all_scissors[bigram]) {
             m_all_scissors[bigram] = 0;
@@ -1752,10 +1752,10 @@ function generatePlots() {
   var right = 0;
   for (let finger in m_finger_usage) {
     sum += m_finger_usage[finger];
-    if (finger <= 4) {
+    if (finger <= 5) {
       left += m_finger_usage[finger];
     }
-    if (finger >= 7) {
+    if (finger >= 6) {
       right += m_finger_usage[finger];
     }
   }
@@ -1855,7 +1855,7 @@ function generatePlots() {
       if (width > 200) { width = 200; }
       stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] * inv_m_input_length)).toFixed(2) + "%");
+      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger[bigram] * inv_m_input_length)).toFixed(3) + "%");
       //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
       i += 1;
       if (i > 10) { break; }
@@ -1865,7 +1865,7 @@ function generatePlots() {
       sum += m_same_finger2[finger] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial")
-       .attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
+       .attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Same Finger Bigrams " + parseFloat(100 * sum).toFixed(3) + "%")
     for (let finger in m_same_finger2) {
       var height = 30000 * m_same_finger2[finger] * inv_m_input_length;
       if (height > 150) { height = 150;}
@@ -1906,7 +1906,7 @@ function generatePlots() {
       if (width > 200) { width = 200; }
       stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", width).attr("height", 10).attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
       stats.append("text").attr("x", x + 20).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger3[bigram] * inv_m_input_length)).toFixed(2) + "%");
+      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * m_same_finger3[bigram] * inv_m_input_length)).toFixed(3) + "%");
       //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
       i += 1;
       if (i > 10) { break; }
@@ -2034,7 +2034,7 @@ function generatePlots() {
     for (let bigram in tmp) {
       sum += tmp[bigram] * inv_m_input_length;
     }
-    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Wide Scissors " + parseFloat(100 * sum).toFixed(2) + "%")
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Rowskips " + parseFloat(100 * sum).toFixed(2) + "%")
   }
   stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
   .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing scissors on ring and pinky, and all 2u scissors')").attr("onmouseout","hideTooltip()").attr("onclick","scissorsToggle(-1)")
