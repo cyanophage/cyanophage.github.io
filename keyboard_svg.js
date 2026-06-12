@@ -512,9 +512,16 @@ function getEffort(row, column){
   return 0;
 }
 
-var skip_toggle = false;
-function skipToggle() {
-  skip_toggle = !skip_toggle
+
+var skip_toggle = 0;
+function skipToggle(v) {
+  skip_toggle += v
+  if (skip_toggle > 2){
+    skip_toggle = 0
+  }
+  if (skip_toggle < 0){
+    skip_toggle = 2
+  }
   generatePlots();
 }
 var scissors_toggle = 0;
@@ -1079,6 +1086,7 @@ var m_same_finger2 = {}; // per finger
 var m_same_finger3 = {}; // per bigram 2u
 var m_skip_bigram = {};
 var m_skip_bigram2 = {};
+var m_skip_bigram_finger = {};
 var m_redirects = {};
 var m_scissors = {};
 var m_all_scissors = {};
@@ -1331,6 +1339,7 @@ function measureWords() {
   m_finger_distance = {};
   m_skip_bigram = {};
   m_skip_bigram2 = {};
+  m_skip_bigram_finger = {};
   m_redirects = {};
   m_scissors = {};
   m_all_scissors = {};
@@ -1537,6 +1546,10 @@ function measureWords() {
             m_skip_bigram[skip] = 0;
           }
           m_skip_bigram[skip] += count;
+          if (!m_skip_bigram_finger[finger]) {
+            m_skip_bigram_finger[finger] = 0;
+          }
+          m_skip_bigram_finger[finger] += count;
 
           if (Math.abs(getRow(ppchar)-row) >= 2) {
             if (!m_skip_bigram2[skip]) {
@@ -1918,7 +1931,7 @@ function generatePlots() {
   var y = 180;
   sum = 0;
   var tmp;
-  if (skip_toggle) {
+  if (skip_toggle === 0) {
     var keyValueArray = Object.entries(m_skip_bigram);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -1926,7 +1939,7 @@ function generatePlots() {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams " + parseFloat(100 * sum).toFixed(2) + "%")
-  } else {
+  } else if(skip_toggle == 1){
     var keyValueArray = Object.entries(m_skip_bigram2);
     keyValueArray.sort((a, b) => b[1] - a[1]);
     tmp = Object.fromEntries(keyValueArray);
@@ -1934,31 +1947,64 @@ function generatePlots() {
       sum += tmp[bigram] * inv_m_input_length;
     }
     stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams (2u) " + parseFloat(100 * sum).toFixed(2) + "%")
+  } else {
+    var keyValueArray = Object.entries(m_skip_bigram_finger);
+    keyValueArray.sort((a, b) => b[1] - a[1]);
+    tmp = Object.fromEntries(keyValueArray);
+    for (let bigram in tmp) {
+      sum += tmp[bigram] * inv_m_input_length;
+    }
+    stats.append("text").attr("x", x + 40).attr("y", y - 16).attr("font-size", 16).attr("font-family", "Sans,Arial").attr("fill", "#dfe2eb").attr("text-anchor", "left").text("Skip Bigrams Fingers " + parseFloat(100 * sum).toFixed(2) + "%")
+
   }
 
   stats.append("path").attr("d", `M ${x + 15} ${y - 24} L ${x + 35} ${y - 24} L ${x + 25} ${y - 34} Z`)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle()")
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle(1)")
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
 
   stats.append("path").attr("d", `M ${x + 15} ${y - 20} L ${x + 35} ${y - 20} L ${x + 25} ${y - 10} Z`)
-  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle()")
+  .attr("fill", "#777777").attr("stroke", "#989898").attr("stroke-width", 1).attr("onmouseover","showTooltip(evt,'Toggle between showing all skip bigrams and only those with a 2u step between 1 and 3')").attr("onmouseout","hideTooltip()").attr("onclick","skipToggle(-1)")
   .on("mouseover", function() {      d3.select(this).attr("fill", "#bbbbbb");  })  .on("mouseout", function() {      d3.select(this).attr("fill", "#777777");  });
   var i = 0;
   var t = scroll_amount;
-  for (let bigram in tmp) {
-    if (t > 0){
-      t -= 1;
-      continue;
+  if (skip_toggle < 2){
+    for (let bigram in tmp) {
+      if (t > 0){
+        t -= 1;
+        continue;
+      }
+      var height = 36000 * tmp[bigram] * inv_m_input_length;
+      if (height > 200) { height = 200; }
+      stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
+        .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
+      stats.append("text").attr("x", x + 17).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
+      stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] * inv_m_input_length)).toFixed(2) + "%");
+      //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
+      i += 1;
+      if (i > 10) { break; }
     }
-    var height = 36000 * tmp[bigram] * inv_m_input_length;
-    if (height > 200) { height = 200; }
-    stats.append("rect").attr("x", x + 40).attr("y", y + i * 15).attr("width", height).attr("height", 10)
-      .attr("fill", "#7777bb").attr("stroke", "#9898d6").attr("stroke-width", 1)
-    stats.append("text").attr("x", x + 17).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Roboto Mono").attr("text-anchor", "right").text(bigram);
-    stats.append("text").attr("x", x + 200).attr("y", y + i * 15 + 8).attr("fill", "#dfe2eb").attr("font-size", 10).attr("font-family", "Sans,Arial").attr("text-anchor", "left").text(parseFloat("" + (100 * tmp[bigram] * inv_m_input_length)).toFixed(2) + "%");
-    //<rect x="#{x+column*20}" y="#{y+100-height}" width="15" height="#{height}" fill="##{ab}7787" stroke="#453033" stroke-width="1" onmousemove="showTooltip(evt,'#{(100*value/sum.to_f).round(2)}%')" onmouseout="hideTooltip()" />\n"
-    i += 1;
-    if (i > 10) { break; }
+  } else {
+    for (let finger in m_skip_bigram_finger) {
+      sum += m_skip_bigram_finger[finger] * inv_m_input_length;
+    }
+    for (let finger in m_skip_bigram_finger) {
+      var height = 8500 * m_skip_bigram_finger[finger] * inv_m_input_length;
+      if (height > 150) { height = 150;}
+      var tip = parseFloat(100 * m_skip_bigram_finger[finger] * inv_m_input_length).toFixed(2);
+      var red = Math.floor(6000 * m_skip_bigram_finger[finger] * inv_m_input_length) + 128
+      var green = 128;
+      if (red < 16) { red = 16; }
+      if (red > 255) { red = 255; }
+      var hex_red = red.toString(16);
+      var hex_bg = green.toString(16);
+      stats.append("rect").attr("x", x + finger * 20).attr("y", y+155 - height).attr("width", 15).attr("height", height)
+        .attr("fill", "#" + hex_red + hex_bg + hex_bg).attr("stroke", "#453033").attr("stroke-width", 1)
+        .attr("onmouseover", "showTooltip(evt,'" + tip + "%')").attr("onmouseout", "hideTooltip()")
+
+      stats.append("text").attr("x", x + finger * 20 + 7).attr("y", y+166).attr("fill", "#dfe2eb").attr("font-size", 10)
+        .attr("font-family", "Sans,Arial").attr("text-anchor", "middle").text(finger)
+    }
+
   }
   ////////////////////////////   L A T E R A L   S T R E T C H   B I G R A M S   ///////////////////////////////
   var x = 500;
